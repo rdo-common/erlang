@@ -1,0 +1,44 @@
+--- otp_src_R10B-3/lib/crypto/c_src/Makefile.in.rpath	2005-02-13 15:22:29.208560819 +0100
++++ otp_src_R10B-3/lib/crypto/c_src/Makefile.in	2005-02-13 15:22:50.852106461 +0100
+@@ -79,7 +79,7 @@
+ ifeq ($(HOST_OS),)
+ HOST_OS := $(shell $(ERL_TOP)/erts/autoconf/config.guess)
+ endif
+-LD_R_FLAG=@DED_LD_FLAG_RUNTIME_LIBRARY_PATH@
++LD_R_FLAG=
+ ifeq ($(findstring @,$(LD_R_FLAG)),@)
+ # Old erts configure used which hasn't replaced
+ # @DED_LD_FLAG_RUNTIME_LIBRARY_PATH@; we try our best here instead...
+--- otp_src_R10B-3/lib/crypto/priv/Makefile.rpath	2005-02-13 14:46:15.043814168 +0100
++++ otp_src_R10B-3/lib/crypto/priv/Makefile	2005-02-13 14:46:48.575467543 +0100
+@@ -60,7 +60,7 @@
+ # ----------------------------------------------------
+ 
+ $(SO_DRIVER): $(OBJS)
+-	$(SO_LD) $(SO_LDFLAGS) -L$(SO_SSL_LIBDIR) -Wl,-R$(SO_SSL_LIBDIR) \
++	$(SO_LD) $(SO_LDFLAGS) -L$(SO_SSL_LIBDIR) \
+ 	-o $@ $^ -lcrypto
+ 
+ $(DLL_DRIVER): $(OBJS)
+--- otp_src_R10B-3/lib/ssh/c_src/Makefile.in.rpath	2005-02-13 15:23:13.516486079 +0100
++++ otp_src_R10B-3/lib/ssh/c_src/Makefile.in	2005-02-13 15:23:25.130630385 +0100
+@@ -75,7 +75,7 @@
+ else
+ DYN_DRIVER = $(LIBDIR)/ssh_crypto_drv.so
+ endif
+-LD_R_FLAG=@DED_LD_FLAG_RUNTIME_LIBRARY_PATH@
++LD_R_FLAG=
+ ifeq ($(findstring @,$(LD_R_FLAG)),@)
+ # Old erts configure used which hasn't replaced
+ # @DED_LD_FLAG_RUNTIME_LIBRARY_PATH@; we try our best here instead...
+--- otp_src_R10B-3/erts/configure.rpath	2005-02-13 14:44:11.498507144 +0100
++++ otp_src_R10B-3/erts/configure	2005-02-13 14:44:55.858437414 +0100
+@@ -1231,7 +1231,7 @@
+ CFLAGS="$CFLAGS $extra_flags"
+ DEBUG_CFLAGS="-g $extra_flags"
+ 
+-CFLAG_RUNTIME_LIBRARY_PATH="-Wl,-R"
++CFLAG_RUNTIME_LIBRARY_PATH=""
+ case $host_os in
+   darwin*)
+ 	CFLAG_RUNTIME_LIBRARY_PATH=
