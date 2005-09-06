@@ -1,6 +1,6 @@
 Name:           erlang
 Version:        R10B
-Release:        6.3
+Release:        6.3%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
