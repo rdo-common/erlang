@@ -1,6 +1,6 @@
 Name:           erlang
 Version:        R10B
-Release:        6.3%{?dist}
+Release:        6.4%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -14,6 +14,8 @@ Patch1:		otp-install.patch
 Patch2:		otp-rpath.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:	ncurses-devel, openssl-devel, flex, unixODBC-devel
+BuildRequires:	tcl-devel, tk-devel
+Requires:	tk
 
 %description 
 Erlang is a general-purpose programming language and runtime
@@ -88,6 +90,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Oct  1 2005 Gerard Milmeister <gemi@bluewin.ch> - R10B-6.4
+- Added tk-devel and tcl-devel to buildreq
+- Added tk to req
+
 * Tue Sep  6 2005 Gerard Milmeister <gemi@bluewin.ch> - R10B-6.3
 - Remove perl BuildRequires
 
