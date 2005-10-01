@@ -12,9 +12,10 @@ Source2:	http://www.erlang.org/download/otp_doc_man_R10B-6.tar.gz
 Patch:		otp-links.patch
 Patch1:		otp-install.patch
 Patch2:		otp-rpath.patch
-Patch3:		otp-glibc24.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:	ncurses-devel, openssl-devel, flex, unixODBC-devel
+BuildRequires:	tcl-devel, tk-devel
+Requires:	tk
 
 %description 
 Erlang is a general-purpose programming language and runtime
@@ -36,7 +37,6 @@ Documentation for Erlang.
 %patch -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
 
 
 %build
@@ -90,9 +90,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Tue Sep  6 2005 Gerard Milmeister <gemi@bluewin.ch> - R10B-6.4
+* Sat Oct  1 2005 Gerard Milmeister <gemi@bluewin.ch> - R10B-6.4
+- Added tk-devel and tcl-devel to buildreq
+- Added tk to req
+
+* Tue Sep  6 2005 Gerard Milmeister <gemi@bluewin.ch> - R10B-6.3
 - Remove perl BuildRequires
-- Add patch for glibc 2.4
 
 * Tue Aug 30 2005 Gerard Milmeister <gemi@bluewin.ch> - R10B-6.2
 - change /usr/lib to %%{_libdir}
