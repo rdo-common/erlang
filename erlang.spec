@@ -1,6 +1,6 @@
 Name:           erlang
 Version:        R10B
-Release:        8.1%{?dist}
+Release:        8.2%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -12,6 +12,7 @@ Source2:	http://www.erlang.org/download/otp_doc_man_R10B-8.tar.gz
 Patch:		otp-links.patch
 Patch1:		otp-install.patch
 Patch2:		otp-rpath.patch
+Patch3:		otp-glibc24.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	ncurses-devel, openssl-devel, flex, unixODBC-devel
@@ -40,6 +41,7 @@ Documentation for Erlang.
 %patch -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 
 %build
@@ -93,6 +95,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Oct 29 2005 Gerard Milmeister <gemi@bluewin.ch> - R10B-8.2
+- updated rpath patch
+
 * Sat Oct 29 2005 Gerard Milmeister <gemi@bluewin.ch> - R10B-8.1
 - New Version R10B-8
 
