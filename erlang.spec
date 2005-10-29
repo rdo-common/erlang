@@ -1,20 +1,23 @@
 Name:           erlang
 Version:        R10B
-Release:        6.4%{?dist}
+Release:        8.1%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
 License:        Erlang Public License
 URL:            http://www.erlang.org
-Source:         http://www.erlang.org/download/otp_src_R10B-6.tar.gz
-Source1:	http://www.erlang.org/download/otp_doc_html_R10B-6.tar.gz
-Source2:	http://www.erlang.org/download/otp_doc_man_R10B-6.tar.gz
+Source:         http://www.erlang.org/download/otp_src_R10B-8.tar.gz
+Source1:	http://www.erlang.org/download/otp_doc_html_R10B-8.tar.gz
+Source2:	http://www.erlang.org/download/otp_doc_man_R10B-8.tar.gz
 Patch:		otp-links.patch
 Patch1:		otp-install.patch
 Patch2:		otp-rpath.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
 BuildRequires:	ncurses-devel, openssl-devel, flex, unixODBC-devel
 BuildRequires:	tcl-devel, tk-devel
+BuildRequires:	java-1.4.2-gcj-compat-devel
+
 Requires:	tk
 
 %description 
@@ -33,7 +36,7 @@ Documentation for Erlang.
 
 
 %prep
-%setup -q -n otp_src_R10B-6
+%setup -q -n otp_src_R10B-8
 %patch -p1
 %patch1 -p1
 %patch2 -p1
@@ -90,6 +93,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Oct 29 2005 Gerard Milmeister <gemi@bluewin.ch> - R10B-8.1
+- New Version R10B-8
+
 * Sat Oct  1 2005 Gerard Milmeister <gemi@bluewin.ch> - R10B-6.4
 - Added tk-devel and tcl-devel to buildreq
 - Added tk to req
