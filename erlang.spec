@@ -1,23 +1,27 @@
 Name:           erlang
 Version:        R10B
-Release:        8.3%{?dist}
+Release:        9.1%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
 License:        Erlang Public License
 URL:            http://www.erlang.org
-Source:         http://www.erlang.org/download/otp_src_R10B-8.tar.gz
-Source1:	http://www.erlang.org/download/otp_doc_html_R10B-8.tar.gz
-Source2:	http://www.erlang.org/download/otp_doc_man_R10B-8.tar.gz
+Source:         http://www.erlang.org/download/otp_src_R10B-9.tar.gz
+Source1:	http://www.erlang.org/download/otp_doc_html_R10B-9.tar.gz
+Source2:	http://www.erlang.org/download/otp_doc_man_R10B-9.tar.gz
 Patch:		otp-links.patch
 Patch1:		otp-install.patch
 Patch2:		otp-rpath.patch
-Patch3:		otp-glibc24.patch
+Patch3:         otp-sslrpath.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:	ncurses-devel, openssl-devel, flex, unixODBC-devel
-BuildRequires:	tcl-devel, tk-devel
+BuildRequires:	ncurses-devel
+BuildRequires:  openssl-devel
+BuildRequires:  unixODBC-devel
+BuildRequires:	tcl-devel
+BuildRequires:	tk-devel
 BuildRequires:	java-1.4.2-gcj-compat-devel
+BuildRequires:  flex
 
 Requires:	tk
 
@@ -37,7 +41,7 @@ Documentation for Erlang.
 
 
 %prep
-%setup -q -n otp_src_R10B-8
+%setup -q -n otp_src_R10B-9
 %patch -p1
 %patch1 -p1
 %patch2 -p1
@@ -91,10 +95,13 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %post
-%{_libdir}/erlang/Install -minimal %{_libdir}/erlang > /dev/null
+%{_libdir}/erlang/Install -minimal %{_libdir}/erlang >/dev/null 2>/dev/null
 
 
 %changelog
+* Thu Dec 29 2005 Gerard Milmeister <gemi@bluewin.ch> - R10B-9.1
+- New Version R10B-9
+
 * Sat Oct 29 2005 Gerard Milmeister <gemi@bluewin.ch> - R10B-8.2
 - updated rpath patch
 
