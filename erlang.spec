@@ -1,14 +1,14 @@
 Name:           erlang
 Version:        R10B
-Release:        9.2%{?dist}
+Release:        10.1%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
 License:        Erlang Public License
 URL:            http://www.erlang.org
-Source:         http://www.erlang.org/download/otp_src_R10B-9.tar.gz
-Source1:	http://www.erlang.org/download/otp_doc_html_R10B-9.tar.gz
-Source2:	http://www.erlang.org/download/otp_doc_man_R10B-9.tar.gz
+Source:         http://www.erlang.org/download/otp_src_R10B-10.tar.gz
+Source1:	http://www.erlang.org/download/otp_doc_html_R10B-10.tar.gz
+Source2:	http://www.erlang.org/download/otp_doc_man_R10B-10.tar.gz
 Patch:		otp-links.patch
 Patch1:		otp-install.patch
 Patch2:		otp-rpath.patch
@@ -41,7 +41,7 @@ Documentation for Erlang.
 
 
 %prep
-%setup -q -n otp_src_R10B-9
+%setup -q -n otp_src_R10B-10
 %patch -p1
 %patch1 -p1
 %patch2 -p1
@@ -99,6 +99,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Mar 13 2006 Gerard Milmeister <gemi@bluewin.ch> - R10B-10.1
+- new version R10B-10
+
 * Thu Dec 29 2005 Gerard Milmeister <gemi@bluewin.ch> - R10B-9.1
 - New Version R10B-9
 
