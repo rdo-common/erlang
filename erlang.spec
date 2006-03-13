@@ -1,6 +1,6 @@
 Name:           erlang
 Version:        R10B
-Release:        10.1%{?dist}
+Release:        10.2%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -13,6 +13,7 @@ Patch:		otp-links.patch
 Patch1:		otp-install.patch
 Patch2:		otp-rpath.patch
 Patch3:         otp-sslrpath.patch
+Patch4:		otp-glibc24.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	ncurses-devel
@@ -46,6 +47,7 @@ Documentation for Erlang.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 
 %build

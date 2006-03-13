@@ -1,11 +1,11 @@
---- otp_src_R10B-6/erts/emulator/hipe/hipe_x86_signal.c.glibc24	2005-09-06 22:01:13.000000000 +0200
-+++ otp_src_R10B-6/erts/emulator/hipe/hipe_x86_signal.c	2005-09-06 22:01:36.000000000 +0200
+--- otp_src_R10B-10/erts/emulator/hipe/hipe_x86_signal.c.glibc24	2006-03-13 17:16:39.000000000 +0100
++++ otp_src_R10B-10/erts/emulator/hipe/hipe_x86_signal.c	2006-03-13 17:17:11.000000000 +0100
 @@ -27,7 +27,7 @@
  #include <stdlib.h>
  #include "hipe_signal.h"
  
 -#if __GLIBC__ == 2 && __GLIBC_MINOR__ == 3
-+#if __GLIBC__ == 2 && (__GLIBC_MINOR__ == 3 || __GLIBC_MINOR__ == 4)
++#if __GLIBC__ == 2 && __GLIBC_MINOR__ == 4
  /* See comment below for glibc 2.2. */
+ #ifndef __USE_GNU
  #define __USE_GNU		/* to un-hide RTLD_NEXT */
- #include <dlfcn.h>
