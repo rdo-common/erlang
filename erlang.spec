@@ -1,6 +1,6 @@
 Name:           erlang
 Version:        R10B
-Release:        10.2%{?dist}
+Release:        10.3%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -14,6 +14,7 @@ Patch1:		otp-install.patch
 Patch2:		otp-rpath.patch
 Patch3:         otp-sslrpath.patch
 Patch4:		otp-glibc24.patch
+Patch5:		otp-run_erl.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	ncurses-devel
@@ -48,6 +49,7 @@ Documentation for Erlang.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 
 %build
@@ -101,6 +103,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed May  3 2006 Gerard Milmeister <gemi@bluewin.ch> - R10B-10.3
+- added patch for run_erl by Knut-Håvard Aksnes
+
 * Mon Mar 13 2006 Gerard Milmeister <gemi@bluewin.ch> - R10B-10.1
 - new version R10B-10
 
