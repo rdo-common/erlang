@@ -1,19 +1,18 @@
 Name:           erlang
-Version:        R10B
-Release:        10.3%{?dist}
+Version:        R11B
+Release:        0.1%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
 License:        Erlang Public License
 URL:            http://www.erlang.org
-Source:         http://www.erlang.org/download/otp_src_R10B-10.tar.gz
-Source1:	http://www.erlang.org/download/otp_doc_html_R10B-10.tar.gz
-Source2:	http://www.erlang.org/download/otp_doc_man_R10B-10.tar.gz
-Patch:		otp-links.patch
+Source:         http://www.erlang.org/download/otp_src_R11B-0.tar.gz
+Source1:	http://www.erlang.org/download/otp_doc_html_R11B-0.tar.gz
+Source2:	http://www.erlang.org/download/otp_doc_man_R11B-0.tar.gz
+Patch0:		otp-links.patch
 Patch1:		otp-install.patch
 Patch2:		otp-rpath.patch
 Patch3:         otp-sslrpath.patch
-Patch4:		otp-glibc24.patch
 Patch5:		otp-run_erl.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -43,13 +42,12 @@ Documentation for Erlang.
 
 
 %prep
-%setup -q -n otp_src_R10B-10
-%patch -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
+%setup -q -n otp_src_R11B-0
+%patch0 -p1 -b .links
+%patch1 -p1 -b .install
+%patch2 -p1 -b .rpath
+%patch3 -p1 -b .sslrpath
+%patch5 -p1 -b .run_erl
 
 
 %build
@@ -103,6 +101,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu May 18 2006 Gerard Milmeister <gemi@bluewin.ch> - R11B-0.1
+- new version R11B-0
+
 * Wed May  3 2006 Gerard Milmeister <gemi@bluewin.ch> - R10B-10.3
 - added patch for run_erl by Knut-Håvard Aksnes
 
