@@ -1,0 +1,11 @@
+--- otp_src_R10B-9/lib/ssl/c_src/Makefile.in.sslrpath	2005-12-29 00:49:17.000000000 +0100
++++ otp_src_R10B-9/lib/ssl/c_src/Makefile.in	2005-12-29 00:50:15.000000000 +0100
+@@ -95,7 +95,7 @@
+ endif
+ endif
+ 
+-CC_R_FLAG=@CFLAG_RUNTIME_LIBRARY_PATH@
++CC_R_FLAG=
+ ifeq ($(findstring @,$(CC_R_FLAG)),@)
+ # Old erts configure used which hasn't replaced @CFLAG_RUNTIME_LIBRARY_PATH@;
+ # we try our best here instead...
