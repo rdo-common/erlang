@@ -1,6 +1,6 @@
 Name:           erlang
 Version:        R11B
-Release:        0.1%{?dist}
+Release:        0.2%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -23,6 +23,7 @@ BuildRequires:	tcl-devel
 BuildRequires:	tk-devel
 BuildRequires:	java-1.4.2-gcj-compat-devel
 BuildRequires:  flex
+BuildRequires:	m4
 
 Requires:	tk
 
@@ -101,6 +102,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jul  5 2006 Gerard Milmeister <gemi@bluewin.ch> - R11B-0.2
+- add BR m4
+
 * Thu May 18 2006 Gerard Milmeister <gemi@bluewin.ch> - R11B-0.1
 - new version R11B-0
 
