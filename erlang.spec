@@ -1,6 +1,6 @@
 Name:           erlang
 Version:        R11B
-Release:        0.2%{?dist}
+Release:        0.3%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -102,6 +102,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Aug 28 2006 Gerard Milmeister <gemi@bluewin.ch> - R11B-0.3
+- Rebuild for FE6
+
 * Wed Jul  5 2006 Gerard Milmeister <gemi@bluewin.ch> - R11B-0.2
 - add BR m4
 
