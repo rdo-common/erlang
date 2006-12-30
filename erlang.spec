@@ -1,6 +1,6 @@
 Name:           erlang
 Version:        R11B
-Release:        2.1%{?dist}
+Release:        2.2%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -13,6 +13,7 @@ Patch0:		otp-links.patch
 Patch1:		otp-install.patch
 Patch2:		otp-rpath.patch
 Patch3:         otp-sslrpath.patch
+Patch4:         otp-glibc25.patch
 Patch5:		otp-run_erl.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -48,6 +49,7 @@ Documentation for Erlang.
 %patch1 -p1 -b .install
 %patch2 -p1 -b .rpath
 %patch3 -p1 -b .sslrpath
+%patch4 -p1 -b .glibc25
 %patch5 -p1 -b .run_erl
 
 
@@ -102,6 +104,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Dec 30 2006 Gerard Milmeister <gemi@bluewin.ch> - R11B-2.2
+- added patch for compiling with glibc 2.5
+
 * Sat Dec 30 2006 Gerard Milmeister <gemi@bluewin.ch> - R11B-2.1
 - new version R11B-2
 
