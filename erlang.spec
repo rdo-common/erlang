@@ -1,14 +1,14 @@
 Name:           erlang
 Version:        R11B
-Release:        0.3%{?dist}
+Release:        2.1%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
 License:        Erlang Public License
 URL:            http://www.erlang.org
-Source:         http://www.erlang.org/download/otp_src_R11B-0.tar.gz
-Source1:	http://www.erlang.org/download/otp_doc_html_R11B-0.tar.gz
-Source2:	http://www.erlang.org/download/otp_doc_man_R11B-0.tar.gz
+Source:         http://www.erlang.org/download/otp_src_R11B-2.tar.gz
+Source1:	http://www.erlang.org/download/otp_doc_html_R11B-2.tar.gz
+Source2:	http://www.erlang.org/download/otp_doc_man_R11B-2.tar.gz
 Patch0:		otp-links.patch
 Patch1:		otp-install.patch
 Patch2:		otp-rpath.patch
@@ -43,7 +43,7 @@ Documentation for Erlang.
 
 
 %prep
-%setup -q -n otp_src_R11B-0
+%setup -q -n otp_src_R11B-2
 %patch0 -p1 -b .links
 %patch1 -p1 -b .install
 %patch2 -p1 -b .rpath
@@ -102,6 +102,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Dec 30 2006 Gerard Milmeister <gemi@bluewin.ch> - R11B-2.1
+- new version R11B-2
+
 * Mon Aug 28 2006 Gerard Milmeister <gemi@bluewin.ch> - R11B-0.3
 - Rebuild for FE6
 
