@@ -1,6 +1,6 @@
 Name:           erlang
 Version:        R11B
-Release:        2.2%{?dist}
+Release:        2.3%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -82,6 +82,10 @@ do
   ln -sf ../%{_lib}/erlang/bin/$file .
 done
 
+# remove buildroot from installed files
+cd $RPM_BUILD_ROOT/%{_libdir}/erlang
+sed -i "s|$RPM_BUILD_ROOT||" erts*/bin/{erl,start} releases/RELEASES bin/{erl,start}
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -104,6 +108,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Dec 31 2006 Gerard Milmeister <gemi@bluewin.ch> - R11B-2.3
+- remove buildroot from installed files
+
 * Sat Dec 30 2006 Gerard Milmeister <gemi@bluewin.ch> - R11B-2.2
 - added patch for compiling with glibc 2.5
 
