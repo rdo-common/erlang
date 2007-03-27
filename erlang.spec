@@ -1,6 +1,6 @@
 Name:           erlang
 Version:        R11B
-Release:        2.3%{?dist}
+Release:        2.4%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -22,7 +22,7 @@ BuildRequires:  openssl-devel
 BuildRequires:  unixODBC-devel
 BuildRequires:	tcl-devel
 BuildRequires:	tk-devel
-BuildRequires:	java-1.4.2-gcj-compat-devel
+BuildRequires:	java-1.5.0-gcj-devel
 BuildRequires:  flex
 BuildRequires:	m4
 
@@ -108,6 +108,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Mar 24 2007 Thomas Fitzsimmons <fitzsim@redhat.com> - R11B-2.4
+- Require java-1.5.0-gcj-devel for build.
+
 * Sun Dec 31 2006 Gerard Milmeister <gemi@bluewin.ch> - R11B-2.3
 - remove buildroot from installed files
 
