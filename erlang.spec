@@ -1,6 +1,6 @@
 Name:           erlang
 Version:        R11B
-Release:        5.1%{?dist}
+Release:        5.2%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -47,6 +47,8 @@ Documentation for Erlang.
 %patch1 -p1 -b .install
 %patch2 -p1 -b .rpath
 %patch3 -p1 -b .sslrpath
+# enable dynamic linking for ssl
+sed -i 's|SSL_DYNAMIC_ONLY=no|SSL_DYNAMIC_ONLY=yes|' erts/configure
 
 
 %build
@@ -104,6 +106,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Aug 18 2007 Gerard Milmeister <gemi@bluewin.ch> - R11B-5.2
+- enable dynamic linking for ssl
+
 * Sat Aug 18 2007 Gerard Milmeister <gemi@bluewin.ch> - R11B-5.1
 - new release R11B-5
 
