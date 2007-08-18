@@ -1,20 +1,18 @@
 Name:           erlang
 Version:        R11B
-Release:        2.4%{?dist}
+Release:        5.1%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
 License:        Erlang Public License
 URL:            http://www.erlang.org
-Source:         http://www.erlang.org/download/otp_src_R11B-2.tar.gz
-Source1:	http://www.erlang.org/download/otp_doc_html_R11B-2.tar.gz
-Source2:	http://www.erlang.org/download/otp_doc_man_R11B-2.tar.gz
+Source:         http://www.erlang.org/download/otp_src_R11B-5.tar.gz
+Source1:	http://www.erlang.org/download/otp_doc_html_R11B-5.tar.gz
+Source2:	http://www.erlang.org/download/otp_doc_man_R11B-5.tar.gz
 Patch0:		otp-links.patch
 Patch1:		otp-install.patch
 Patch2:		otp-rpath.patch
 Patch3:         otp-sslrpath.patch
-Patch4:         otp-glibc25.patch
-Patch5:		otp-run_erl.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	ncurses-devel
@@ -44,13 +42,11 @@ Documentation for Erlang.
 
 
 %prep
-%setup -q -n otp_src_R11B-2
+%setup -q -n otp_src_R11B-5
 %patch0 -p1 -b .links
 %patch1 -p1 -b .install
 %patch2 -p1 -b .rpath
 %patch3 -p1 -b .sslrpath
-%patch4 -p1 -b .glibc25
-%patch5 -p1 -b .run_erl
 
 
 %build
@@ -108,6 +104,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Aug 18 2007 Gerard Milmeister <gemi@bluewin.ch> - R11B-5.1
+- new release R11B-5
+
 * Sat Mar 24 2007 Thomas Fitzsimmons <fitzsim@redhat.com> - R11B-2.4
 - Require java-1.5.0-gcj-devel for build.
 
