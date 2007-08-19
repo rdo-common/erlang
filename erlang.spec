@@ -1,6 +1,6 @@
 Name:           erlang
 Version:        R11B
-Release:        5.2%{?dist}
+Release:        5.3%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -64,6 +64,7 @@ make INSTALL_PREFIX=$RPM_BUILD_ROOT install
 # clean up
 find $RPM_BUILD_ROOT%{_libdir}/erlang -perm 0775 | xargs chmod 755
 find $RPM_BUILD_ROOT%{_libdir}/erlang -name Makefile | xargs chmod 644
+find $RPM_BUILD_ROOT%{_libdir}/erlang -name \*.o | xargs chmod 644
 find $RPM_BUILD_ROOT%{_libdir}/erlang -name \*.bat | xargs rm -f
 find $RPM_BUILD_ROOT%{_libdir}/erlang -name index.txt.old | xargs rm -f
 
@@ -106,6 +107,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Aug 19 2007 Gerard Milmeister <gemi@bluewin.ch> - R11B-5.3
+- fix some permissions
+
 * Sat Aug 18 2007 Gerard Milmeister <gemi@bluewin.ch> - R11B-5.2
 - enable dynamic linking for ssl
 
