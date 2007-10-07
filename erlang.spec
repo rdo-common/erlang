@@ -1,18 +1,19 @@
 Name:           erlang
 Version:        R11B
-Release:        0.1.1%{?dist}
+Release:        2.3%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
 License:        Erlang Public License
 URL:            http://www.erlang.org
-Source:         http://www.erlang.org/download/otp_src_R11B-0.tar.gz
-Source1:	http://www.erlang.org/download/otp_doc_html_R11B-0.tar.gz
-Source2:	http://www.erlang.org/download/otp_doc_man_R11B-0.tar.gz
+Source:         http://www.erlang.org/download/otp_src_R11B-2.tar.gz
+Source1:	http://www.erlang.org/download/otp_doc_html_R11B-2.tar.gz
+Source2:	http://www.erlang.org/download/otp_doc_man_R11B-2.tar.gz
 Patch0:		otp-links.patch
 Patch1:		otp-install.patch
 Patch2:		otp-rpath.patch
 Patch3:         otp-sslrpath.patch
+Patch4:         otp-glibc25.patch
 Patch5:		otp-run_erl.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -23,7 +24,7 @@ BuildRequires:	tcl-devel
 BuildRequires:	tk-devel
 BuildRequires:	java-1.4.2-gcj-compat-devel
 BuildRequires:  flex
-BuildRequires:  m4
+BuildRequires:	m4
 
 Requires:	tk
 
@@ -43,11 +44,12 @@ Documentation for Erlang.
 
 
 %prep
-%setup -q -n otp_src_R11B-0
+%setup -q -n otp_src_R11B-2
 %patch0 -p1 -b .links
 %patch1 -p1 -b .install
 %patch2 -p1 -b .rpath
 %patch3 -p1 -b .sslrpath
+%patch4 -p1 -b .glibc25
 %patch5 -p1 -b .run_erl
 
 
@@ -80,6 +82,10 @@ do
   ln -sf ../%{_lib}/erlang/bin/$file .
 done
 
+# remove buildroot from installed files
+cd $RPM_BUILD_ROOT/%{_libdir}/erlang
+sed -i "s|$RPM_BUILD_ROOT||" erts*/bin/{erl,start} releases/RELEASES bin/{erl,start}
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -102,12 +108,32 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Dec 31 2006 Gerard Milmeister <gemi@bluewin.ch> - R11B-2.3
+- remove buildroot from installed files
 
-* Sun Oct  7 2007 Peter Lemenkov <lemenkov@gmail.com> - R11B-0.1.1
-- Added missing BR for EL-4 - m4
+* Sat Dec 30 2006 Gerard Milmeister <gemi@bluewin.ch> - R11B-2.2
+- added patch for compiling with glibc 2.5
+
+* Sat Dec 30 2006 Gerard Milmeister <gemi@bluewin.ch> - R11B-2.1
+- new version R11B-2
+
+* Mon Aug 28 2006 Gerard Milmeister <gemi@bluewin.ch> - R11B-0.3
+- Rebuild for FE6
+
+* Wed Jul  5 2006 Gerard Milmeister <gemi@bluewin.ch> - R11B-0.2
+- add BR m4
 
 * Thu May 18 2006 Gerard Milmeister <gemi@bluewin.ch> - R11B-0.1
 - new version R11B-0
+
+* Wed May  3 2006 Gerard Milmeister <gemi@bluewin.ch> - R10B-10.3
+- added patch for run_erl by Knut-Håvard Aksnes
+
+* Mon Mar 13 2006 Gerard Milmeister <gemi@bluewin.ch> - R10B-10.1
+- new version R10B-10
+
+* Thu Dec 29 2005 Gerard Milmeister <gemi@bluewin.ch> - R10B-9.1
+- New Version R10B-9
 
 * Sat Oct 29 2005 Gerard Milmeister <gemi@bluewin.ch> - R10B-8.2
 - updated rpath patch
