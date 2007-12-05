@@ -1,6 +1,6 @@
 Name:           erlang
 Version:        R11B
-Release:        5.3%{?dist}
+Release:        6.3%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -107,6 +107,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Dec 05 2007 Release Engineering <rel-eng at fedoraproject dot org> - R11B-6
+ - Rebuild for deps
+
 * Sun Aug 19 2007 Gerard Milmeister <gemi@bluewin.ch> - R11B-5.3
 - fix some permissions
 
