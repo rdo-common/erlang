@@ -6,15 +6,13 @@ Summary:        General-purpose programming language and runtime environment
 Group:          Development/Languages
 License:        Erlang Public License
 URL:            http://www.erlang.org
-Source:         http://www.erlang.org/download/otp_src_R11B-2.tar.gz
-Source1:	http://www.erlang.org/download/otp_doc_html_R11B-2.tar.gz
-Source2:	http://www.erlang.org/download/otp_doc_man_R11B-2.tar.gz
+Source:         http://www.erlang.org/download/otp_src_R12B-0.tar.gz
+Source1:	http://www.erlang.org/download/otp_doc_html_R12B-0.tar.gz
+Source2:	http://www.erlang.org/download/otp_doc_man_R12B-0.tar.gz
 Patch0:		otp-links.patch
 Patch1:		otp-install.patch
 Patch2:		otp-rpath.patch
 Patch3:         otp-sslrpath.patch
-Patch4:         otp-glibc25.patch
-Patch5:		otp-run_erl.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	ncurses-devel
@@ -44,14 +42,14 @@ Documentation for Erlang.
 
 
 %prep
-%setup -q -n otp_src_R11B-2
+%setup -q -n otp_src_R12B-0
 %patch0 -p1 -b .links
 %patch1 -p1 -b .install
 %patch2 -p1 -b .rpath
 %patch3 -p1 -b .sslrpath
-%patch4 -p1 -b .glibc25
-%patch5 -p1 -b .run_erl
-
+# enable dynamic linking for ssl
+sed -i 's|SSL_DYNAMIC_ONLY=no|SSL_DYNAMIC_ONLY=yes|' erts/configure
+sed -i 's|LD.*=.*|LD = gcc -shared|' lib/common_test/c_src/Makefile
 
 %build
 ./configure --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
@@ -66,6 +64,7 @@ make INSTALL_PREFIX=$RPM_BUILD_ROOT install
 # clean up
 find $RPM_BUILD_ROOT%{_libdir}/erlang -perm 0775 | xargs chmod 755
 find $RPM_BUILD_ROOT%{_libdir}/erlang -name Makefile | xargs chmod 644
+find $RPM_BUILD_ROOT%{_libdir}/erlang -name \*.o | xargs chmod 644
 find $RPM_BUILD_ROOT%{_libdir}/erlang -name \*.bat | xargs rm -f
 find $RPM_BUILD_ROOT%{_libdir}/erlang -name index.txt.old | xargs rm -f
 
@@ -108,6 +107,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Dec  8 2007 Gerard Milmeister <gemi@bluewin.ch> - R12B-0.1
+- new release R12B-0
+
 * Sat Mar 24 2007 Thomas Fitzsimmons <fitzsim@redhat.com> - R11B-2.4
 - Require java-1.5.0-gcj-devel for build.
 
