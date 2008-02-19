@@ -1,6 +1,6 @@
 Name:           erlang
 Version:        R12B
-Release:        0.1%{?dist}
+Release:        0.2%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -107,6 +107,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Feb 18 2008 Fedora Release Engineering <rel-eng@fedoraproject.org> - R12B-0.2
+- Autorebuild for GCC 4.3
+
 * Sat Dec  8 2007 Gerard Milmeister <gemi@bluewin.ch> - R12B-0.1
 - new release R12B-0
 
