@@ -1,6 +1,6 @@
 Name:           erlang
 Version:        R12B
-Release:        0.2%{?dist}
+Release:        0.3%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -13,6 +13,7 @@ Patch0:		otp-links.patch
 Patch1:		otp-install.patch
 Patch2:		otp-rpath.patch
 Patch3:         otp-sslrpath.patch
+Patch4:         otp-null.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	ncurses-devel
@@ -20,6 +21,7 @@ BuildRequires:  openssl-devel
 BuildRequires:  unixODBC-devel
 BuildRequires:	tcl-devel
 BuildRequires:	tk-devel
+BuildRequires:  gd-devel
 BuildRequires:	java-1.5.0-gcj-devel
 BuildRequires:  flex
 BuildRequires:	m4
@@ -47,12 +49,13 @@ Documentation for Erlang.
 %patch1 -p1 -b .install
 %patch2 -p1 -b .rpath
 %patch3 -p1 -b .sslrpath
+%patch4 -p1 -b .null
 # enable dynamic linking for ssl
 sed -i 's|SSL_DYNAMIC_ONLY=no|SSL_DYNAMIC_ONLY=yes|' erts/configure
 sed -i 's|LD.*=.*|LD = gcc -shared|' lib/common_test/c_src/Makefile
 
 %build
-./configure --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
+CFLAGS="-fno-strict-aliasing" ./configure --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
 chmod -R u+w .
 make
 
@@ -107,6 +110,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Feb 23 2008 Gerard Milmeister <gemi@bluewin.ch> - R12B-0.3
+- disable strict aliasing optimization
+
 * Mon Feb 18 2008 Fedora Release Engineering <rel-eng@fedoraproject.org> - R12B-0.2
 - Autorebuild for GCC 4.3
 
