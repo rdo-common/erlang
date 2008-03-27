@@ -1,20 +1,20 @@
 Name:           erlang
-Version:        R11B
-Release:        2.3%{?dist}
+Version:        R12B
+Release:        1.0%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
 License:        Erlang Public License
 URL:            http://www.erlang.org
-Source:         http://www.erlang.org/download/otp_src_R11B-2.tar.gz
-Source1:	http://www.erlang.org/download/otp_doc_html_R11B-2.tar.gz
-Source2:	http://www.erlang.org/download/otp_doc_man_R11B-2.tar.gz
+Source:         http://www.erlang.org/download/otp_src_R12B-1.tar.gz
+Source1:	http://www.erlang.org/download/otp_doc_html_R12B-1.tar.gz
+Source2:	http://www.erlang.org/download/otp_doc_man_R12B-1.tar.gz
 Patch0:		otp-links.patch
 Patch1:		otp-install.patch
 Patch2:		otp-rpath.patch
 Patch3:         otp-sslrpath.patch
-Patch4:         otp-glibc25.patch
 Patch5:		otp-run_erl.patch
+Patch6:		otp-ssl_missing_libs.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	ncurses-devel
@@ -44,13 +44,13 @@ Documentation for Erlang.
 
 
 %prep
-%setup -q -n otp_src_R11B-2
+%setup -q -n otp_src_R12B-1
 %patch0 -p1 -b .links
 %patch1 -p1 -b .install
 %patch2 -p1 -b .rpath
 %patch3 -p1 -b .sslrpath
-%patch4 -p1 -b .glibc25
-%patch5 -p1 -b .run_erl
+%patch5 -p0 -b .run_erl
+%patch6 -p0 -b .keyutils
 
 
 %build
@@ -108,6 +108,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Mar 26 2008 Peter Lemenkov <lemenkov@gmail.com> - R12B-1.0
+- Ver. R12B-1
+
 * Sun Dec 31 2006 Gerard Milmeister <gemi@bluewin.ch> - R11B-2.3
 - remove buildroot from installed files
 
