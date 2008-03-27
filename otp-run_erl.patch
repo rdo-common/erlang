@@ -1,46 +1,11 @@
---- otp_src_R10B-10/erts/etc/unix/run_erl.c.bak	2006-05-03 15:54:19.000000000 +0200
-+++ otp_src_R10B-10/erts/etc/unix/run_erl.c	2006-05-03 15:57:36.000000000 +0200
-@@ -42,6 +42,8 @@
- #include <dirent.h>
- #include <termios.h>
- #include <time.h>
-+#include <pty.h>
-+#include <utmp.h>
- #if !defined(NO_SYSLOG)
- #include <syslog.h>
- #endif
-@@ -803,6 +805,7 @@
- static int open_pty_master(char **ptyslave)
- {
-   int mfd;
-+  int sfd;
-   char *major, *minor;
- 
-   static char majorchars[] = "pqrstuvwxyzabcdePQRSTUVWXYZABCDE";
-@@ -818,6 +821,15 @@
-   /* http://www.xcf.berkeley.edu/~ali/K0D/UNIX/PTY/code/upty.h.html */
- 
-   {
-+    static char ttyname[] = "                                   ";
-+    if (0 == openpty(&mfd, &sfd, ttyname, NULL, NULL)) {
-+      close(sfd);
-+      *ptyslave = ttyname;
-+      return mfd;
-+    }
-+  }
-+
-+  {
-     /* New style devpts or devfs /dev/pty/{m,s}{0,1....} */
- 
-     static char ptyname[] = "/dev/pty/mX";
---- otp_src_R10B-10/erts/etc/common/Makefile.in.orig	2006-05-03 17:08:53.000000000 +0200
-+++ otp_src_R10B-10/erts/etc/common/Makefile.in	2006-05-03 17:10:18.000000000 +0200
-@@ -241,7 +241,7 @@
+--- erts/etc/common/Makefile.in.orig	2008-03-27 13:11:52.000000000 +0300
++++ erts/etc/common/Makefile.in	2008-03-27 13:13:23.000000000 +0300
+@@ -298,7 +298,7 @@
  	$(PURIFY) $(LD) $(LDFLAGS) $(ENTRY_LDFLAGS) -o $@ $(OBJDIR)/inet_gethost.o $(ENTRY_OBJ) $(LIBS) 
  
  $(BINDIR)/run_erl: $(OBJDIR)/run_erl.o
--	$(LD) $(LDFLAGS) -o $@ $(OBJDIR)/run_erl.o
-+	$(LD) $(LDFLAGS) -lutil -o $@ $(OBJDIR)/run_erl.o
+-	$(LD) $(LDFLAGS) -o $@ $(OBJDIR)/run_erl.o $(LIBS)
++	$(LD) $(LDFLAGS) -o $@ $(OBJDIR)/run_erl.o $(LIBS) -lutil
  
  $(OBJDIR)/run_erl.o: ../unix/run_erl.c
  	$(CC) $(CFLAGS) -o $@ -c ../unix/run_erl.c

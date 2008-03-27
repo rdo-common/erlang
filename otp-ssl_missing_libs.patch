@@ -1,0 +1,11 @@
+--- lib/ssl/c_src/Makefile.in	2008-03-27 13:43:04.000000000 +0300
++++ lib/ssl/c_src/Makefile.in	2008-03-27 14:03:27.000000000 +0300
+@@ -38,7 +38,7 @@
+ CC = @CC@
+ LD = @LD@
+ SHELL = /bin/sh
+-LIBS = @LIBS@
++LIBS = @LIBS@ -lkeyutils -lselinux
+ PLAIN_CFLAGS = @CFLAGS@
+ 
+ # ----------------------------------------------------
