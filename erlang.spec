@@ -1,19 +1,21 @@
+%define ver R12B
+%define rel 3
+
 Name:           erlang
-Version:        R12B
-Release:        1.1%{?dist}
+Version:        %{ver}
+Release:        %{rel}.1%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
 License:        Erlang Public License
 URL:            http://www.erlang.org
-Source:         http://www.erlang.org/download/otp_src_R12B-1.tar.gz
-Source1:	http://www.erlang.org/download/otp_doc_html_R12B-1.tar.gz
-Source2:	http://www.erlang.org/download/otp_doc_man_R12B-1.tar.gz
+Source:         http://www.erlang.org/download/otp_src_%{ver}-%{rel}.tar.gz
+Source1:	http://www.erlang.org/download/otp_doc_html_%{ver}-%{rel}.tar.gz
+Source2:	http://www.erlang.org/download/otp_doc_man_%{ver}-%{rel}.tar.gz
 Patch0:		otp-links.patch
 Patch1:		otp-install.patch
 Patch2:		otp-rpath.patch
 Patch3:         otp-sslrpath.patch
-Patch4:         otp-null.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	ncurses-devel
@@ -44,15 +46,22 @@ Documentation for Erlang.
 
 
 %prep
-%setup -q -n otp_src_R12B-1
+%setup -q -n otp_src_%{ver}-%{rel}
 %patch0 -p1 -b .links
 %patch1 -p1 -b .install
-%patch2 -p1 -b .rpath
+#%patch2 -p1 -b .rpath
 %patch3 -p1 -b .sslrpath
-%patch4 -p1 -b .null
+
 # enable dynamic linking for ssl
 sed -i 's|SSL_DYNAMIC_ONLY=no|SSL_DYNAMIC_ONLY=yes|' erts/configure
 sed -i 's|^LD.*=.*|LD = gcc -shared|' lib/common_test/c_src/Makefile
+# fix for newer glibc version
+sed -i 's|__GLIBC_MINOR__ <= 7|__GLIBC_MINOR__ <= 8|' erts/emulator/hipe/hipe_x86_signal.c
+# use gcc -shared instead of ld
+sed -i 's|@RX_LD@|gcc -shared|' lib/common_test/c_src/Makefile.in
+sed -i 's|@RX_LDFLAGS@||' lib/common_test/c_src/Makefile.in
+
+
 
 %build
 CFLAGS="-fno-strict-aliasing" ./configure --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
@@ -110,6 +119,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Jul  6 2008 Gerard Milmeister <gemi@bluewin.ch> - R12B-3.1
+- new release R12B-3
+
 * Thu Mar 27 2008 Gerard Milmeister <gemi@bluewin.ch> - R12B-1.1
 - new release R12B-1
 
