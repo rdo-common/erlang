@@ -14,7 +14,6 @@ Source1:	http://www.erlang.org/download/otp_doc_html_%{ver}-%{rel}.tar.gz
 Source2:	http://www.erlang.org/download/otp_doc_man_%{ver}-%{rel}.tar.gz
 Patch0:		otp-links.patch
 Patch1:		otp-install.patch
-Patch2:		otp-rpath.patch
 Patch3:         otp-sslrpath.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -49,7 +48,6 @@ Documentation for Erlang.
 %setup -q -n otp_src_%{ver}-%{rel}
 %patch0 -p1 -b .links
 %patch1 -p1 -b .install
-#%patch2 -p1 -b .rpath
 %patch3 -p1 -b .sslrpath
 
 # enable dynamic linking for ssl
