@@ -3,11 +3,11 @@
 
 Name:           erlang
 Version:        %{ver}
-Release:        %{rel}.1%{?dist}
+Release:        %{rel}.2%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
-License:        Erlang Public License
+License:        ERPL
 URL:            http://www.erlang.org
 Source:         http://www.erlang.org/download/otp_src_%{ver}-%{rel}.tar.gz
 Source1:	http://www.erlang.org/download/otp_doc_html_%{ver}-%{rel}.tar.gz
@@ -117,6 +117,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jul 17 2008 Tom "spot" Callaway <tcallawa@redhat.com> - R12B-3.2
+- fix license tag
+
 * Sun Jul  6 2008 Gerard Milmeister <gemi@bluewin.ch> - R12B-3.1
 - new release R12B-3
 
