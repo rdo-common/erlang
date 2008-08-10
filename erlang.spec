@@ -1,20 +1,21 @@
+%define ver R12B
+%define rel 3
+
 Name:           erlang
-Version:        R12B
-Release:        1.0%{?dist}
+Version:        %{ver}
+Release:        %{rel}.2%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
-License:        Erlang Public License
+License:        ERPL
 URL:            http://www.erlang.org
-Source:         http://www.erlang.org/download/otp_src_R12B-1.tar.gz
-Source1:	http://www.erlang.org/download/otp_doc_html_R12B-1.tar.gz
-Source2:	http://www.erlang.org/download/otp_doc_man_R12B-1.tar.gz
+Source:         http://www.erlang.org/download/otp_src_%{ver}-%{rel}.tar.gz
+Source1:	http://www.erlang.org/download/otp_doc_html_%{ver}-%{rel}.tar.gz
+Source2:	http://www.erlang.org/download/otp_doc_man_%{ver}-%{rel}.tar.gz
 Patch0:		otp-links.patch
 Patch1:		otp-install.patch
-Patch2:		otp-rpath.patch
 Patch3:         otp-sslrpath.patch
-Patch5:		otp-run_erl.patch
-Patch6:		otp-ssl_missing_libs.patch
+Patch6:         otp-ssl_missing_libs.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	ncurses-devel
@@ -22,6 +23,7 @@ BuildRequires:  openssl-devel
 BuildRequires:  unixODBC-devel
 BuildRequires:	tcl-devel
 BuildRequires:	tk-devel
+BuildRequires:  gd-devel
 BuildRequires:	java-1.4.2-gcj-compat-devel
 BuildRequires:  flex
 BuildRequires:	m4
@@ -44,17 +46,25 @@ Documentation for Erlang.
 
 
 %prep
-%setup -q -n otp_src_R12B-1
+%setup -q -n otp_src_%{ver}-%{rel}
 %patch0 -p1 -b .links
 %patch1 -p1 -b .install
-%patch2 -p1 -b .rpath
 %patch3 -p1 -b .sslrpath
-%patch5 -p0 -b .run_erl
 %patch6 -p0 -b .keyutils
+
+# enable dynamic linking for ssl
+sed -i 's|SSL_DYNAMIC_ONLY=no|SSL_DYNAMIC_ONLY=yes|' erts/configure
+sed -i 's|^LD.*=.*|LD = gcc -shared|' lib/common_test/c_src/Makefile
+# fix for newer glibc version
+sed -i 's|__GLIBC_MINOR__ <= 7|__GLIBC_MINOR__ <= 8|' erts/emulator/hipe/hipe_x86_signal.c
+# use gcc -shared instead of ld
+sed -i 's|@RX_LD@|gcc -shared|' lib/common_test/c_src/Makefile.in
+sed -i 's|@RX_LDFLAGS@||' lib/common_test/c_src/Makefile.in
+
 
 
 %build
-./configure --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
+CFLAGS="-fno-strict-aliasing" ./configure --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
 chmod -R u+w .
 make
 
@@ -66,6 +76,7 @@ make INSTALL_PREFIX=$RPM_BUILD_ROOT install
 # clean up
 find $RPM_BUILD_ROOT%{_libdir}/erlang -perm 0775 | xargs chmod 755
 find $RPM_BUILD_ROOT%{_libdir}/erlang -name Makefile | xargs chmod 644
+find $RPM_BUILD_ROOT%{_libdir}/erlang -name \*.o | xargs chmod 644
 find $RPM_BUILD_ROOT%{_libdir}/erlang -name \*.bat | xargs rm -f
 find $RPM_BUILD_ROOT%{_libdir}/erlang -name index.txt.old | xargs rm -f
 
@@ -108,8 +119,38 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Wed Mar 26 2008 Peter Lemenkov <lemenkov@gmail.com> - R12B-1.0
-- Ver. R12B-1
+* Thu Jul 17 2008 Tom "spot" Callaway <tcallawa@redhat.com> - R12B-3.2
+- fix license tag
+
+* Sun Jul  6 2008 Gerard Milmeister <gemi@bluewin.ch> - R12B-3.1
+- new release R12B-3
+
+* Thu Mar 27 2008 Gerard Milmeister <gemi@bluewin.ch> - R12B-1.1
+- new release R12B-1
+
+* Sat Feb 23 2008 Gerard Milmeister <gemi@bluewin.ch> - R12B-0.3
+- disable strict aliasing optimization
+
+* Mon Feb 18 2008 Fedora Release Engineering <rel-eng@fedoraproject.org> - R12B-0.2
+- Autorebuild for GCC 4.3
+
+* Sat Dec  8 2007 Gerard Milmeister <gemi@bluewin.ch> - R12B-0.1
+- new release R12B-0
+
+* Wed Dec 05 2007 Release Engineering <rel-eng at fedoraproject dot org> - R11B-6
+ - Rebuild for deps
+
+* Sun Aug 19 2007 Gerard Milmeister <gemi@bluewin.ch> - R11B-5.3
+- fix some permissions
+
+* Sat Aug 18 2007 Gerard Milmeister <gemi@bluewin.ch> - R11B-5.2
+- enable dynamic linking for ssl
+
+* Sat Aug 18 2007 Gerard Milmeister <gemi@bluewin.ch> - R11B-5.1
+- new release R11B-5
+
+* Sat Mar 24 2007 Thomas Fitzsimmons <fitzsim@redhat.com> - R11B-2.4
+- Require java-1.5.0-gcj-devel for build.
 
 * Sun Dec 31 2006 Gerard Milmeister <gemi@bluewin.ch> - R11B-2.3
 - remove buildroot from installed files
