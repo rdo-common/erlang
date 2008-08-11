@@ -3,7 +3,7 @@
 
 Name:           erlang
 Version:        %{ver}
-Release:        %{rel}.2%{?dist}
+Release:        %{rel}.3%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -64,7 +64,7 @@ sed -i 's|@RX_LDFLAGS@||' lib/common_test/c_src/Makefile.in
 
 
 %build
-CFLAGS="-fno-strict-aliasing" ./configure --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
+CFLAGS="-fno-strict-aliasing" ./configure --enable-dynamic-ssl-lib --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
 chmod -R u+w .
 make
 
@@ -102,7 +102,7 @@ sed -i "s|$RPM_BUILD_ROOT||" erts*/bin/{erl,start} releases/RELEASES bin/{erl,st
 rm -rf $RPM_BUILD_ROOT
 
 
-%files 
+%files
 %defattr(-,root,root)
 %doc AUTHORS EPLICENCE README
 %{_bindir}/*
@@ -119,6 +119,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Aug 11 2008 Peter Lemenkov <lemenkov@gmail.com> - R12B-3.3
+- Force dynamic linking of crypto libs
+
 * Thu Jul 17 2008 Tom "spot" Callaway <tcallawa@redhat.com> - R12B-3.2
 - fix license tag
 
