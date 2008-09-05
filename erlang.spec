@@ -3,7 +3,7 @@
 
 Name:           erlang
 Version:        %{ver}
-Release:        %{rel}.2%{?dist}
+Release:        %{rel}.3%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -117,6 +117,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Sep  5 2008 Gerard Milmeister <gemi@bluewin.ch> - R12B-3.3%{?dist}
+- fixed sslrpath patch
+
 * Thu Jul 17 2008 Tom "spot" Callaway <tcallawa@redhat.com> - R12B-3.2
 - fix license tag
 
