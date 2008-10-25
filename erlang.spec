@@ -1,19 +1,18 @@
 Name:           erlang
 Version:        R12B
-Release:        1.1%{?dist}
+Release:        4.1%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
 License:        Erlang Public License
 URL:            http://www.erlang.org
-Source:         http://www.erlang.org/download/otp_src_R12B-1.tar.gz
-Source1:	http://www.erlang.org/download/otp_doc_html_R12B-1.tar.gz
-Source2:	http://www.erlang.org/download/otp_doc_man_R12B-1.tar.gz
+Source:         http://www.erlang.org/download/otp_src_R12B-4.tar.gz
+Source1:	http://www.erlang.org/download/otp_doc_html_R12B-4.tar.gz
+Source2:	http://www.erlang.org/download/otp_doc_man_R12B-4.tar.gz
 Patch0:		otp-links.patch
 Patch1:		otp-install.patch
 Patch2:		otp-rpath.patch
 Patch3:         otp-sslrpath.patch
-Patch4:         otp-null.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	ncurses-devel
@@ -44,12 +43,12 @@ Documentation for Erlang.
 
 
 %prep
-%setup -q -n otp_src_R12B-1
+%setup -q -n otp_src_R12B-4
 %patch0 -p1 -b .links
 %patch1 -p1 -b .install
 %patch2 -p1 -b .rpath
 %patch3 -p1 -b .sslrpath
-%patch4 -p1 -b .null
+
 # enable dynamic linking for ssl
 sed -i 's|SSL_DYNAMIC_ONLY=no|SSL_DYNAMIC_ONLY=yes|' erts/configure
 sed -i 's|^LD.*=.*|LD = gcc -shared|' lib/common_test/c_src/Makefile
@@ -110,6 +109,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Oct 25 2008 Gerard Milmeister <gemi@bluewin.ch> - R12B-4.1
+- new release R12B-4
+
 * Thu Mar 27 2008 Gerard Milmeister <gemi@bluewin.ch> - R12B-1.1
 - new release R12B-1
 
