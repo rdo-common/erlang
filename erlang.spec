@@ -3,7 +3,7 @@
 
 Name:           erlang
 Version:        %{ver}
-Release:        %{rel}.2%{?dist}
+Release:        %{rel}.3%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -50,7 +50,7 @@ Documentation for Erlang.
 %patch0 -p1 -b .links
 %patch1 -p1 -b .install
 %patch2 -p1 -b .rpath
-%patch3 -p1 -b .sslrpath
+#%patch3 -p1 -b .sslrpath
 
 # enable dynamic linking for ssl
 sed -i 's|SSL_DYNAMIC_ONLY=no|SSL_DYNAMIC_ONLY=yes|' erts/configure
