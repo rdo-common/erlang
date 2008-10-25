@@ -1,9 +1,9 @@
 %define ver R12B
-%define rel 3
+%define rel 4
 
 Name:           erlang
 Version:        %{ver}
-Release:        %{rel}.3%{?dist}
+Release:        %{rel}.1%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -14,6 +14,7 @@ Source1:	http://www.erlang.org/download/otp_doc_html_%{ver}-%{rel}.tar.gz
 Source2:	http://www.erlang.org/download/otp_doc_man_%{ver}-%{rel}.tar.gz
 Patch0:		otp-links.patch
 Patch1:		otp-install.patch
+Patch2:		otp-rpath.patch
 Patch3:         otp-sslrpath.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -48,6 +49,7 @@ Documentation for Erlang.
 %setup -q -n otp_src_%{ver}-%{rel}
 %patch0 -p1 -b .links
 %patch1 -p1 -b .install
+%patch2 -p1 -b .rpath
 %patch3 -p1 -b .sslrpath
 
 # enable dynamic linking for ssl
@@ -117,6 +119,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Oct 25 2008 Gerard Milmeister <gemi@bluewin.ch> - R12B-4.1
+- new release R12B-4
+
 * Fri Sep  5 2008 Gerard Milmeister <gemi@bluewin.ch> - R12B-3.3%{?dist}
 - fixed sslrpath patch
 

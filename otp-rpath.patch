@@ -1,17 +1,19 @@
---- otp_src_R10B-8/lib/crypto/c_src/Makefile.in.rpath	2005-10-29 22:50:59.000000000 +0200
-+++ otp_src_R10B-8/lib/crypto/c_src/Makefile.in	2005-10-29 22:51:23.000000000 +0200
-@@ -79,7 +79,7 @@
- ifeq ($(HOST_OS),)
+diff -up otp_src_R12B-4/lib/crypto/c_src/Makefile.in.rpath otp_src_R12B-4/lib/crypto/c_src/Makefile.in
+--- otp_src_R12B-4/lib/crypto/c_src/Makefile.in.rpath	2008-10-25 22:20:42.000000000 +0200
++++ otp_src_R12B-4/lib/crypto/c_src/Makefile.in	2008-10-25 22:20:59.000000000 +0200
+@@ -80,7 +80,7 @@ ifeq ($(HOST_OS),)
  HOST_OS := $(shell $(ERL_TOP)/erts/autoconf/config.guess)
  endif
+ DYNAMIC_CRYPTO_LIB=@SSL_DYNAMIC_ONLY@
 -LD_R_FLAG=@DED_LD_FLAG_RUNTIME_LIBRARY_PATH@
 +LD_R_FLAG=
  ifeq ($(strip $(LD_R_FLAG)),)
  LD_R_OPT =
  else
---- otp_src_R10B-8/lib/crypto/priv/Makefile.rpath	2005-10-29 22:52:01.000000000 +0200
-+++ otp_src_R10B-8/lib/crypto/priv/Makefile	2005-10-29 22:52:32.000000000 +0200
-@@ -60,7 +60,7 @@
+diff -up otp_src_R12B-4/lib/crypto/priv/Makefile.rpath otp_src_R12B-4/lib/crypto/priv/Makefile
+--- otp_src_R12B-4/lib/crypto/priv/Makefile.rpath	2008-10-25 22:21:11.000000000 +0200
++++ otp_src_R12B-4/lib/crypto/priv/Makefile	2008-10-25 22:21:33.000000000 +0200
+@@ -60,7 +60,7 @@ OBJS = $(OBJDIR)/crypto_drv.o
  # ----------------------------------------------------
  
  $(SO_DRIVER): $(OBJS)
@@ -20,9 +22,10 @@
  	-o $@ $^ -lcrypto
  
  $(DLL_DRIVER): $(OBJS)
---- otp_src_R10B-8/lib/ssl/c_src/Makefile.in.rpath	2005-10-29 22:53:15.000000000 +0200
-+++ otp_src_R10B-8/lib/ssl/c_src/Makefile.in	2005-10-29 22:53:50.000000000 +0200
-@@ -104,9 +104,9 @@
+diff -up otp_src_R12B-4/lib/ssl/c_src/Makefile.in.rpath otp_src_R12B-4/lib/ssl/c_src/Makefile.in
+--- otp_src_R12B-4/lib/ssl/c_src/Makefile.in.rpath	2008-10-25 22:21:51.000000000 +0200
++++ otp_src_R12B-4/lib/ssl/c_src/Makefile.in	2008-10-25 22:22:21.000000000 +0200
+@@ -111,9 +111,9 @@ ifeq ($(findstring darwin,$(TARGET)),dar
  CC_R_FLAG =
  else
  ifeq ($(findstring osf,$(TARGET)),osf)		# osf1: -Wl,-rpath,
@@ -33,4 +36,4 @@
 +CC_R_FLAG =
  endif
  endif
- 
+ endif
