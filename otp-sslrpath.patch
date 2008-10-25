@@ -1,8 +1,7 @@
-diff -up otp_src_R12B-3/lib/ssl/c_src/Makefile.in.sslrpath otp_src_R12B-3/lib/ssl/c_src/Makefile.in
---- otp_src_R12B-3/lib/ssl/c_src/Makefile.in.sslrpath	2008-09-05 22:01:58.000000000 +0200
-+++ otp_src_R12B-3/lib/ssl/c_src/Makefile.in	2008-09-05 22:02:34.000000000 +0200
-@@ -102,7 +102,7 @@ else
- SSL_MAKEFILE =
+--- otp_src_R10B-9/lib/ssl/c_src/Makefile.in.sslrpath	2005-12-29 00:49:17.000000000 +0100
++++ otp_src_R10B-9/lib/ssl/c_src/Makefile.in	2005-12-29 00:50:15.000000000 +0100
+@@ -95,7 +95,7 @@
+ endif
  endif
  
 -CC_R_FLAG=@CFLAG_RUNTIME_LIBRARY_PATH@
