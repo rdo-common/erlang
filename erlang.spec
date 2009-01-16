@@ -3,7 +3,7 @@
 
 Name:           erlang
 Version:        %{ver}
-Release:        %{rel}.3%{?dist}
+Release:        %{rel}.4%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -119,6 +119,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jan 16 2009 Tomas Mraz <tmraz@redhat.com> - R12B-4.4
+- rebuild with new openssl
+
 * Sat Oct 25 2008 Gerard Milmeister <gemi@bluewin.ch> - R12B-4.1
 - new release R12B-4
 
