@@ -3,7 +3,7 @@
 
 Name:           erlang
 Version:        %{ver}
-Release:        %{rel}.4%{?dist}
+Release:        %{rel}.5%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -64,7 +64,11 @@ sed -i 's|@RX_LDFLAGS@||' lib/common_test/c_src/Makefile.in
 
 
 %build
+%ifarch sparcv9 sparc64
+CFLAGS="-mcpu=ultrasparc -fno-strict-aliasing" ./configure --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
+%else
 CFLAGS="-fno-strict-aliasing" ./configure --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
+%endif
 chmod -R u+w .
 make
 
@@ -119,6 +123,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Feb 14 2009 Dennis Gilmore <dennis@ausil.us> - R12B-4.5
+- fix sparc arches to compile
+
 * Fri Jan 16 2009 Tomas Mraz <tmraz@redhat.com> - R12B-4.4
 - rebuild with new openssl
 
