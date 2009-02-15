@@ -1,6 +1,6 @@
 Name:           erlang
 Version:        R12B
-Release:        4.1%{?dist}
+Release:        4.2%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -54,7 +54,11 @@ sed -i 's|SSL_DYNAMIC_ONLY=no|SSL_DYNAMIC_ONLY=yes|' erts/configure
 sed -i 's|^LD.*=.*|LD = gcc -shared|' lib/common_test/c_src/Makefile
 
 %build
+%ifarch sparcv9 sparc64
+CFLAGS="-mcpu=ultrasparc -fno-strict-aliasing" ./configure --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
+%else
 CFLAGS="-fno-strict-aliasing" ./configure --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
+%endif
 chmod -R u+w .
 make
 
@@ -109,6 +113,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Feb 14 2009 Dennis Gilmore <dennis@ausil.us> - R12B-4.2
+- fix sparc arches to compile
+
 * Sat Oct 25 2008 Gerard Milmeister <gemi@bluewin.ch> - R12B-4.1
 - new release R12B-4
 
