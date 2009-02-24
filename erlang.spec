@@ -1,5 +1,5 @@
 %define ver R12B
-%define rel 4
+%define rel 5
 
 Name:           erlang
 Version:        %{ver}
@@ -123,6 +123,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Feb 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - R12B-5.5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
+
 * Sat Feb 14 2009 Dennis Gilmore <dennis@ausil.us> - R12B-4.5
 - fix sparc arches to compile
 
