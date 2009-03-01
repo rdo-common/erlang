@@ -1,7 +1,8 @@
---- otp_src_R10B-9/lib/ssl/c_src/Makefile.in.sslrpath	2005-12-29 00:49:17.000000000 +0100
-+++ otp_src_R10B-9/lib/ssl/c_src/Makefile.in	2005-12-29 00:50:15.000000000 +0100
-@@ -95,7 +95,7 @@
- endif
+diff -up otp_src_R12B-4/lib/ssl/c_src/Makefile.in.sslrpath otp_src_R12B-4/lib/ssl/c_src/Makefile.in
+--- otp_src_R12B-4/lib/ssl/c_src/Makefile.in.sslrpath	2008-10-26 00:00:37.000000000 +0200
++++ otp_src_R12B-4/lib/ssl/c_src/Makefile.in	2008-10-26 00:01:09.000000000 +0200
+@@ -102,7 +102,7 @@ else
+ SSL_MAKEFILE =
  endif
  
 -CC_R_FLAG=@CFLAG_RUNTIME_LIBRARY_PATH@
@@ -9,3 +10,15 @@
  ifeq ($(findstring @,$(CC_R_FLAG)),@)
  # Old erts configure used which hasn't replaced @CFLAG_RUNTIME_LIBRARY_PATH@;
  # we try our best here instead...
+@@ -111,9 +111,9 @@ ifeq ($(findstring darwin,$(TARGET)),dar
+ CC_R_FLAG =
+ else
+ ifeq ($(findstring osf,$(TARGET)),osf)		# osf1: -Wl,-rpath,
+-CC_R_FLAG = -Wl,-rpath,
++CC_R_FLAG =
+ else						# Default: -Wl,-R
+-CC_R_FLAG = -Wl,-R
++CC_R_FLAG =
+ endif
+ endif
+ endif

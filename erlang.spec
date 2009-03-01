@@ -1,14 +1,17 @@
+%define ver R12B
+%define rel 5
+
 Name:           erlang
-Version:        R12B
-Release:        4.2%{?dist}
+Version:        %{ver}
+Release:        %{rel}.6%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
-License:        Erlang Public License
+License:        ERPL
 URL:            http://www.erlang.org
-Source:         http://www.erlang.org/download/otp_src_R12B-4.tar.gz
-Source1:	http://www.erlang.org/download/otp_doc_html_R12B-4.tar.gz
-Source2:	http://www.erlang.org/download/otp_doc_man_R12B-4.tar.gz
+Source:         http://www.erlang.org/download/otp_src_%{ver}-%{rel}.tar.gz
+Source1:	http://www.erlang.org/download/otp_doc_html_%{ver}-%{rel}.tar.gz
+Source2:	http://www.erlang.org/download/otp_doc_man_%{ver}-%{rel}.tar.gz
 Patch0:		otp-links.patch
 Patch1:		otp-install.patch
 Patch2:		otp-rpath.patch
@@ -43,15 +46,22 @@ Documentation for Erlang.
 
 
 %prep
-%setup -q -n otp_src_R12B-4
+%setup -q -n otp_src_%{ver}-%{rel}
 %patch0 -p1 -b .links
 %patch1 -p1 -b .install
 %patch2 -p1 -b .rpath
-%patch3 -p1 -b .sslrpath
+#%patch3 -p1 -b .sslrpath
 
 # enable dynamic linking for ssl
 sed -i 's|SSL_DYNAMIC_ONLY=no|SSL_DYNAMIC_ONLY=yes|' erts/configure
 sed -i 's|^LD.*=.*|LD = gcc -shared|' lib/common_test/c_src/Makefile
+# fix for newer glibc version
+sed -i 's|__GLIBC_MINOR__ <= 7|__GLIBC_MINOR__ <= 8|' erts/emulator/hipe/hipe_x86_signal.c
+# use gcc -shared instead of ld
+sed -i 's|@RX_LD@|gcc -shared|' lib/common_test/c_src/Makefile.in
+sed -i 's|@RX_LDFLAGS@||' lib/common_test/c_src/Makefile.in
+
+
 
 %build
 %ifarch sparcv9 sparc64
@@ -82,7 +92,7 @@ tar -C $RPM_BUILD_ROOT/%{_libdir}/erlang -zxf %{SOURCE2}
 # make links to binaries
 mkdir -p $RPM_BUILD_ROOT/%{_bindir}
 cd $RPM_BUILD_ROOT/%{_bindir}
-for file in erl erlc 
+for file in erl erlc escript dialyzer
 do
   ln -sf ../%{_lib}/erlang/bin/$file .
 done
@@ -113,7 +123,14 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Sat Feb 14 2009 Dennis Gilmore <dennis@ausil.us> - R12B-4.2
+* Sun Mar  1 2009 Gerard Milmeister <gemi@bluewin.ch> - R12B-5.6
+- new release R12B-5
+- link escript and dialyzer to %{_bindir}
+
+* Tue Feb 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - R12B-5.5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
+
+* Sat Feb 14 2009 Dennis Gilmore <dennis@ausil.us> - R12B-4.5
 - fix sparc arches to compile
 
 * Sat Oct 25 2008 Gerard Milmeister <gemi@bluewin.ch> - R12B-4.1
