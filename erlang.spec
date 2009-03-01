@@ -1,9 +1,9 @@
 %define ver R12B
-%define rel 4
+%define rel 5
 
 Name:           erlang
 Version:        %{ver}
-Release:        %{rel}.4%{?dist}
+Release:        %{rel}.6%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -92,7 +92,7 @@ tar -C $RPM_BUILD_ROOT/%{_libdir}/erlang -zxf %{SOURCE2}
 # make links to binaries
 mkdir -p $RPM_BUILD_ROOT/%{_bindir}
 cd $RPM_BUILD_ROOT/%{_bindir}
-for file in erl erlc 
+for file in erl erlc escript dialyzer
 do
   ln -sf ../%{_lib}/erlang/bin/$file .
 done
@@ -123,7 +123,14 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Sat Feb 14 2009 Dennis Gilmore <dennis@ausil.us> - R12B-4.4
+* Sun Mar  1 2009 Gerard Milmeister <gemi@bluewin.ch> - R12B-5.6
+- new release R12B-5
+- link escript and dialyzer to %{_bindir}
+
+* Tue Feb 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - R12B-5.5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
+
+* Sat Feb 14 2009 Dennis Gilmore <dennis@ausil.us> - R12B-4.5
 - fix sparc arches to compile
 
 * Sat Oct 25 2008 Gerard Milmeister <gemi@bluewin.ch> - R12B-4.1
