@@ -1,0 +1,39 @@
+diff -up otp_src_R12B-4/lib/crypto/c_src/Makefile.in.rpath otp_src_R12B-4/lib/crypto/c_src/Makefile.in
+--- otp_src_R12B-4/lib/crypto/c_src/Makefile.in.rpath	2008-10-25 22:20:42.000000000 +0200
++++ otp_src_R12B-4/lib/crypto/c_src/Makefile.in	2008-10-25 22:20:59.000000000 +0200
+@@ -80,7 +80,7 @@ ifeq ($(HOST_OS),)
+ HOST_OS := $(shell $(ERL_TOP)/erts/autoconf/config.guess)
+ endif
+ DYNAMIC_CRYPTO_LIB=@SSL_DYNAMIC_ONLY@
+-LD_R_FLAG=@DED_LD_FLAG_RUNTIME_LIBRARY_PATH@
++LD_R_FLAG=
+ ifeq ($(strip $(LD_R_FLAG)),)
+ LD_R_OPT =
+ else
+diff -up otp_src_R12B-4/lib/crypto/priv/Makefile.rpath otp_src_R12B-4/lib/crypto/priv/Makefile
+--- otp_src_R12B-4/lib/crypto/priv/Makefile.rpath	2008-10-25 22:21:11.000000000 +0200
++++ otp_src_R12B-4/lib/crypto/priv/Makefile	2008-10-25 22:21:33.000000000 +0200
+@@ -60,7 +60,7 @@ OBJS = $(OBJDIR)/crypto_drv.o
+ # ----------------------------------------------------
+ 
+ $(SO_DRIVER): $(OBJS)
+-	$(SO_LD) $(SO_LDFLAGS) -L$(SO_SSL_LIBDIR) -Wl,-R$(SO_SSL_LIBDIR) \
++	$(SO_LD) $(SO_LDFLAGS) -L$(SO_SSL_LIBDIR) \
+ 	-o $@ $^ -lcrypto
+ 
+ $(DLL_DRIVER): $(OBJS)
+diff -up otp_src_R12B-4/lib/ssl/c_src/Makefile.in.rpath otp_src_R12B-4/lib/ssl/c_src/Makefile.in
+--- otp_src_R12B-4/lib/ssl/c_src/Makefile.in.rpath	2008-10-25 22:21:51.000000000 +0200
++++ otp_src_R12B-4/lib/ssl/c_src/Makefile.in	2008-10-25 22:22:21.000000000 +0200
+@@ -111,9 +111,9 @@ ifeq ($(findstring darwin,$(TARGET)),dar
+ CC_R_FLAG =
+ else
+ ifeq ($(findstring osf,$(TARGET)),osf)		# osf1: -Wl,-rpath,
+-CC_R_FLAG = -Wl,-rpath,
++CC_R_FLAG =
+ else						# Default: -Wl,-R
+-CC_R_FLAG = -Wl,-R
++CC_R_FLAG =
+ endif
+ endif
+ endif

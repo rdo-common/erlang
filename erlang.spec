@@ -1,9 +1,9 @@
 %define ver R12B
-%define rel 3
+%define rel 5
 
 Name:           erlang
 Version:        %{ver}
-Release:        %{rel}.3%{?dist}
+Release:        %{rel}.6%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -14,6 +14,7 @@ Source1:	http://www.erlang.org/download/otp_doc_html_%{ver}-%{rel}.tar.gz
 Source2:	http://www.erlang.org/download/otp_doc_man_%{ver}-%{rel}.tar.gz
 Patch0:		otp-links.patch
 Patch1:		otp-install.patch
+Patch2:		otp-rpath.patch
 Patch3:         otp-sslrpath.patch
 Patch6:         otp-ssl_missing_libs.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -24,13 +25,17 @@ BuildRequires:  unixODBC-devel
 BuildRequires:	tcl-devel
 BuildRequires:	tk-devel
 BuildRequires:  gd-devel
+%if 0%{?rhel}
 BuildRequires:	java-1.4.2-gcj-compat-devel
+%else
+BuildRequires:	java-1.5.0-gcj-devel
+%endif
 BuildRequires:  flex
 BuildRequires:	m4
 
 Requires:	tk
 
-%description 
+%description
 Erlang is a general-purpose programming language and runtime
 environment. Erlang has built-in support for concurrency, distribution
 and fault tolerance. Erlang is used in several large telecommunication
@@ -49,7 +54,8 @@ Documentation for Erlang.
 %setup -q -n otp_src_%{ver}-%{rel}
 %patch0 -p1 -b .links
 %patch1 -p1 -b .install
-%patch3 -p1 -b .sslrpath
+%patch2 -p1 -b .rpath
+#%patch3 -p1 -b .sslrpath
 %patch6 -p0 -b .keyutils
 
 # enable dynamic linking for ssl
@@ -64,7 +70,11 @@ sed -i 's|@RX_LDFLAGS@||' lib/common_test/c_src/Makefile.in
 
 
 %build
-CFLAGS="-fno-strict-aliasing" ./configure --enable-dynamic-ssl-lib --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
+%ifarch sparcv9 sparc64
+CFLAGS="-mcpu=ultrasparc -fno-strict-aliasing" ./configure --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
+%else
+CFLAGS="-fno-strict-aliasing" ./configure --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
+%endif
 chmod -R u+w .
 make
 
@@ -88,7 +98,7 @@ tar -C $RPM_BUILD_ROOT/%{_libdir}/erlang -zxf %{SOURCE2}
 # make links to binaries
 mkdir -p $RPM_BUILD_ROOT/%{_bindir}
 cd $RPM_BUILD_ROOT/%{_bindir}
-for file in erl erlc 
+for file in erl erlc escript dialyzer
 do
   ln -sf ../%{_lib}/erlang/bin/$file .
 done
@@ -119,8 +129,24 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Mon Aug 11 2008 Peter Lemenkov <lemenkov@gmail.com> - R12B-3.3
-- Force dynamic linking of crypto libs
+* Sun Mar  1 2009 Gerard Milmeister <gemi@bluewin.ch> - R12B-5.6
+- new release R12B-5
+- link escript and dialyzer to %{_bindir}
+
+* Tue Feb 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - R12B-5.5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
+
+* Sat Feb 14 2009 Dennis Gilmore <dennis@ausil.us> - R12B-4.5
+- fix sparc arches to compile
+
+* Fri Jan 16 2009 Tomas Mraz <tmraz@redhat.com> - R12B-4.4
+- rebuild with new openssl
+
+* Sat Oct 25 2008 Gerard Milmeister <gemi@bluewin.ch> - R12B-4.1
+- new release R12B-4
+
+* Fri Sep  5 2008 Gerard Milmeister <gemi@bluewin.ch> - R12B-3.3
+- fixed sslrpath patch
 
 * Thu Jul 17 2008 Tom "spot" Callaway <tcallawa@redhat.com> - R12B-3.2
 - fix license tag
