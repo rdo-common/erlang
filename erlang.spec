@@ -3,7 +3,7 @@
 
 Name:           erlang
 Version:        %{ver}
-Release:        %{rel}.6%{?dist}
+Release:        %{rel}.7%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -65,9 +65,9 @@ sed -i 's|@RX_LDFLAGS@||' lib/common_test/c_src/Makefile.in
 
 %build
 %ifarch sparcv9 sparc64
-CFLAGS="-mcpu=ultrasparc -fno-strict-aliasing" ./configure --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
+CFLAGS="$RPM_OPT_FLAGS -mcpu=ultrasparc -fno-strict-aliasing" ./configure --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
 %else
-CFLAGS="-fno-strict-aliasing" ./configure --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
+CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing" ./configure --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
 %endif
 chmod -R u+w .
 make
@@ -123,6 +123,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Apr 21 2009 Debarshi Ray <rishi@fedoraproject.org> R12B-5.7
+- Updated rpath patch.
+- Fixed configure to respect $RPM_OPT_FLAGS.
+
 * Sun Mar  1 2009 Gerard Milmeister <gemi@bluewin.ch> - R12B-5.6
 - new release R12B-5
 - link escript and dialyzer to %{_bindir}

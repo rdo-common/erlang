@@ -1,6 +1,6 @@
-diff -up otp_src_R12B-4/lib/crypto/c_src/Makefile.in.rpath otp_src_R12B-4/lib/crypto/c_src/Makefile.in
---- otp_src_R12B-4/lib/crypto/c_src/Makefile.in.rpath	2008-10-25 22:20:42.000000000 +0200
-+++ otp_src_R12B-4/lib/crypto/c_src/Makefile.in	2008-10-25 22:20:59.000000000 +0200
+diff -urNp otp_src_R12B-5.orig/lib/crypto/c_src/Makefile.in otp_src_R12B-5/lib/crypto/c_src/Makefile.in
+--- otp_src_R12B-5.orig/lib/crypto/c_src/Makefile.in	2009-04-21 18:38:46.000000000 +0530
++++ otp_src_R12B-5/lib/crypto/c_src/Makefile.in	2009-04-21 18:51:34.000000000 +0530
 @@ -80,7 +80,7 @@ ifeq ($(HOST_OS),)
  HOST_OS := $(shell $(ERL_TOP)/erts/autoconf/config.guess)
  endif
@@ -10,9 +10,9 @@ diff -up otp_src_R12B-4/lib/crypto/c_src/Makefile.in.rpath otp_src_R12B-4/lib/cr
  ifeq ($(strip $(LD_R_FLAG)),)
  LD_R_OPT =
  else
-diff -up otp_src_R12B-4/lib/crypto/priv/Makefile.rpath otp_src_R12B-4/lib/crypto/priv/Makefile
---- otp_src_R12B-4/lib/crypto/priv/Makefile.rpath	2008-10-25 22:21:11.000000000 +0200
-+++ otp_src_R12B-4/lib/crypto/priv/Makefile	2008-10-25 22:21:33.000000000 +0200
+diff -urNp otp_src_R12B-5.orig/lib/crypto/priv/Makefile otp_src_R12B-5/lib/crypto/priv/Makefile
+--- otp_src_R12B-5.orig/lib/crypto/priv/Makefile	2009-04-21 18:38:46.000000000 +0530
++++ otp_src_R12B-5/lib/crypto/priv/Makefile	2009-04-21 18:52:56.000000000 +0530
 @@ -60,7 +60,7 @@ OBJS = $(OBJDIR)/crypto_drv.o
  # ----------------------------------------------------
  
@@ -22,10 +22,19 @@ diff -up otp_src_R12B-4/lib/crypto/priv/Makefile.rpath otp_src_R12B-4/lib/crypto
  	-o $@ $^ -lcrypto
  
  $(DLL_DRIVER): $(OBJS)
-diff -up otp_src_R12B-4/lib/ssl/c_src/Makefile.in.rpath otp_src_R12B-4/lib/ssl/c_src/Makefile.in
---- otp_src_R12B-4/lib/ssl/c_src/Makefile.in.rpath	2008-10-25 22:21:51.000000000 +0200
-+++ otp_src_R12B-4/lib/ssl/c_src/Makefile.in	2008-10-25 22:22:21.000000000 +0200
-@@ -111,9 +111,9 @@ ifeq ($(findstring darwin,$(TARGET)),dar
+diff -urNp otp_src_R12B-5.orig/lib/ssl/c_src/Makefile.in otp_src_R12B-5/lib/ssl/c_src/Makefile.in
+--- otp_src_R12B-5.orig/lib/ssl/c_src/Makefile.in	2009-04-21 18:38:47.000000000 +0530
++++ otp_src_R12B-5/lib/ssl/c_src/Makefile.in	2009-04-21 19:58:29.000000000 +0530
+@@ -104,7 +104,7 @@ else
+ SSL_MAKEFILE =
+ endif
+ 
+-CC_R_FLAG=@CFLAG_RUNTIME_LIBRARY_PATH@
++CC_R_FLAG=
+ ifeq ($(findstring @,$(CC_R_FLAG)),@)
+ # Old erts configure used which hasn't replaced @CFLAG_RUNTIME_LIBRARY_PATH@;
+ # we try our best here instead...
+@@ -113,9 +113,9 @@ ifeq ($(findstring darwin,$(TARGET)),dar
  CC_R_FLAG =
  else
  ifeq ($(findstring osf,$(TARGET)),osf)		# osf1: -Wl,-rpath,
