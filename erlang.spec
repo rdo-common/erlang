@@ -3,7 +3,7 @@
 
 Name:           erlang
 Version:        %{ver}
-Release:        %{rel}.6%{?dist}
+Release:        %{rel}.6%{?dist}.1
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -70,10 +70,12 @@ sed -i 's|@RX_LDFLAGS@||' lib/common_test/c_src/Makefile.in
 
 
 %build
+# WARN: --enable-dynamic-ssl-lib needed for preventing strange messages about missing dependencies on EPEL
+# see https://bugzilla.redhat.com/show_bug.cgi?id=458646 and https://bugzilla.redhat.com/show_bug.cgi?id=499525
 %ifarch sparcv9 sparc64
-CFLAGS="-mcpu=ultrasparc -fno-strict-aliasing" ./configure --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
+CFLAGS="-mcpu=ultrasparc -fno-strict-aliasing" ./configure --enable-dynamic-ssl-lib --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
 %else
-CFLAGS="-fno-strict-aliasing" ./configure --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
+CFLAGS="-fno-strict-aliasing" ./configure --enable-dynamic-ssl-lib --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
 %endif
 chmod -R u+w .
 make
@@ -129,6 +131,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu May  7 2009 Peter Lemenkov <lemenkov@gmail.com> - R12B-5.6
+- added accidentally removed --enable-dynamic-ssl-lib
+
 * Sun Mar  1 2009 Gerard Milmeister <gemi@bluewin.ch> - R12B-5.6
 - new release R12B-5
 - link escript and dialyzer to %{_bindir}
