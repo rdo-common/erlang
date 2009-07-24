@@ -1,5 +1,5 @@
 %define ver R12B
-%define rel 5
+%define rel 6
 
 Name:           erlang
 Version:        %{ver}
@@ -123,6 +123,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jul 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - R12B-6.7
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
+
 * Tue Apr 21 2009 Debarshi Ray <rishi@fedoraproject.org> R12B-5.7
 - Updated rpath patch.
 - Fixed configure to respect $RPM_OPT_FLAGS.
