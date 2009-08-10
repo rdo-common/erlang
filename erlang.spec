@@ -1,34 +1,34 @@
-%define ver R12B
-%define rel 6
+%define ver R13B
+%define rel 01
 
 Name:           erlang
 Version:        %{ver}
-Release:        %{rel}.7%{?dist}
+Release:        %{rel}.1%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
 License:        ERPL
 URL:            http://www.erlang.org
-Source:         http://www.erlang.org/download/otp_src_%{ver}-%{rel}.tar.gz
-Source1:	http://www.erlang.org/download/otp_doc_html_%{ver}-%{rel}.tar.gz
-Source2:	http://www.erlang.org/download/otp_doc_man_%{ver}-%{rel}.tar.gz
-Patch0:		otp-links.patch
-Patch1:		otp-install.patch
-Patch2:		otp-rpath.patch
-Patch3:         otp-sslrpath.patch
+Source:         http://www.erlang.org/download/otp_src_%{ver}%{rel}.tar.gz
+Source1:        http://www.erlang.org/download/otp_doc_html_%{ver}%{rel}.tar.gz
+Source2:        http://www.erlang.org/download/otp_doc_man_%{ver}%{rel}.tar.gz
+Patch0:         otp-links.patch
+Patch1:         otp-install.patch
+Patch2:         otp-rpath.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	ncurses-devel
 BuildRequires:  openssl-devel
 BuildRequires:  unixODBC-devel
+BuildRequires:  wxGTK-devel
 BuildRequires:	tcl-devel
 BuildRequires:	tk-devel
 BuildRequires:  gd-devel
-BuildRequires:	java-1.5.0-gcj-devel
+BuildRequires:	java-1.6.0-openjdk-devel
 BuildRequires:  flex
 BuildRequires:	m4
 
-Requires:	tk
+Requires:       tk
 
 %description 
 Erlang is a general-purpose programming language and runtime
@@ -46,20 +46,19 @@ Documentation for Erlang.
 
 
 %prep
-%setup -q -n otp_src_%{ver}-%{rel}
+%setup -q -n otp_src_%{ver}%{rel}
 %patch0 -p1 -b .links
 %patch1 -p1 -b .install
 %patch2 -p1 -b .rpath
-#%patch3 -p1 -b .sslrpath
 
 # enable dynamic linking for ssl
 sed -i 's|SSL_DYNAMIC_ONLY=no|SSL_DYNAMIC_ONLY=yes|' erts/configure
-sed -i 's|^LD.*=.*|LD = gcc -shared|' lib/common_test/c_src/Makefile
+#sed -i 's|^LD.*=.*|LD = gcc -shared|' lib/common_test/c_src/Makefile
 # fix for newer glibc version
 sed -i 's|__GLIBC_MINOR__ <= 7|__GLIBC_MINOR__ <= 8|' erts/emulator/hipe/hipe_x86_signal.c
 # use gcc -shared instead of ld
-sed -i 's|@RX_LD@|gcc -shared|' lib/common_test/c_src/Makefile.in
-sed -i 's|@RX_LDFLAGS@||' lib/common_test/c_src/Makefile.in
+#sed -i 's|@RX_LD@|gcc -shared|' lib/common_test/c_src/Makefile.in
+#sed -i 's|@RX_LDFLAGS@||' lib/common_test/c_src/Makefile.in
 
 
 
@@ -88,6 +87,7 @@ find $RPM_BUILD_ROOT%{_libdir}/erlang -name index.txt.old | xargs rm -f
 mkdir -p erlang_doc
 tar -C erlang_doc -zxf %{SOURCE1}
 tar -C $RPM_BUILD_ROOT/%{_libdir}/erlang -zxf %{SOURCE2}
+gzip $RPM_BUILD_ROOT/%{_libdir}/erlang/man/man*/*
 
 # make links to binaries
 mkdir -p $RPM_BUILD_ROOT/%{_bindir}
@@ -123,6 +123,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Aug 10 2009 Gerard Milmeister <gemi@bluewin.ch> - R13B-01.1
+- update to R13B01
+
 * Fri Jul 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - R12B-6.7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
 
