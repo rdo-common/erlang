@@ -1,5 +1,5 @@
 %define ver R13B
-%define rel 01
+%define rel 2
 
 Name:           erlang
 Version:        %{ver}
@@ -123,6 +123,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Aug 21 2009 Tomas Mraz <tmraz@redhat.com> - R13B-2.1
+- rebuilt with new openssl
+
 * Mon Aug 10 2009 Gerard Milmeister <gemi@bluewin.ch> - R13B-01.1
 - update to R13B01
 
