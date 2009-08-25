@@ -1,9 +1,9 @@
 %define ver R13B
-%define rel 2
+%define rel 01
 
 Name:           erlang
 Version:        %{ver}
-Release:        %{rel}.1%{?dist}
+Release:        %{rel}.2%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -123,7 +123,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Fri Aug 21 2009 Tomas Mraz <tmraz@redhat.com> - R13B-2.1
+* Tue Aug 25 2009 Tomas Mraz <tmraz@redhat.com> - R13B-01.2
 - rebuilt with new openssl
 
 * Mon Aug 10 2009 Gerard Milmeister <gemi@bluewin.ch> - R13B-01.1
