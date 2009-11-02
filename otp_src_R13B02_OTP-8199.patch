@@ -1,0 +1,20 @@
+--- otp_src_R13B02/lib/reltool/src/reltool_target.erl	2009-09-18 16:25:49.000000000 +0200
++++ otp_src_R13B02_patched/lib/reltool/src/reltool_target.erl	2009-09-22 17:45:33.000000000 +0200
+@@ -1014,7 +1014,7 @@
+     TargetDir2 = filename:join([TargetDir, Dir]),
+     cleanup_spec(Files, TargetDir2),
+     file:del_dir(TargetDir2);
+-cleanup_spec({create_dir, _OldDir, NewDir, Files}, TargetDir) ->
++cleanup_spec({create_dir, NewDir, _OldDir, Files}, TargetDir) ->
+     TargetDir2 = filename:join([TargetDir, NewDir]),
+     cleanup_spec(Files, TargetDir2),
+     file:del_dir(TargetDir2);
+@@ -1152,7 +1152,7 @@
+ 			       "Progname=erl\r\n",
+ 			       "Rootdir=", NativeRootDir, "\r\n"],
+ 		    IniFile = filename:join([BinDir, "erl.ini"]),
+-                    file:write(IniFile, IniData);
++                    ok = file:write_file(IniFile, IniData);
+ 		_ ->
+ 		    subst_src_scripts(start_scripts(), ErtsBinDir, BinDir, 
+ 				      [{"FINAL_ROOTDIR", TargetDir2}, {"EMU", "beam"}],

@@ -1,15 +1,16 @@
---- otp_src_R9C-0/erts/etc/unix/Install.src.install	2003-10-17 12:52:14.000000000 +0200
-+++ otp_src_R9C-0/erts/etc/unix/Install.src	2003-10-17 14:26:49.000000000 +0200
-@@ -84,7 +84,7 @@
+diff -up otp_src_R13B02/erts/etc/unix/Install.src.install otp_src_R13B02/erts/etc/unix/Install.src
+--- otp_src_R13B02/erts/etc/unix/Install.src.install	2009-09-18 16:07:12.000000000 +0200
++++ otp_src_R13B02/erts/etc/unix/Install.src	2009-10-22 15:49:01.000000000 +0200
+@@ -111,7 +111,7 @@ if [ -h epmd ]; then
    /bin/rm -f epmd
  fi
  
--ln -s $ERL_ROOT/erts-%I_VSN%/bin/epmd epmd
+-ln -s $TARGET_ERL_ROOT/erts-%I_VSN%/bin/epmd epmd
 +ln -s ../erts-%I_VSN%/bin/epmd epmd
  
  cp -p $ERL_ROOT/erts-%I_VSN%/bin/run_erl .
  cp -p $ERL_ROOT/erts-%I_VSN%/bin/to_erl .
-@@ -145,16 +145,4 @@
+@@ -160,16 +160,4 @@ if [ "X$TARGET" != "Xsunos5" -a -d $ERL_
  	(ranlib $library) > /dev/null 2>&1
      done
  fi

@@ -1,9 +1,9 @@
 %define ver R13B
-%define rel 01
+%define rel 02
 
 Name:           erlang
 Version:        %{ver}
-Release:        %{rel}.2%{?dist}
+Release:        %{rel}.1%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -15,6 +15,9 @@ Source2:        http://www.erlang.org/download/otp_doc_man_%{ver}%{rel}.tar.gz
 Patch0:         otp-links.patch
 Patch1:         otp-install.patch
 Patch2:         otp-rpath.patch
+# OTP-8199 In the new release of Reltool (0.5) there is a severe bug that may cause your source files to be deleted. 
+# http://www.erlang.org/download/patches/otp_src_R13B02_OTP-8199.readme
+Patch3:         http://www.erlang.org/download/patches/otp_src_R13B02_OTP-8199.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	ncurses-devel
@@ -50,6 +53,7 @@ Documentation for Erlang.
 %patch0 -p1 -b .links
 %patch1 -p1 -b .install
 %patch2 -p1 -b .rpath
+%patch3 -p1 -b .OTP-8199
 
 # enable dynamic linking for ssl
 sed -i 's|SSL_DYNAMIC_ONLY=no|SSL_DYNAMIC_ONLY=yes|' erts/configure
@@ -123,6 +127,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Oct 22 2009 Lubomir Rintel (Good Data) <lubo.rintel@gooddata.com> - R13B-02-1
+- Update to R13B-02 (patched for what's released as 02-1 by upstream)
+
 * Tue Aug 25 2009 Tomas Mraz <tmraz@redhat.com> - R13B-01.2
 - rebuilt with new openssl
 
