@@ -3,7 +3,7 @@
 
 Name:           erlang
 Version:        %{ver}
-Release:        %{rel}.2%{?dist}
+Release:        %{rel}.3%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -123,6 +123,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Dec 09 2009 Kevin Kofler <Kevin@tigcc.ticalc.org> - R13B-01.3
+- rebuild with fixed GCC, fixes couchdb crash (#527370)
+
 * Tue Aug 25 2009 Tomas Mraz <tmraz@redhat.com> - R13B-01.2
 - rebuilt with new openssl
 
