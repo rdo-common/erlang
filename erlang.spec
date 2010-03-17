@@ -1,9 +1,9 @@
 %define ver R13B
-%define rel 01
+%define rel 04
 
 Name:           erlang
 Version:        %{ver}
-Release:        %{rel}.3%{?dist}
+Release:        %{rel}.1%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -12,25 +12,27 @@ URL:            http://www.erlang.org
 Source:         http://www.erlang.org/download/otp_src_%{ver}%{rel}.tar.gz
 Source1:        http://www.erlang.org/download/otp_doc_html_%{ver}%{rel}.tar.gz
 Source2:        http://www.erlang.org/download/otp_doc_man_%{ver}%{rel}.tar.gz
+# TODO this patch needs rebase against current tree
 Patch0:         otp-links.patch
-Patch1:         otp-install.patch
-Patch2:         otp-rpath.patch
+Patch1:		otp-0001-Do-not-format-man-pages.patch
+Patch2:		otp-0002-Remove-rpath.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	ncurses-devel
 BuildRequires:  openssl-devel
+BuildRequires:	zlib-devel
 BuildRequires:  unixODBC-devel
 BuildRequires:  wxGTK-devel
 BuildRequires:	tcl-devel
 BuildRequires:	tk-devel
-BuildRequires:  gd-devel
 BuildRequires:	java-1.6.0-openjdk-devel
 BuildRequires:  flex
 BuildRequires:	m4
+BuildRequires:	fop
 
 Requires:       tk
 
-%description 
+%description
 Erlang is a general-purpose programming language and runtime
 environment. Erlang has built-in support for concurrency, distribution
 and fault tolerance. Erlang is used in several large telecommunication
@@ -47,28 +49,18 @@ Documentation for Erlang.
 
 %prep
 %setup -q -n otp_src_%{ver}%{rel}
-%patch0 -p1 -b .links
-%patch1 -p1 -b .install
+%patch1 -p1 -b .do_not_format_manpages
 %patch2 -p1 -b .rpath
-
-# enable dynamic linking for ssl
-sed -i 's|SSL_DYNAMIC_ONLY=no|SSL_DYNAMIC_ONLY=yes|' erts/configure
-#sed -i 's|^LD.*=.*|LD = gcc -shared|' lib/common_test/c_src/Makefile
-# fix for newer glibc version
-sed -i 's|__GLIBC_MINOR__ <= 7|__GLIBC_MINOR__ <= 8|' erts/emulator/hipe/hipe_x86_signal.c
-# use gcc -shared instead of ld
-#sed -i 's|@RX_LD@|gcc -shared|' lib/common_test/c_src/Makefile.in
-#sed -i 's|@RX_LDFLAGS@||' lib/common_test/c_src/Makefile.in
-
+# remove shipped zlib sources
+rm -f erts/emulator/zlib/*.[ch]
 
 
 %build
 %ifarch sparcv9 sparc64
-CFLAGS="$RPM_OPT_FLAGS -mcpu=ultrasparc -fno-strict-aliasing" ./configure --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
+CFLAGS="$RPM_OPT_FLAGS -mcpu=ultrasparc -fno-strict-aliasing" %configure --enable-shared-zlib
 %else
-CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing" ./configure --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
+CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing" %configure --enable-shared-zlib
 %endif
-chmod -R u+w .
 make
 
 
@@ -101,14 +93,20 @@ done
 cd $RPM_BUILD_ROOT/%{_libdir}/erlang
 sed -i "s|$RPM_BUILD_ROOT||" erts*/bin/{erl,start} releases/RELEASES bin/{erl,start}
 
+# remove unneeded *.erl sources
+find $RPM_BUILD_ROOT/%{_libdir}/erlang/lib -maxdepth 2 -type d -name *src -exec rm -rf {} \;
+
+# fixed permisson for wx library
+chmod 755 $RPM_BUILD_ROOT/%{_libdir}/erlang/lib/wx-*/priv/*/wxe_driver.so
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 
-%files 
+%files
 %defattr(-,root,root)
-%doc AUTHORS EPLICENCE README
+%doc AUTHORS EPLICENCE README.md
 %{_bindir}/*
 %{_libdir}/erlang
 
@@ -123,8 +121,20 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Wed Dec 09 2009 Kevin Kofler <Kevin@tigcc.ticalc.org> - R13B-01.3
-- rebuild with fixed GCC, fixes couchdb crash (#527370)
+* Sat Feb 13 2010 Peter Lemenkov <lemenkov@gmail.com> - R13B-04.1
+- New release R13B-04
+- Since now we're using %%configure instead of ./configure
+- Removed no longer needed fix for newer glibc version
+- Dropped %%patch3 (applied upstream)
+- Rebased patches
+- Added BR fop for rebuilding of docs
+- Use system-wide zlib instead of shipped one
+- Dropped BR gd-devel
+- Removed unneeded sources (should be fixed upstream)
+- Fixed permission for wx driver (should be fixed upstream)
+
+* Thu Oct 22 2009 Lubomir Rintel (Good Data) <lubo.rintel@gooddata.com> - R13B-02-1
+- Update to R13B-02 (patched for what's released as 02-1 by upstream)
 
 * Tue Aug 25 2009 Tomas Mraz <tmraz@redhat.com> - R13B-01.2
 - rebuilt with new openssl
