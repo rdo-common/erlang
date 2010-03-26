@@ -3,7 +3,7 @@
 
 Name:           erlang
 Version:        %{ver}
-Release:        %{rel}.1%{?dist}
+Release:        %{rel}.2%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -78,26 +78,34 @@ find $RPM_BUILD_ROOT%{_libdir}/erlang -name index.txt.old | xargs rm -f
 # doc
 mkdir -p erlang_doc
 tar -C erlang_doc -zxf %{SOURCE1}
-tar -C $RPM_BUILD_ROOT/%{_libdir}/erlang -zxf %{SOURCE2}
-gzip $RPM_BUILD_ROOT/%{_libdir}/erlang/man/man*/*
+tar -C $RPM_BUILD_ROOT%{_libdir}/erlang -zxf %{SOURCE2}
+gzip $RPM_BUILD_ROOT%{_libdir}/erlang/man/man*/*
 
 # make links to binaries
-mkdir -p $RPM_BUILD_ROOT/%{_bindir}
-cd $RPM_BUILD_ROOT/%{_bindir}
+mkdir -p $RPM_BUILD_ROOT%{_bindir}
+cd $RPM_BUILD_ROOT%{_bindir}
 for file in erl erlc escript dialyzer
 do
   ln -sf ../%{_lib}/erlang/bin/$file .
 done
 
 # remove buildroot from installed files
-cd $RPM_BUILD_ROOT/%{_libdir}/erlang
+cd $RPM_BUILD_ROOT%{_libdir}/erlang
 sed -i "s|$RPM_BUILD_ROOT||" erts*/bin/{erl,start} releases/RELEASES bin/{erl,start}
 
-# remove unneeded *.erl sources
-find $RPM_BUILD_ROOT/%{_libdir}/erlang/lib -maxdepth 2 -type d -name *src -exec rm -rf {} \;
+# remove unneeded sources, but keep *.hrl and *.yrl
+for d in $RPM_BUILD_ROOT%{_libdir}/erlang/lib/* ; do find $d/src -maxdepth 1 -type f ! -name "*.[yh]rl" -print -delete || true ; done
+find $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ -maxdepth 2 -type d -name src -empty -delete
 
-# fixed permisson for wx library
-chmod 755 $RPM_BUILD_ROOT/%{_libdir}/erlang/lib/wx-*/priv/*/wxe_driver.so
+# fix permissions for asn1 library
+chmod 755 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/asn1-*/priv/lib/asn1_erl_drv.so
+
+# fix permissions for megaco library
+chmod 755 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/megaco-*/priv/lib/megaco_flex_scanner_drv.so
+chmod 755 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/megaco-*/priv/lib/megaco_flex_scanner_drv_mt.so
+
+# fix permissons for wx library
+chmod 755 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/wx-*/priv/*/wxe_driver.so
 
 
 %clean
@@ -121,6 +129,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Mar 26 2010 Peter Lemenkov <lemenkov@gmail.com> - R13B-04.2
+- Do not remove all files from %%{_libdir}/erlang/lib/*/src - keep
+  *.[yh]rl intact
+- Fix permissions for megaco *.so objects
+- Fix permissions for asn1 *.so objects
+
 * Sat Feb 13 2010 Peter Lemenkov <lemenkov@gmail.com> - R13B-04.1
 - New release R13B-04
 - Since now we're using %%configure instead of ./configure
