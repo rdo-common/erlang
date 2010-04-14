@@ -3,7 +3,7 @@
 
 Name:           erlang
 Version:        %{ver}
-Release:        %{rel}.2%{?dist}
+Release:        %{rel}.3%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -12,6 +12,11 @@ URL:            http://www.erlang.org
 Source:         http://www.erlang.org/download/otp_src_%{ver}%{rel}.tar.gz
 Source1:        http://www.erlang.org/download/otp_doc_html_%{ver}%{rel}.tar.gz
 Source2:        http://www.erlang.org/download/otp_doc_man_%{ver}%{rel}.tar.gz
+Source3:	erlang-find-provides.escript
+Source4:	erlang-find-provides.sh
+Source5:	erlang-find-requires.escript
+Source6:	erlang-find-requires.sh
+Source7:	macros.erlang
 # TODO this patch needs rebase against current tree
 Patch0:         otp-links.patch
 Patch1:		otp-0001-Do-not-format-man-pages.patch
@@ -75,9 +80,11 @@ find $RPM_BUILD_ROOT%{_libdir}/erlang -name \*.o | xargs chmod 644
 find $RPM_BUILD_ROOT%{_libdir}/erlang -name \*.bat | xargs rm -f
 find $RPM_BUILD_ROOT%{_libdir}/erlang -name index.txt.old | xargs rm -f
 
-# doc
+# install additional doc files
 mkdir -p erlang_doc
 tar -C erlang_doc -zxf %{SOURCE1}
+
+# install man-pages
 tar -C $RPM_BUILD_ROOT%{_libdir}/erlang -zxf %{SOURCE2}
 gzip $RPM_BUILD_ROOT%{_libdir}/erlang/man/man*/*
 
@@ -94,8 +101,32 @@ cd $RPM_BUILD_ROOT%{_libdir}/erlang
 sed -i "s|$RPM_BUILD_ROOT||" erts*/bin/{erl,start} releases/RELEASES bin/{erl,start}
 
 # remove unneeded sources, but keep *.hrl and *.yrl
-for d in $RPM_BUILD_ROOT%{_libdir}/erlang/lib/* ; do find $d/src -maxdepth 1 -type f ! -name "*.[yh]rl" -print -delete || true ; done
+for d in $RPM_BUILD_ROOT%{_libdir}/erlang/lib/* ; do find $d/src -maxdepth 1 -type f ! -name "*.hrl" -print -delete || true ; done
+rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/hipe-*/{cerl,flow,icode,main,misc,util}/*.erl
+rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/orber-*/COSS/CosNaming/*.erl
+rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/snmp-*/src/{agent,app,compiler,manager,misc}/*.erl
+rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/wx-*/src/gen/*.erl
 find $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ -maxdepth 2 -type d -name src -empty -delete
+
+# remove C and Java sources
+rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/asn1-*/c_src
+rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/erl_interface-*/src
+rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ic-*/c_src
+rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ic-*/java_src
+rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/jinterface-*/java_src
+rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/odbc-*/c_src
+rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/tools-*/c_src
+
+# remove empty or intermediate files and directories
+rm -r $RPM_BUILD_ROOT%{_libdir}/erlang/erts-*/doc
+rm -r $RPM_BUILD_ROOT%{_libdir}/erlang/erts-*/man
+rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/cosEvent-*/info
+rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/cosEventDomain-*/info
+rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/crypto-*/priv/obj
+rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/hipe-*/vsn.mk
+rm -r $RPM_BUILD_ROOT%{_libdir}/erlang/lib/odbc-*/priv/obj
+rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ssl-*/priv/obj
+rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/misc
 
 # fix permissions for asn1 library
 chmod 755 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/asn1-*/priv/lib/asn1_erl_drv.so
@@ -106,6 +137,13 @@ chmod 755 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/megaco-*/priv/lib/megaco_flex_sca
 
 # fix permissons for wx library
 chmod 755 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/wx-*/priv/*/wxe_driver.so
+
+# Install RPM related files
+install -D -p -m 0755 %{SOURCE3} $RPM_BUILD_ROOT%{_libdir}/rpm/erlang-find-provides.escript
+install -D -p -m 0755 %{SOURCE4} $RPM_BUILD_ROOT%{_libdir}/rpm/erlang-find-provides.sh
+install -D -p -m 0755 %{SOURCE5} $RPM_BUILD_ROOT%{_libdir}/rpm/erlang-find-requires.escript
+install -D -p -m 0755 %{SOURCE6} $RPM_BUILD_ROOT%{_libdir}/rpm/erlang-find-requires.sh
+install -D -p -m 0644 %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/rpm/macros.erlang
 
 
 %clean
@@ -118,6 +156,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/*
 %{_libdir}/erlang
 
+# RPM stuff
+%{_sysconfdir}/rpm/macros.erlang
+%{_libdir}/rpm/erlang-find-provides.escript
+%{_libdir}/rpm/erlang-find-provides.sh
+%{_libdir}/rpm/erlang-find-requires.escript
+%{_libdir}/rpm/erlang-find-requires.sh
+
 
 %files doc
 %defattr(-,root,root)
@@ -129,6 +174,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Mar 26 2010 Peter Lemenkov <lemenkov@gmail.com> - R13B-04.3
+- Added rpm-related stuff for auto-generating erlang dependencies in the future builds
+- Since now *.yrl files are removed too.
+- Removed unnecessary C and Java sources
+
 * Fri Mar 26 2010 Peter Lemenkov <lemenkov@gmail.com> - R13B-04.2
 - Do not remove all files from %%{_libdir}/erlang/lib/*/src - keep
   *.[yh]rl intact
