@@ -3,7 +3,7 @@
 
 Name:           erlang
 Version:        %{ver}
-Release:        %{rel}.3%{?dist}
+Release:        %{rel}.4%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -19,8 +19,16 @@ Source6:	erlang-find-requires.sh
 Source7:	macros.erlang
 # TODO this patch needs rebase against current tree
 Patch0:         otp-links.patch
+# Fedora-specific
 Patch1:		otp-0001-Do-not-format-man-pages.patch
+# Fedora-specific
 Patch2:		otp-0002-Remove-rpath.patch
+# Upstreamed
+Patch6:		otp-0006-Fix-shared-libraries-installation.patch
+# Fedora-specific
+Patch7:		otp-0007-Fix-for-dlopening-libGL-and-libGLU.patch
+# Upstreamed
+Patch8:		otp-0008-Fix-check-for-compile-workspace-overflow.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	ncurses-devel
@@ -36,6 +44,9 @@ BuildRequires:	m4
 BuildRequires:	fop
 
 Requires:       tk
+Requires:	mesa-libGL
+Requires:	mesa-libGLU
+
 
 %description
 Erlang is a general-purpose programming language and runtime
@@ -47,6 +58,8 @@ systems from Ericsson.
 %package doc
 Summary:	Erlang documentation
 Group:		Development/Languages
+BuildArch:	noarch
+Obsoletes:	%{name}-doc < R13B-04.4
 
 %description doc
 Documentation for Erlang.
@@ -56,6 +69,9 @@ Documentation for Erlang.
 %setup -q -n otp_src_%{ver}%{rel}
 %patch1 -p1 -b .do_not_format_manpages
 %patch2 -p1 -b .rpath
+%patch6 -p1 -b .fix_shared_lib_install
+%patch7 -p1 -b .dlopen_opengl_libs
+%patch8 -p1 -b .pcre_overflow
 # remove shipped zlib sources
 rm -f erts/emulator/zlib/*.[ch]
 
@@ -128,16 +144,6 @@ rm -r $RPM_BUILD_ROOT%{_libdir}/erlang/lib/odbc-*/priv/obj
 rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ssl-*/priv/obj
 rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/misc
 
-# fix permissions for asn1 library
-chmod 755 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/asn1-*/priv/lib/asn1_erl_drv.so
-
-# fix permissions for megaco library
-chmod 755 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/megaco-*/priv/lib/megaco_flex_scanner_drv.so
-chmod 755 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/megaco-*/priv/lib/megaco_flex_scanner_drv_mt.so
-
-# fix permissons for wx library
-chmod 755 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/wx-*/priv/*/wxe_driver.so
-
 # Install RPM related files
 install -D -p -m 0755 %{SOURCE3} $RPM_BUILD_ROOT%{_libdir}/rpm/erlang-find-provides.escript
 install -D -p -m 0755 %{SOURCE4} $RPM_BUILD_ROOT%{_libdir}/rpm/erlang-find-provides.sh
@@ -174,6 +180,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Apr 17 2010 Peter Lemenkov <lemenkov@gmail.com> - R13B-04.4
+- Added missing Requires mesa-libGL{U} for wx module (rhbz #583287)
+- Fix for buffer overflow in pcre module (rhbz #583288)
+- Doc sub-package marked as noarch (partially resolves rhbz #491165)
+
 * Fri Mar 26 2010 Peter Lemenkov <lemenkov@gmail.com> - R13B-04.3
 - Added rpm-related stuff for auto-generating erlang dependencies in the future builds
 - Since now *.yrl files are removed too.
