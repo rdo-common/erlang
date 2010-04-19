@@ -3,7 +3,7 @@
 
 Name:           erlang
 Version:        %{ver}
-Release:        %{rel}.6%{?dist}.1
+Release:        %{rel}.8%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -12,11 +12,13 @@ URL:            http://www.erlang.org
 Source:         http://www.erlang.org/download/otp_src_%{ver}-%{rel}.tar.gz
 Source1:	http://www.erlang.org/download/otp_doc_html_%{ver}-%{rel}.tar.gz
 Source2:	http://www.erlang.org/download/otp_doc_man_%{ver}-%{rel}.tar.gz
-Patch0:		otp-links.patch
-Patch1:		otp-install.patch
-Patch2:		otp-rpath.patch
-Patch3:         otp-sslrpath.patch
-Patch6:         otp-ssl_missing_libs.patch
+Patch1:		otp-R12B-5-0001-Do-not-create-links-instead-of-real-files.patch
+Patch2:		otp-R12B-5-0002-Fix-symlinking-of-epmd.patch
+Patch3:		otp-R12B-5-0003-Do-not-format-man-pages.patch
+Patch4:		otp-R12B-5-0004-Remove-rpath.patch
+Patch5:		otp-R12B-5-0005-Fix-missing-ssl-libraries-in-EPEL.patch
+Patch6:		otp-R12B-5-0006-Fix-shared-libraries-installation.patch
+Patch7:		otp-R12B-5-0007-Fix-check-for-compile-workspace-overflow.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	ncurses-devel
@@ -52,11 +54,14 @@ Documentation for Erlang.
 
 %prep
 %setup -q -n otp_src_%{ver}-%{rel}
-%patch0 -p1 -b .links
-%patch1 -p1 -b .install
-%patch2 -p1 -b .rpath
-#%patch3 -p1 -b .sslrpath
-%patch6 -p0 -b .keyutils
+%patch1 -p1 -b .links
+%patch2 -p1 -b .fyx_epmd_symlink
+%patch3 -p1 -b .manpages
+%patch4 -p1 -b .rpath_removal
+%patch5 -p1 -b .missing_ssl_libraries
+%patch6 -p1 -b .so_lib_install_fix
+%patch7 -p1 -b .pcre_buffer_overflow
+
 
 # enable dynamic linking for ssl
 sed -i 's|SSL_DYNAMIC_ONLY=no|SSL_DYNAMIC_ONLY=yes|' erts/configure
@@ -68,14 +73,13 @@ sed -i 's|@RX_LD@|gcc -shared|' lib/common_test/c_src/Makefile.in
 sed -i 's|@RX_LDFLAGS@||' lib/common_test/c_src/Makefile.in
 
 
-
 %build
 # WARN: --enable-dynamic-ssl-lib needed for preventing strange messages about missing dependencies on EPEL
-# see https://bugzilla.redhat.com/show_bug.cgi?id=458646 and https://bugzilla.redhat.com/show_bug.cgi?id=499525
+# see https://bugzilla.redhat.com/458646 and https://bugzilla.redhat.com/499525
 %ifarch sparcv9 sparc64
-CFLAGS="-mcpu=ultrasparc -fno-strict-aliasing" ./configure --enable-dynamic-ssl-lib --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
+CFLAGS="$RPM_OPT_FLAGS -mcpu=ultrasparc -fno-strict-aliasing" %configure --enable-dynamic-ssl-lib
 %else
-CFLAGS="-fno-strict-aliasing" ./configure --enable-dynamic-ssl-lib --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
+CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing" %configure --enable-dynamic-ssl-lib
 %endif
 chmod -R u+w .
 make
@@ -131,8 +135,14 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Thu May  7 2009 Peter Lemenkov <lemenkov@gmail.com> - R12B-5.6
-- added accidentally removed --enable-dynamic-ssl-lib
+* Mon Apr 19 2010 Peter Lemenkov <lemenkov@gmail.com> - R12B-5.8
+- Patches rebased
+- Added patches 6,7 from trunk
+- Use %%configure
+
+* Tue Apr 21 2009 Debarshi Ray <rishi@fedoraproject.org> R12B-5.7
+- Updated rpath patch.
+- Fixed configure to respect $RPM_OPT_FLAGS.
 
 * Sun Mar  1 2009 Gerard Milmeister <gemi@bluewin.ch> - R12B-5.6
 - new release R12B-5
