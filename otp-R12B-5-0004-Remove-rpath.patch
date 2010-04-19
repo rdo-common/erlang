@@ -1,6 +1,18 @@
-diff -urNp otp_src_R12B-5.orig/lib/crypto/c_src/Makefile.in otp_src_R12B-5/lib/crypto/c_src/Makefile.in
---- otp_src_R12B-5.orig/lib/crypto/c_src/Makefile.in	2009-04-21 18:38:46.000000000 +0530
-+++ otp_src_R12B-5/lib/crypto/c_src/Makefile.in	2009-04-21 18:51:34.000000000 +0530
+From 03e261ee3152f3c45b23886e143c28bf2953f78d Mon Sep 17 00:00:00 2001
+From: Peter Lemenkov <lemenkov@gmail.com>
+Date: Mon, 19 Apr 2010 13:36:36 +0400
+Subject: [PATCH 4/7] Remove rpath
+
+---
+ lib/crypto/c_src/Makefile.in |    2 +-
+ lib/crypto/priv/Makefile     |    2 +-
+ lib/ssl/c_src/Makefile.in    |    6 +++---
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/lib/crypto/c_src/Makefile.in b/lib/crypto/c_src/Makefile.in
+index fb9ebae..eddcd0a 100644
+--- a/lib/crypto/c_src/Makefile.in
++++ b/lib/crypto/c_src/Makefile.in
 @@ -80,7 +80,7 @@ ifeq ($(HOST_OS),)
  HOST_OS := $(shell $(ERL_TOP)/erts/autoconf/config.guess)
  endif
@@ -10,9 +22,10 @@ diff -urNp otp_src_R12B-5.orig/lib/crypto/c_src/Makefile.in otp_src_R12B-5/lib/c
  ifeq ($(strip $(LD_R_FLAG)),)
  LD_R_OPT =
  else
-diff -urNp otp_src_R12B-5.orig/lib/crypto/priv/Makefile otp_src_R12B-5/lib/crypto/priv/Makefile
---- otp_src_R12B-5.orig/lib/crypto/priv/Makefile	2009-04-21 18:38:46.000000000 +0530
-+++ otp_src_R12B-5/lib/crypto/priv/Makefile	2009-04-21 18:52:56.000000000 +0530
+diff --git a/lib/crypto/priv/Makefile b/lib/crypto/priv/Makefile
+index b8acdac..2c2989a 100644
+--- a/lib/crypto/priv/Makefile
++++ b/lib/crypto/priv/Makefile
 @@ -60,7 +60,7 @@ OBJS = $(OBJDIR)/crypto_drv.o
  # ----------------------------------------------------
  
@@ -22,9 +35,10 @@ diff -urNp otp_src_R12B-5.orig/lib/crypto/priv/Makefile otp_src_R12B-5/lib/crypt
  	-o $@ $^ -lcrypto
  
  $(DLL_DRIVER): $(OBJS)
-diff -urNp otp_src_R12B-5.orig/lib/ssl/c_src/Makefile.in otp_src_R12B-5/lib/ssl/c_src/Makefile.in
---- otp_src_R12B-5.orig/lib/ssl/c_src/Makefile.in	2009-04-21 18:38:47.000000000 +0530
-+++ otp_src_R12B-5/lib/ssl/c_src/Makefile.in	2009-04-21 19:58:29.000000000 +0530
+diff --git a/lib/ssl/c_src/Makefile.in b/lib/ssl/c_src/Makefile.in
+index 57b2929..6fc1140 100644
+--- a/lib/ssl/c_src/Makefile.in
++++ b/lib/ssl/c_src/Makefile.in
 @@ -104,7 +104,7 @@ else
  SSL_MAKEFILE =
  endif
@@ -34,7 +48,7 @@ diff -urNp otp_src_R12B-5.orig/lib/ssl/c_src/Makefile.in otp_src_R12B-5/lib/ssl/
  ifeq ($(findstring @,$(CC_R_FLAG)),@)
  # Old erts configure used which hasn't replaced @CFLAG_RUNTIME_LIBRARY_PATH@;
  # we try our best here instead...
-@@ -113,9 +113,9 @@ ifeq ($(findstring darwin,$(TARGET)),dar
+@@ -113,9 +113,9 @@ ifeq ($(findstring darwin,$(TARGET)),darwin)	# darwin: no flag
  CC_R_FLAG =
  else
  ifeq ($(findstring osf,$(TARGET)),osf)		# osf1: -Wl,-rpath,
@@ -46,3 +60,6 @@ diff -urNp otp_src_R12B-5.orig/lib/ssl/c_src/Makefile.in otp_src_R12B-5/lib/ssl/
  endif
  endif
  endif
+-- 
+1.6.6.1
+
