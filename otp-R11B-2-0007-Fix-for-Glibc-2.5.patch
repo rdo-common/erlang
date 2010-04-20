@@ -1,0 +1,25 @@
+From 319be0f08f4dd4df861b550bf45ee36feb0515fb Mon Sep 17 00:00:00 2001
+From: Peter Lemenkov <lemenkov@gmail.com>
+Date: Mon, 19 Apr 2010 15:23:08 +0400
+Subject: [PATCH 7/8] Fix for Glibc 2.5
+
+---
+ erts/emulator/hipe/hipe_x86_signal.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/erts/emulator/hipe/hipe_x86_signal.c b/erts/emulator/hipe/hipe_x86_signal.c
+index 42097ef..f37e499 100644
+--- a/erts/emulator/hipe/hipe_x86_signal.c
++++ b/erts/emulator/hipe/hipe_x86_signal.c
+@@ -34,7 +34,7 @@
+ #endif
+ #include "hipe_signal.h"
+ 
+-#if __GLIBC__ == 2 && (__GLIBC_MINOR__ == 3 || __GLIBC_MINOR__ == 4)
++#if __GLIBC__ == 2 && (__GLIBC_MINOR__ == 3 || __GLIBC_MINOR__ == 4 || __GLIBC_MINOR__ == 5)
+ /* See comment below for glibc 2.2. */
+ #ifndef __USE_GNU
+ #define __USE_GNU		/* to un-hide RTLD_NEXT */
+-- 
+1.6.6.1
+

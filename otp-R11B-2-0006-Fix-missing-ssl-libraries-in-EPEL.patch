@@ -1,0 +1,219 @@
+From 8fbb7446060768f03912ec903992bcf57e8d6974 Mon Sep 17 00:00:00 2001
+From: Peter Lemenkov <lemenkov@gmail.com>
+Date: Mon, 19 Apr 2010 13:39:17 +0400
+Subject: [PATCH 6/8] Fix missing ssl-libraries in EPEL
+
+---
+ lib/ssl/c_src/Makefile.in  |    2 +-
+ lib/ssl/c_src/Makefile.in~ |  186 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 187 insertions(+), 1 deletions(-)
+ create mode 100644 lib/ssl/c_src/Makefile.in~
+
+diff --git a/lib/ssl/c_src/Makefile.in b/lib/ssl/c_src/Makefile.in
+index b145aac..20f8dc8 100644
+--- a/lib/ssl/c_src/Makefile.in
++++ b/lib/ssl/c_src/Makefile.in
+@@ -38,7 +38,7 @@ VSN=$(SSL_VSN)
+ CC = @CC@
+ LD = @LD@
+ SHELL = /bin/sh
+-LIBS = @LIBS@
++LIBS = @LIBS@ -lkeyutils -lselinux
+ 
+ # ----------------------------------------------------
+ # Includes and libs
+diff --git a/lib/ssl/c_src/Makefile.in~ b/lib/ssl/c_src/Makefile.in~
+new file mode 100644
+index 0000000..b145aac
+--- /dev/null
++++ b/lib/ssl/c_src/Makefile.in~
+@@ -0,0 +1,186 @@
++# ``The contents of this file are subject to the Erlang Public License,
++# Version 1.1, (the "License"); you may not use this file except in
++# compliance with the License. You should have received a copy of the
++# Erlang Public License along with this software. If not, it can be
++# retrieved via the world wide web at http://www.erlang.org/.
++# 
++# Software distributed under the License is distributed on an "AS IS"
++# basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
++# the License for the specific language governing rights and limitations
++# under the License.
++# 
++# The Initial Developer of the Original Code is Ericsson Utvecklings AB.
++# Portions created by Ericsson are Copyright 1999, Ericsson Utvecklings
++# AB. All Rights Reserved.''
++# 
++#     $Id$
++#
++# Makefile only for Unix and Win32/Cygwin.
++# 
++
++include $(ERL_TOP)/make/target.mk
++include $(ERL_TOP)/make/$(TARGET)/otp.mk
++# ----------------------------------------------------
++# SSL locations and include options from configure
++# ----------------------------------------------------
++SSL_LIBDIR = @SSL_LIBDIR@
++SSL_INCLUDE = @SSL_INCLUDE@
++
++# ----------------------------------------------------
++# Application version
++# ----------------------------------------------------
++include ../vsn.mk
++VSN=$(SSL_VSN)
++
++# ----------------------------------------------------
++# Commands 
++# ----------------------------------------------------
++CC = @CC@
++LD = @LD@
++SHELL = /bin/sh
++LIBS = @LIBS@
++
++# ----------------------------------------------------
++# Includes and libs
++# ----------------------------------------------------
++
++ALL_CFLAGS = @WFLAGS@ @CFLAGS@ @DEFS@ $(TYPE_FLAGS)
++TARGET = @host@
++
++ifeq ($(TYPE),debug)
++TYPEMARKER = .debug
++TYPE_FLAGS = -g -DDEBUG @DEBUG_FLAGS@
++else
++TYPEMARKER =
++TYPE_FLAGS = -O2
++endif
++
++PRIVDIR = ../priv
++BINDIR = $(PRIVDIR)/bin/$(TARGET)
++OBJDIR = $(PRIVDIR)/obj/$(TARGET)
++
++# ----------------------------------------------------
++# File suffixes
++# ----------------------------------------------------
++exe = @EXEEXT@
++obj = .@OBJEXT@
++
++# ----------------------------------------------------
++# Release directory specification
++# ----------------------------------------------------
++RELSYSDIR = $(RELEASE_PATH)/lib/ssl-$(VSN)
++
++# ----------------------------------------------------
++# Common Macros
++# ----------------------------------------------------
++OBJS = 	$(OBJDIR)/esock$(obj) \
++	$(OBJDIR)/debuglog$(obj) \
++	$(OBJDIR)/esock_poll$(obj) \
++	$(OBJDIR)/esock_osio$(obj) \
++	$(OBJDIR)/esock_utils$(obj) \
++	$(OBJDIR)/esock_posix_str$(obj) \
++	$(OBJDIR)/esock_openssl$(obj)
++
++PORT_PROGRAM = $(BINDIR)/ssl_esock$(exe)
++
++ifneq ($(TARGET),win32)
++SSL_MAKEFILE = $(OBJDIR)/Makefile
++SKIP_BUILDING_BINARIES := false
++else
++ifeq ($(HOST_OS),)
++HOST_OS := $(shell $(ERL_TOP)/erts/autoconf/config.guess)
++endif
++ifeq ($(findstring solaris,$(HOST_OS)),solaris)
++SKIP_BUILDING_BINARIES := true
++endif
++endif
++
++CC_R_FLAG=
++ifeq ($(findstring @,$(CC_R_FLAG)),@)
++# Old erts configure used which hasn't replaced @CFLAG_RUNTIME_LIBRARY_PATH@;
++# we try our best here instead...
++
++ifeq ($(findstring darwin,$(TARGET)),darwin)	# darwin: no flag
++CC_R_FLAG =
++else
++ifeq ($(findstring osf,$(TARGET)),osf)		# osf1: -Wl,-rpath,
++CC_R_FLAG =
++else						# Default: -Wl,-R
++CC_R_FLAG =
++endif
++endif
++
++endif
++
++ifeq ($(strip $(CC_R_FLAG)),)
++CC_R_OPT =
++else
++CC_R_OPT = $(CC_R_FLAG)$(SSL_LIBDIR)
++endif
++
++
++# ----------------------------------------------------
++# Targets
++# ----------------------------------------------------
++
++ifeq ($(SKIP_BUILDING_BINARIES), true)
++debug opt:
++else
++debug opt: $(OBJDIR) $(BINDIR) $(OBJS) $(PORT_PROGRAM) $(SSL_MAKEFILE)
++endif
++
++$(OBJDIR):
++	-@mkdir -p $(OBJDIR)
++
++$(BINDIR):
++	-@mkdir -p $(BINDIR)
++
++$(OBJDIR)/esock_openssl$(obj):	esock_openssl.c
++	$(CC) -c -o $@ $(ALL_CFLAGS) $(SSL_INCLUDE) $<
++
++$(OBJDIR)/%$(obj): %.c
++	$(CC) -c -o $@ $(ALL_CFLAGS) $<
++
++# Unix
++$(BINDIR)/ssl_esock: $(OBJS)
++	$(CC) -L$(SSL_LIBDIR) $(CC_R_OPT) -o $@ $^ \
++		$(LIBS) -lssl -lcrypto
++
++# Win32/Cygwin
++$(BINDIR)/ssl_esock.exe: $(OBJS)
++	$(LD) -L$(SSL_LIBDIR) -o $@ $^ -lwsock32 -llibeay32 -lssleay32
++
++# Unix only
++$(SSL_MAKEFILE):
++	sed 	-e "s;%BINDIR%;../../bin/$(TARGET);" \
++		-e "s;%SSL_LIBDIR%;$(SSL_LIBDIR);" \
++		-e "s;%OBJS;$(OBJS);" \
++		-e "s;%LIBS%;$(LIBS);" ./Makefile.dist \
++		> $(OBJDIR)/Makefile
++
++
++clean:
++	rm -f $(PORT_PROGRAM) $(OBJS) core *~ $(SSL_MAKEFILE)
++
++docs:
++
++# ----------------------------------------------------
++# Release Target
++# ---------------------------------------------------- 
++include $(ERL_TOP)/make/otp_release_targets.mk
++
++release_spec: opt
++	$(INSTALL_DIR) $(RELSYSDIR)/priv/bin
++	$(INSTALL_DIR) $(RELSYSDIR)/priv/obj
++	$(INSTALL_DATA) $(OBJS) $(RELSYSDIR)/priv/obj
++	$(INSTALL_PROGRAM) $(PORT_PROGRAM) $(RELSYSDIR)/priv/bin
++ifneq ($(TARGET),win32)
++	sed 	-e "s;%BINDIR%;../bin;" \
++		-e "s;%SSL_LIBDIR%;$(SSL_LIBDIR);" \
++		-e "s;%OBJS;$(OBJS);" \
++		-e "s;%LIBS%;$(LIBS);" ./Makefile.dist \
++		> $(RELSYSDIR)/priv/obj/Makefile
++endif
++
++release_docs_spec:
++
+-- 
+1.6.6.1
+

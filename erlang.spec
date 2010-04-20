@@ -1,21 +1,22 @@
-%define ver R12B
-%define rel 3
-
 Name:           erlang
-Version:        %{ver}
-Release:        %{rel}.3%{?dist}
+Version:        R11B
+Release:        2.4%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
-License:        ERPL
+License:        Erlang Public License
 URL:            http://www.erlang.org
-Source:         http://www.erlang.org/download/otp_src_%{ver}-%{rel}.tar.gz
-Source1:	http://www.erlang.org/download/otp_doc_html_%{ver}-%{rel}.tar.gz
-Source2:	http://www.erlang.org/download/otp_doc_man_%{ver}-%{rel}.tar.gz
-Patch0:		otp-links.patch
-Patch1:		otp-install.patch
-Patch3:         otp-sslrpath.patch
-Patch6:         otp-ssl_missing_libs.patch
+Source:         http://www.erlang.org/download/otp_src_R11B-2.tar.gz
+Source1:	http://www.erlang.org/download/otp_doc_html_R11B-2.tar.gz
+Source2:	http://www.erlang.org/download/otp_doc_man_R11B-2.tar.gz
+Patch1:		otp-R11B-2-0001-Do-not-create-links-instead-of-real-files.patch
+Patch2:		otp-R11B-2-0002-Fix-symlinking-of-epmd.patch
+Patch3:		otp-R11B-2-0003-Do-not-format-man-pages.patch
+Patch4:		otp-R11B-2-0004-Remove-rpath.patch
+Patch5:		otp-R11B-2-0005-Fix-shared-libraries-installation.patch
+Patch6:		otp-R11B-2-0006-Fix-missing-ssl-libraries-in-EPEL.patch
+Patch7:		otp-R11B-2-0007-Fix-for-Glibc-2.5.patch
+Patch8:		otp-R11B-2-0008-Fix-for-run_erl-utility.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	ncurses-devel
@@ -23,14 +24,13 @@ BuildRequires:  openssl-devel
 BuildRequires:  unixODBC-devel
 BuildRequires:	tcl-devel
 BuildRequires:	tk-devel
-BuildRequires:  gd-devel
 BuildRequires:	java-1.4.2-gcj-compat-devel
 BuildRequires:  flex
 BuildRequires:	m4
 
 Requires:	tk
 
-%description 
+%description
 Erlang is a general-purpose programming language and runtime
 environment. Erlang has built-in support for concurrency, distribution
 and fault tolerance. Erlang is used in several large telecommunication
@@ -46,25 +46,19 @@ Documentation for Erlang.
 
 
 %prep
-%setup -q -n otp_src_%{ver}-%{rel}
-%patch0 -p1 -b .links
-%patch1 -p1 -b .install
-%patch3 -p1 -b .sslrpath
-%patch6 -p0 -b .keyutils
-
-# enable dynamic linking for ssl
-sed -i 's|SSL_DYNAMIC_ONLY=no|SSL_DYNAMIC_ONLY=yes|' erts/configure
-sed -i 's|^LD.*=.*|LD = gcc -shared|' lib/common_test/c_src/Makefile
-# fix for newer glibc version
-sed -i 's|__GLIBC_MINOR__ <= 7|__GLIBC_MINOR__ <= 8|' erts/emulator/hipe/hipe_x86_signal.c
-# use gcc -shared instead of ld
-sed -i 's|@RX_LD@|gcc -shared|' lib/common_test/c_src/Makefile.in
-sed -i 's|@RX_LDFLAGS@||' lib/common_test/c_src/Makefile.in
-
+%setup -q -n otp_src_R11B-2
+%patch1 -p1 -b .links
+%patch2 -p1 -b .epmd
+%patch3 -p1 -b .manpages
+%patch4 -p1 -b .rpath
+%patch5 -p1 -b .shared_libs
+%patch6 -p1 -b .missing_ssl_libs
+%patch7 -p1 -b .glibc25
+%patch8 -p1 -b .run_erl
 
 
 %build
-CFLAGS="-fno-strict-aliasing" ./configure --enable-dynamic-ssl-lib --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
+./configure --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
 chmod -R u+w .
 make
 
@@ -76,7 +70,6 @@ make INSTALL_PREFIX=$RPM_BUILD_ROOT install
 # clean up
 find $RPM_BUILD_ROOT%{_libdir}/erlang -perm 0775 | xargs chmod 755
 find $RPM_BUILD_ROOT%{_libdir}/erlang -name Makefile | xargs chmod 644
-find $RPM_BUILD_ROOT%{_libdir}/erlang -name \*.o | xargs chmod 644
 find $RPM_BUILD_ROOT%{_libdir}/erlang -name \*.bat | xargs rm -f
 find $RPM_BUILD_ROOT%{_libdir}/erlang -name index.txt.old | xargs rm -f
 
@@ -88,7 +81,7 @@ tar -C $RPM_BUILD_ROOT/%{_libdir}/erlang -zxf %{SOURCE2}
 # make links to binaries
 mkdir -p $RPM_BUILD_ROOT/%{_bindir}
 cd $RPM_BUILD_ROOT/%{_bindir}
-for file in erl erlc 
+for file in erl erlc
 do
   ln -sf ../%{_lib}/erlang/bin/$file .
 done
@@ -119,41 +112,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Mon Aug 11 2008 Peter Lemenkov <lemenkov@gmail.com> - R12B-3.3
-- Force dynamic linking of crypto libs
-
-* Thu Jul 17 2008 Tom "spot" Callaway <tcallawa@redhat.com> - R12B-3.2
-- fix license tag
-
-* Sun Jul  6 2008 Gerard Milmeister <gemi@bluewin.ch> - R12B-3.1
-- new release R12B-3
-
-* Thu Mar 27 2008 Gerard Milmeister <gemi@bluewin.ch> - R12B-1.1
-- new release R12B-1
-
-* Sat Feb 23 2008 Gerard Milmeister <gemi@bluewin.ch> - R12B-0.3
-- disable strict aliasing optimization
-
-* Mon Feb 18 2008 Fedora Release Engineering <rel-eng@fedoraproject.org> - R12B-0.2
-- Autorebuild for GCC 4.3
-
-* Sat Dec  8 2007 Gerard Milmeister <gemi@bluewin.ch> - R12B-0.1
-- new release R12B-0
-
-* Wed Dec 05 2007 Release Engineering <rel-eng at fedoraproject dot org> - R11B-6
- - Rebuild for deps
-
-* Sun Aug 19 2007 Gerard Milmeister <gemi@bluewin.ch> - R11B-5.3
-- fix some permissions
-
-* Sat Aug 18 2007 Gerard Milmeister <gemi@bluewin.ch> - R11B-5.2
-- enable dynamic linking for ssl
-
-* Sat Aug 18 2007 Gerard Milmeister <gemi@bluewin.ch> - R11B-5.1
-- new release R11B-5
-
-* Sat Mar 24 2007 Thomas Fitzsimmons <fitzsim@redhat.com> - R11B-2.4
-- Require java-1.5.0-gcj-devel for build.
+* Mon Apr 19 2010 Peter Lemenkov <lemenkov@gmail.com> - R11B-2.4
+- Patches rebased
+- Added patches 6,7 from trunk
 
 * Sun Dec 31 2006 Gerard Milmeister <gemi@bluewin.ch> - R11B-2.3
 - remove buildroot from installed files

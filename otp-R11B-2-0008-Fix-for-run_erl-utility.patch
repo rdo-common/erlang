@@ -1,0 +1,63 @@
+From 82764cd53a519b552fb4f62814ca65cd77105f14 Mon Sep 17 00:00:00 2001
+From: Peter Lemenkov <lemenkov@gmail.com>
+Date: Mon, 19 Apr 2010 15:23:49 +0400
+Subject: [PATCH 8/8] Fix for run_erl utility
+
+---
+ erts/etc/common/Makefile.in |    2 +-
+ erts/etc/unix/run_erl.c     |   12 ++++++++++++
+ 2 files changed, 13 insertions(+), 1 deletions(-)
+
+diff --git a/erts/etc/common/Makefile.in b/erts/etc/common/Makefile.in
+index d0b9a7f..18c2f8d 100644
+--- a/erts/etc/common/Makefile.in
++++ b/erts/etc/common/Makefile.in
+@@ -280,7 +280,7 @@ $(BINDIR)/inet_gethost@EXEEXT@: $(OBJDIR)/inet_gethost.o $(ENTRY_OBJ)
+ 	$(PURIFY) $(LD) $(LDFLAGS) $(ENTRY_LDFLAGS) -o $@ $(OBJDIR)/inet_gethost.o $(ENTRY_OBJ) $(LIBS) 
+ 
+ $(BINDIR)/run_erl: $(OBJDIR)/run_erl.o
+-	$(LD) $(LDFLAGS) -o $@ $(OBJDIR)/run_erl.o
++	$(LD) $(LDFLAGS) -lutil -o $@ $(OBJDIR)/run_erl.o
+ 
+ $(OBJDIR)/run_erl.o: ../unix/run_erl.c
+ 	$(CC) $(CFLAGS) -o $@ -c ../unix/run_erl.c
+diff --git a/erts/etc/unix/run_erl.c b/erts/etc/unix/run_erl.c
+index a39ace3..ec73a68 100644
+--- a/erts/etc/unix/run_erl.c
++++ b/erts/etc/unix/run_erl.c
+@@ -42,6 +42,8 @@
+ #include <dirent.h>
+ #include <termios.h>
+ #include <time.h>
++#include <pty.h>
++#include <utmp.h>
+ #if !defined(NO_SYSLOG)
+ #include <syslog.h>
+ #endif
+@@ -803,6 +805,7 @@ static int create_fifo(char *name, int perm)
+ static int open_pty_master(char **ptyslave)
+ {
+   int mfd;
++  int sfd;
+   char *major, *minor;
+ 
+   static char majorchars[] = "pqrstuvwxyzabcdePQRSTUVWXYZABCDE";
+@@ -818,6 +821,15 @@ static int open_pty_master(char **ptyslave)
+   /* http://www.xcf.berkeley.edu/~ali/K0D/UNIX/PTY/code/upty.h.html */
+ 
+   {
++    static char ttyname[] = "                                   ";
++    if (0 == openpty(&mfd, &sfd, ttyname, NULL, NULL)) {
++      close(sfd);
++      *ptyslave = ttyname;
++      return mfd;
++    }
++  }
++
++  {
+     /* New style devpts or devfs /dev/pty/{m,s}{0,1....} */
+ 
+     static char ptyname[] = "/dev/pty/mX";
+-- 
+1.6.6.1
+
