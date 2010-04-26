@@ -5,7 +5,7 @@
 
 Name:           erlang
 Version:        %{ver}
-Release:        %{rel}.5%{?dist}
+Release:        %{rel}.6%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -81,6 +81,7 @@ Requires: erlang-percept = %{version}-%{release}
 Requires: erlang-pman = %{version}-%{release}
 Requires: erlang-public_key = %{version}-%{release}
 Requires: erlang-reltool = %{version}-%{release}
+Requires: erlang-rpm-macros = %{version}-%{release}
 Requires: erlang-runtime_tools = %{version}-%{release}
 Requires: erlang-sasl = %{version}-%{release}
 Requires: erlang-snmp = %{version}-%{release}
@@ -493,6 +494,14 @@ dependencies and enables interactive customization of a
 target system. The backend provides a batch interface
 for generation of customized target systems.
 
+%package rpm-macros
+Summary:	Necessary macros for building Erlang
+Group:		Development/Languages
+Obsoletes:	%{name} < R13B-04.5
+
+%description rpm-macros
+Necessary macros for building Erlang.
+
 %package runtime_tools
 Summary:	A set of tools to include in a production system
 Group:		Development/Languages
@@ -666,7 +675,6 @@ chmod 644 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/kernel-*/examples/uds_dist/c_src/
 chmod 644 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/kernel-*/examples/uds_dist/src/Makefile
 chmod 644 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ssl-*/examples/certs/Makefile
 chmod 644 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ssl-*/examples/src/Makefile
-chmod 644 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ssl-*/priv/obj/Makefile
 
 # install additional doc files
 mkdir -p erlang_doc
@@ -726,10 +734,10 @@ rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/odbc-*/priv/obj
 rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ssl-*/priv/obj
 
 # Install RPM related files
-install -D -p -m 0755 %{SOURCE3} $RPM_BUILD_ROOT%{_libdir}/rpm/erlang-find-provides.escript
-install -D -p -m 0755 %{SOURCE4} $RPM_BUILD_ROOT%{_libdir}/rpm/erlang-find-provides.sh
-install -D -p -m 0755 %{SOURCE5} $RPM_BUILD_ROOT%{_libdir}/rpm/erlang-find-requires.escript
-install -D -p -m 0755 %{SOURCE6} $RPM_BUILD_ROOT%{_libdir}/rpm/erlang-find-requires.sh
+install -D -p -m 0755 %{SOURCE3} $RPM_BUILD_ROOT%{_rpmconfigdir}/erlang-find-provides.escript
+install -D -p -m 0755 %{SOURCE4} $RPM_BUILD_ROOT%{_rpmconfigdir}/erlang-find-provides.sh
+install -D -p -m 0755 %{SOURCE5} $RPM_BUILD_ROOT%{_rpmconfigdir}/erlang-find-requires.escript
+install -D -p -m 0755 %{SOURCE6} $RPM_BUILD_ROOT%{_rpmconfigdir}/erlang-find-requires.sh
 install -D -p -m 0644 %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/rpm/macros.erlang
 
 
@@ -744,13 +752,6 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_libdir}/erlang/PR.template
 %doc %{_libdir}/erlang/README
 %doc %{_libdir}/erlang/COPYRIGHT
-
-# RPM stuff
-%{_sysconfdir}/rpm/macros.erlang
-%{_libdir}/rpm/erlang-find-provides.escript
-%{_libdir}/rpm/erlang-find-provides.sh
-%{_libdir}/rpm/erlang-find-requires.escript
-%{_libdir}/rpm/erlang-find-requires.sh
 
 %files appmon
 %defattr(-,root,root)
@@ -982,6 +983,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/reltool-*/ebin
 %{_libdir}/erlang/lib/reltool-*/src
 
+%files rpm-macros
+%defattr(-,root,root)
+%{_sysconfdir}/rpm/macros.erlang
+%{_rpmconfigdir}/erlang-find-provides.escript
+%{_rpmconfigdir}/erlang-find-provides.sh
+%{_rpmconfigdir}/erlang-find-requires.escript
+%{_rpmconfigdir}/erlang-find-requires.sh
+
 %files runtime_tools
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/runtime_tools-*/
@@ -1071,6 +1080,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Apr 26 2010 Peter Lemenkov <lemenkov@gmail.com> - R13B-04.6
+- Made erlang-rpm-macros as separate package
+- Fix error while installing erlang-rpm-macros
+
 * Wed Apr 17 2010 Peter Lemenkov <lemenkov@gmail.com> - R13B-04.5
 - Use erlang rpm macros for adding provides/reqires
 - All %%{_libdir}/erlang/lib/* items were splitted off from main package, which
