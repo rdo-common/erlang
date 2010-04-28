@@ -3,24 +3,22 @@
 %define ver R13B
 %define rel 04
 
-Name:           erlang
-Version:        %{ver}
-Release:        %{rel}.7%{?dist}
-Summary:        General-purpose programming language and runtime environment
+Name:		erlang
+Version:	%{ver}
+Release:	%{rel}.8%{?dist}
+Summary:	General-purpose programming language and runtime environment
 
-Group:          Development/Languages
-License:        ERPL
-URL:            http://www.erlang.org
-Source:         http://www.erlang.org/download/otp_src_%{ver}%{rel}.tar.gz
-Source1:        http://www.erlang.org/download/otp_doc_html_%{ver}%{rel}.tar.gz
-Source2:        http://www.erlang.org/download/otp_doc_man_%{ver}%{rel}.tar.gz
+Group:		Development/Languages
+License:	ERPL
+URL:		http://www.erlang.org
+Source0:	http://www.erlang.org/download/otp_src_%{ver}%{rel}.tar.gz
 Source3:	erlang-find-provides.escript
 Source4:	erlang-find-provides.sh
 Source5:	erlang-find-requires.escript
 Source6:	erlang-find-requires.sh
 Source7:	macros.erlang
 # TODO this patch needs rebase against current tree
-Patch0:         otp-links.patch
+Patch0:		otp-links.patch
 # Fedora-specific
 Patch1:		otp-0001-Do-not-format-man-pages.patch
 # Fedora-specific
@@ -31,14 +29,15 @@ Patch6:		otp-0006-Fix-shared-libraries-installation.patch
 Patch7:		otp-0007-Fix-for-dlopening-libGL-and-libGLU.patch
 # Upstreamed
 Patch8:		otp-0008-Fix-check-for-compile-workspace-overflow.patch
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	ncurses-devel
-BuildRequires:  openssl-devel
+BuildRequires:	openssl-devel
 BuildRequires:	zlib-devel
-BuildRequires:  flex
+BuildRequires:	flex
 BuildRequires:	m4
 BuildRequires:	fop
+BuildRequires:	libxslt
 # Required for erlang-rpm-macros
 BuildRequires:	erlang
 
@@ -237,6 +236,7 @@ A DIscrepany AnaLYZer for ERlang programs.
 Summary:	Erlang documentation
 Group:		Development/Languages
 BuildArch:	noarch
+Requires:	%{name} = %{version}-%{release}
 Obsoletes:	%{name}-doc < R13B-04.4
 
 %description doc
@@ -664,11 +664,13 @@ CFLAGS="$RPM_OPT_FLAGS -mcpu=ultrasparc -fno-strict-aliasing" %configure --enabl
 CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing" %configure --enable-shared-zlib
 %endif
 make
+make docs
 
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make INSTALL_PREFIX=$RPM_BUILD_ROOT install
+make DESTDIR=$RPM_BUILD_ROOT install
+make DESTDIR=$RPM_BUILD_ROOT install-docs
 
 # fix 0775 permission on some directories
 find $RPM_BUILD_ROOT%{_libdir}/erlang -type d -perm 0775 | xargs chmod 755
@@ -679,21 +681,19 @@ chmod 644 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/kernel-*/examples/uds_dist/src/Ma
 chmod 644 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ssl-*/examples/certs/Makefile
 chmod 644 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ssl-*/examples/src/Makefile
 
-# install additional doc files
-mkdir -p erlang_doc
-tar -C erlang_doc -zxf %{SOURCE1}
-
-# install man-pages
-tar -C $RPM_BUILD_ROOT%{_libdir}/erlang -zxf %{SOURCE2}
-gzip $RPM_BUILD_ROOT%{_libdir}/erlang/man/man*/*
-
-# make links to binaries
-mkdir -p $RPM_BUILD_ROOT%{_bindir}
-cd $RPM_BUILD_ROOT%{_bindir}
-for file in erl erlc escript dialyzer
-do
-  ln -sf ../%{_lib}/erlang/bin/$file .
-done
+# Relocate doc-files into the proper directory
+mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}/lib
+pushd .
+cd $RPM_BUILD_ROOT%{_libdir}/erlang
+mv -v doc $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}
+for i in erts-* ; do mv -v $i/doc $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}/$i ; done
+cd $RPM_BUILD_ROOT%{_libdir}/erlang/lib
+for i in * ; do mv -v $i/doc $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}/lib/$i || true ; done
+popd
+cp -av AUTHORS EPLICENCE README.md $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}
+mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/PR.template $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}
+mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/README $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}
+mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/COPYRIGHT $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}
 
 # Win32-specific functionality
 rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/observer-*/priv/bin/etop.bat
@@ -728,14 +728,12 @@ rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/jinterface-*/java_src
 rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/odbc-*/c_src
 rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/tools-*/c_src
 
-# remove empty directories
-rm -r $RPM_BUILD_ROOT%{_libdir}/erlang/erts-*/doc
+# remove empty directory
 rm -r $RPM_BUILD_ROOT%{_libdir}/erlang/erts-*/man
 
 # remove unneeded files
-rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/cosEvent-*/info
-rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/cosEventDomain-*/info
-rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/hipe-*/vsn.mk
+rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/*-*/info
+rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/hipe-*/vsn.mk
 
 # No longer needed utilities for formatting man-pages
 rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/misc
@@ -752,6 +750,8 @@ install -D -p -m 0755 %{SOURCE5} $RPM_BUILD_ROOT%{_rpmconfigdir}/erlang-find-req
 install -D -p -m 0755 %{SOURCE6} $RPM_BUILD_ROOT%{_rpmconfigdir}/erlang-find-requires.sh
 install -D -p -m 0644 %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/rpm/macros.erlang
 
+# remove outdated script
+rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/Install
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -759,11 +759,13 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-
-%doc AUTHORS EPLICENCE README.md
-%doc %{_libdir}/erlang/PR.template
-%doc %{_libdir}/erlang/README
-%doc %{_libdir}/erlang/COPYRIGHT
+%dir %{_docdir}/%{name}-%{ver}-%{rel}/
+%doc %{_docdir}/%{name}-%{ver}-%{rel}/AUTHORS
+%doc %{_docdir}/%{name}-%{ver}-%{rel}/COPYRIGHT
+%doc %{_docdir}/%{name}-%{ver}-%{rel}/EPLICENCE
+%doc %{_docdir}/%{name}-%{ver}-%{rel}/PR.template
+%doc %{_docdir}/%{name}-%{ver}-%{rel}/README
+%doc %{_docdir}/%{name}-%{ver}-%{rel}/README.md
 
 %files appmon
 %defattr(-,root,root)
@@ -915,7 +917,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files doc
 %defattr(-,root,root)
-%doc erlang_doc/*
+%doc %{_docdir}/%{name}-%{ver}-%{rel}/doc
+%doc %{_docdir}/%{name}-%{ver}-%{rel}/erts-*/
+%doc %{_docdir}/%{name}-%{ver}-%{rel}/lib/
+
 
 %files docbuilder
 %defattr(-,root,root)
@@ -957,7 +962,8 @@ rm -rf $RPM_BUILD_ROOT
 %files erts
 %defattr(-,root,root)
 
-%dir %{_libdir}/erlang
+# TODO these directories should be packaged separately
+%dir %{_libdir}/erlang/
 %dir %{_libdir}/erlang/bin/
 %dir %{_libdir}/erlang/lib/
 %dir %{_libdir}/erlang/man/
@@ -966,12 +972,12 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/erlang/man/man4/
 %dir %{_libdir}/erlang/man/man6/
 %dir %{_libdir}/erlang/man/man7/
+%dir %{_libdir}/erlang/releases/
 
 %{_bindir}/*
 %{_libdir}/erlang/bin/
 %{_libdir}/erlang/erts-*/
 %{_libdir}/erlang/lib/erts-*/
-
 %{_libdir}/erlang/man/man1/epmd.*
 %{_libdir}/erlang/man/man1/erl.*
 %{_libdir}/erlang/man/man1/erlc.*
@@ -986,10 +992,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/erts_alloc.*
 %{_libdir}/erlang/man/man3/init.*
 %{_libdir}/erlang/man/man3/zlib.*
-
-%{_libdir}/erlang/releases/
+%{_libdir}/erlang/releases/*
 %{_libdir}/erlang/usr/
-%{_libdir}/erlang/Install
 
 %files et
 %defattr(-,root,root)
@@ -1709,11 +1713,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/xmerl_xsd.*
 
 
-%post
-%{_libdir}/erlang/Install -minimal -cross %{_libdir}/erlang >/dev/null 2>/dev/null
-
-
 %changelog
+* Tue Apr 27 2010 Peter Lemenkov <lemenkov@gmail.com> - R13B-04.8
+- Added missing BuildRequires libxslt (for building docs)
+- Removed %%post script completely (resolves rhbz #586428)
+- Since now both docs and man-pages are built from sources
+- No need to manually create symlinks in %%{_bindir}
+
 * Mon Apr 26 2010 Peter Lemenkov <lemenkov@gmail.com> - R13B-04.7
 - Build with erlang-rpm-macros
 - Man-files are packed with packages, they belong to
