@@ -1,7 +1,7 @@
-From 0c963550412174a4c4fe64aa7f70189998abef41 Mon Sep 17 00:00:00 2001
+From edaced375235a006c87a3e15b8b17e9bc6dbb923 Mon Sep 17 00:00:00 2001
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Thu, 15 Apr 2010 13:31:36 +0400
-Subject: [PATCH 6/9] Fix shared libraries installation
+Subject: [PATCH 4/7] Fix shared libraries installation
 
 Several shared libraries (asn1_erl_drv.so, megaco_flex_scanner_drv_mt.so,
 megaco_flex_scanner_drv.so, wxe_driver.so) were installed as data files

@@ -5,7 +5,7 @@
 
 Name:		erlang
 Version:	%{ver}
-Release:	%{rel}.8%{?dist}
+Release:	%{rel}.9%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -24,11 +24,13 @@ Patch1:		otp-0001-Do-not-format-man-pages.patch
 # Fedora-specific
 Patch2:		otp-0002-Remove-rpath.patch
 # Upstreamed
-Patch6:		otp-0006-Fix-shared-libraries-installation.patch
+Patch4:		otp-0004-Fix-shared-libraries-installation.patch
 # Fedora-specific
-Patch7:		otp-0007-Fix-for-dlopening-libGL-and-libGLU.patch
+Patch5:		otp-0005-Fix-for-dlopening-libGL-and-libGLU.patch
 # Upstreamed
-Patch8:		otp-0008-Fix-check-for-compile-workspace-overflow.patch
+Patch6:		otp-0006-Fix-check-for-compile-workspace-overflow.patch
+# Install accidentally forgotten emacs files (see rhbz #585349) (already fixed upstream)
+Patch7:		otp-0007-Install-missing-emacs-files.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	ncurses-devel
@@ -650,9 +652,10 @@ Provides support for XML 1.0.
 %setup -q -n otp_src_%{ver}%{rel}
 %patch1 -p1 -b .do_not_format_manpages
 %patch2 -p1 -b .rpath
-%patch6 -p1 -b .fix_shared_lib_install
-%patch7 -p1 -b .dlopen_opengl_libs
-%patch8 -p1 -b .pcre_overflow
+%patch4 -p1 -b .fix_shared_lib_install
+%patch5 -p1 -b .dlopen_opengl_libs
+%patch6 -p1 -b .pcre_overflow
+%patch7 -p1 -b .missing_emacs_files
 # remove shipped zlib sources
 rm -f erts/emulator/zlib/*.[ch]
 
@@ -1714,6 +1717,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Apr 28 2010 Peter Lemenkov <lemenkov@gmail.com> - R13B-04.9
+- Added missing files, necessary for emacs (see rhbz #585349)
+- Patches rebased
+
 * Tue Apr 27 2010 Peter Lemenkov <lemenkov@gmail.com> - R13B-04.8
 - Added missing BuildRequires libxslt (for building docs)
 - Removed %%post script completely (resolves rhbz #586428)

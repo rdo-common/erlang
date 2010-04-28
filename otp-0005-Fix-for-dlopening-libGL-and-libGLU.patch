@@ -1,7 +1,7 @@
-From 6ffccff36e0d94cba0412cf3a29769b4a19d3be3 Mon Sep 17 00:00:00 2001
+From 3475d4f155dc4bc2919e371e614fee81f01e87d5 Mon Sep 17 00:00:00 2001
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Fri, 16 Apr 2010 21:13:47 +0400
-Subject: [PATCH 7/9] Fix for dlopening libGL and libGLU
+Subject: [PATCH 5/7] Fix for dlopening libGL and libGLU
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 ---
