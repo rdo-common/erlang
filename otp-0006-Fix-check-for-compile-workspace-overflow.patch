@@ -1,7 +1,7 @@
-From d496ce48940411976617b66a5c941c78313cb78c Mon Sep 17 00:00:00 2001
+From 400034faee44b65a5e33014e7ce4edcfcfba870f Mon Sep 17 00:00:00 2001
 From: Michael Santos <michael.santos@gmail.com>
 Date: Thu, 18 Mar 2010 20:08:10 -0400
-Subject: [PATCH 8/9] Fix check for compile workspace overflow
+Subject: [PATCH 6/7] Fix check for compile workspace overflow
 
 Patch from:
 http://vcs.pcre.org/viewvc/code/trunk/pcre_compile.c?r1=504&r2=505&view=patch
