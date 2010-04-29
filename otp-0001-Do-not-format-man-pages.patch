@@ -1,7 +1,7 @@
 From 80fd602b5cd9f4aaa7b6bd95e174708e27601db5 Mon Sep 17 00:00:00 2001
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Thu, 25 Feb 2010 16:45:28 +0300
-Subject: [PATCH 1/9] Do not format man-pages
+Subject: [PATCH 1/7] Do not format man-pages
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 ---

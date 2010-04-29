@@ -3,42 +3,45 @@
 %define ver R13B
 %define rel 04
 
-Name:           erlang
-Version:        %{ver}
-Release:        %{rel}.6%{?dist}
-Summary:        General-purpose programming language and runtime environment
+Name:		erlang
+Version:	%{ver}
+Release:	%{rel}.9%{?dist}
+Summary:	General-purpose programming language and runtime environment
 
-Group:          Development/Languages
-License:        ERPL
-URL:            http://www.erlang.org
-Source:         http://www.erlang.org/download/otp_src_%{ver}%{rel}.tar.gz
-Source1:        http://www.erlang.org/download/otp_doc_html_%{ver}%{rel}.tar.gz
-Source2:        http://www.erlang.org/download/otp_doc_man_%{ver}%{rel}.tar.gz
+Group:		Development/Languages
+License:	ERPL
+URL:		http://www.erlang.org
+Source0:	http://www.erlang.org/download/otp_src_%{ver}%{rel}.tar.gz
 Source3:	erlang-find-provides.escript
 Source4:	erlang-find-provides.sh
 Source5:	erlang-find-requires.escript
 Source6:	erlang-find-requires.sh
 Source7:	macros.erlang
 # TODO this patch needs rebase against current tree
-Patch0:         otp-links.patch
+Patch0:		otp-links.patch
 # Fedora-specific
 Patch1:		otp-0001-Do-not-format-man-pages.patch
 # Fedora-specific
 Patch2:		otp-0002-Remove-rpath.patch
 # Upstreamed
-Patch6:		otp-0006-Fix-shared-libraries-installation.patch
+Patch4:		otp-0004-Fix-shared-libraries-installation.patch
 # Fedora-specific
-Patch7:		otp-0007-Fix-for-dlopening-libGL-and-libGLU.patch
+Patch5:		otp-0005-Fix-for-dlopening-libGL-and-libGLU.patch
 # Upstreamed
-Patch8:		otp-0008-Fix-check-for-compile-workspace-overflow.patch
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+Patch6:		otp-0006-Fix-check-for-compile-workspace-overflow.patch
+# Install accidentally forgotten emacs files (see rhbz #585349) (already fixed upstream)
+Patch7:		otp-0007-Install-missing-emacs-files.patch
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	ncurses-devel
-BuildRequires:  openssl-devel
+BuildRequires:	openssl-devel
 BuildRequires:	zlib-devel
-BuildRequires:  flex
+BuildRequires:	flex
 BuildRequires:	m4
 BuildRequires:	fop
+BuildRequires:	libxslt
+# Required for erlang-rpm-macros
+BuildRequires:	erlang
 
 Requires: erlang-appmon = %{version}-%{release}
 Requires: erlang-asn1 = %{version}-%{release}
@@ -50,7 +53,7 @@ Requires: erlang-cosFileTransfer = %{version}-%{release}
 Requires: erlang-cosNotification = %{version}-%{release}
 Requires: erlang-cosProperty = %{version}-%{release}
 Requires: erlang-cosTime = %{version}-%{release}
-Requires: erlang-cosTransaction = %{version}-%{release}
+Requires: erlang-cosTransactions = %{version}-%{release}
 Requires: erlang-crypto = %{version}-%{release}
 Requires: erlang-debugger = %{version}-%{release}
 Requires: erlang-dialyzer = %{version}-%{release}
@@ -194,13 +197,14 @@ Obsoletes:	%{name} < R13B-04.5
 %description cosTime
 Orber OMG Timer and TimerEvent Service.
 
-%package cosTransaction
+%package cosTransactions
 Summary:	Orber OMG Transaction Service
 Group:		Development/Languages
 Requires:	%{name}-erts = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
+Obsoletes:	%{name}-cosTransaction < R13B-04.7
 
-%description cosTransaction
+%description cosTransactions
 Orber OMG Transaction Service.
 
 %package crypto
@@ -234,6 +238,7 @@ A DIscrepany AnaLYZer for ERlang programs.
 Summary:	Erlang documentation
 Group:		Development/Languages
 BuildArch:	noarch
+Requires:	%{name} = %{version}-%{release}
 Obsoletes:	%{name}-doc < R13B-04.4
 
 %description doc
@@ -647,9 +652,10 @@ Provides support for XML 1.0.
 %setup -q -n otp_src_%{ver}%{rel}
 %patch1 -p1 -b .do_not_format_manpages
 %patch2 -p1 -b .rpath
-%patch6 -p1 -b .fix_shared_lib_install
-%patch7 -p1 -b .dlopen_opengl_libs
-%patch8 -p1 -b .pcre_overflow
+%patch4 -p1 -b .fix_shared_lib_install
+%patch5 -p1 -b .dlopen_opengl_libs
+%patch6 -p1 -b .pcre_overflow
+%patch7 -p1 -b .missing_emacs_files
 # remove shipped zlib sources
 rm -f erts/emulator/zlib/*.[ch]
 
@@ -661,11 +667,13 @@ CFLAGS="$RPM_OPT_FLAGS -mcpu=ultrasparc -fno-strict-aliasing" %configure --enabl
 CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing" %configure --enable-shared-zlib
 %endif
 make
+make docs
 
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make INSTALL_PREFIX=$RPM_BUILD_ROOT install
+make DESTDIR=$RPM_BUILD_ROOT install
+make DESTDIR=$RPM_BUILD_ROOT install-docs
 
 # fix 0775 permission on some directories
 find $RPM_BUILD_ROOT%{_libdir}/erlang -type d -perm 0775 | xargs chmod 755
@@ -676,26 +684,32 @@ chmod 644 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/kernel-*/examples/uds_dist/src/Ma
 chmod 644 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ssl-*/examples/certs/Makefile
 chmod 644 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ssl-*/examples/src/Makefile
 
-# install additional doc files
-mkdir -p erlang_doc
-tar -C erlang_doc -zxf %{SOURCE1}
+# Relocate doc-files into the proper directory
+mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}/lib
+pushd .
+cd $RPM_BUILD_ROOT%{_libdir}/erlang
+mv -v doc $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}
+for i in erts-* ; do mv -v $i/doc $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}/$i ; done
+cd $RPM_BUILD_ROOT%{_libdir}/erlang/lib
+for i in * ; do mv -v $i/doc $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}/lib/$i || true ; done
+popd
+cp -av AUTHORS EPLICENCE README.md $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}
+mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/PR.template $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}
+mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/README $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}
+mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/COPYRIGHT $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}
 
-# install man-pages
-tar -C $RPM_BUILD_ROOT%{_libdir}/erlang -zxf %{SOURCE2}
-gzip $RPM_BUILD_ROOT%{_libdir}/erlang/man/man*/*
-
-# make links to binaries
-mkdir -p $RPM_BUILD_ROOT%{_bindir}
-cd $RPM_BUILD_ROOT%{_bindir}
-for file in erl erlc escript dialyzer
-do
-  ln -sf ../%{_lib}/erlang/bin/$file .
-done
-
-# Remove batch files intended to use on one proprietary OS.
+# Win32-specific functionality
 rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/observer-*/priv/bin/etop.bat
 rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/observer-*/priv/bin/getop.bat
+rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/os_mon-*/ebin/nteventlog.beam
 rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/webtool-*/priv/bin/start_webtool.bat
+rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/man/man1/erlsrv.*
+rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/man/man1/werl.*
+rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/man/man3/nteventlog.*
+rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/man/man3/win32reg.*
+
+# VxWorks specific
+rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/man/man3/erl_set_memory_block.*
 
 # Remove old txt files
 rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ssl-*/examples/certs/etc/otpCA/index.txt.old
@@ -706,6 +720,7 @@ for d in $RPM_BUILD_ROOT%{_libdir}/erlang/lib/* ; do find $d/src -type f ! -name
 rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/hipe-*/{cerl,flow,icode,main,misc,util}/*.erl
 rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/orber-*/COSS/CosNaming/*.erl
 find $RPM_BUILD_ROOT%{_libdir}/erlang/lib/*/src -type d -empty -delete
+rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/cosFileTransfer-*/src
 
 # remove C and Java sources
 rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/asn1-*/c_src
@@ -716,14 +731,12 @@ rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/jinterface-*/java_src
 rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/odbc-*/c_src
 rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/tools-*/c_src
 
-# remove empty directories
-rm -r $RPM_BUILD_ROOT%{_libdir}/erlang/erts-*/doc
+# remove empty directory
 rm -r $RPM_BUILD_ROOT%{_libdir}/erlang/erts-*/man
 
 # remove unneeded files
-rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/cosEvent-*/info
-rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/cosEventDomain-*/info
-rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/hipe-*/vsn.mk
+rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/*-*/info
+rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/hipe-*/vsn.mk
 
 # No longer needed utilities for formatting man-pages
 rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/misc
@@ -740,6 +753,8 @@ install -D -p -m 0755 %{SOURCE5} $RPM_BUILD_ROOT%{_rpmconfigdir}/erlang-find-req
 install -D -p -m 0755 %{SOURCE6} $RPM_BUILD_ROOT%{_rpmconfigdir}/erlang-find-requires.sh
 install -D -p -m 0644 %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/rpm/macros.erlang
 
+# remove outdated script
+rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/Install
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -747,15 +762,18 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-
-%doc AUTHORS EPLICENCE README.md
-%doc %{_libdir}/erlang/PR.template
-%doc %{_libdir}/erlang/README
-%doc %{_libdir}/erlang/COPYRIGHT
+%dir %{_docdir}/%{name}-%{ver}-%{rel}/
+%doc %{_docdir}/%{name}-%{ver}-%{rel}/AUTHORS
+%doc %{_docdir}/%{name}-%{ver}-%{rel}/COPYRIGHT
+%doc %{_docdir}/%{name}-%{ver}-%{rel}/EPLICENCE
+%doc %{_docdir}/%{name}-%{ver}-%{rel}/PR.template
+%doc %{_docdir}/%{name}-%{ver}-%{rel}/README
+%doc %{_docdir}/%{name}-%{ver}-%{rel}/README.md
 
 %files appmon
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/appmon-*/
+%{_libdir}/erlang/man/man3/appmon.*
 
 %files asn1
 %defattr(-,root,root)
@@ -763,66 +781,167 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/asn1-*/ebin
 %{_libdir}/erlang/lib/asn1-*/priv
 %{_libdir}/erlang/lib/asn1-*/src
+%{_libdir}/erlang/man/man3/asn1ct.*
+%{_libdir}/erlang/man/man3/asn1rt.*
 
 %files common_test
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/common_test-*/
+%{_libdir}/erlang/man/man1/run_test.*
+%{_libdir}/erlang/man/man3/ct.*
+%{_libdir}/erlang/man/man3/ct_cover.*
+%{_libdir}/erlang/man/man3/ct_ftp.*
+%{_libdir}/erlang/man/man3/ct_master.*
+%{_libdir}/erlang/man/man3/ct_rpc.*
+%{_libdir}/erlang/man/man3/ct_snmp.*
+%{_libdir}/erlang/man/man3/ct_ssh.*
+%{_libdir}/erlang/man/man3/ct_telnet.*
+%{_libdir}/erlang/man/man3/unix_telnet.*
+%{_libdir}/erlang/man/man6/common_test.*
 
 %files compiler
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/compiler-*/
+%{_libdir}/erlang/man/man3/compile.*
 
 %files cosEvent
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/cosEvent-*/
+%{_libdir}/erlang/man/man3/cosEventApp.*
+%{_libdir}/erlang/man/man3/CosEventChannelAdmin.*
+%{_libdir}/erlang/man/man3/CosEventChannelAdmin_ConsumerAdmin.*
+%{_libdir}/erlang/man/man3/CosEventChannelAdmin_EventChannel.*
+%{_libdir}/erlang/man/man3/CosEventChannelAdmin_ProxyPullConsumer.*
+%{_libdir}/erlang/man/man3/CosEventChannelAdmin_ProxyPullSupplier.*
+%{_libdir}/erlang/man/man3/CosEventChannelAdmin_ProxyPushConsumer.*
+%{_libdir}/erlang/man/man3/CosEventChannelAdmin_ProxyPushSupplier.*
+%{_libdir}/erlang/man/man3/CosEventChannelAdmin_SupplierAdmin.*
 
 %files cosEventDomain
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/cosEventDomain-*/
+%{_libdir}/erlang/man/man3/CosEventDomainAdmin.*
+%{_libdir}/erlang/man/man3/CosEventDomainAdmin_EventDomain.*
+%{_libdir}/erlang/man/man3/CosEventDomainAdmin_EventDomainFactory.*
+%{_libdir}/erlang/man/man3/cosEventDomainApp.*
 
 %files cosFileTransfer
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/cosFileTransfer-*/
+%{_libdir}/erlang/man/man3/cosFileTransferApp.*
+%{_libdir}/erlang/man/man3/CosFileTransfer_Directory.*
+%{_libdir}/erlang/man/man3/CosFileTransfer_File.*
+%{_libdir}/erlang/man/man3/CosFileTransfer_FileIterator.*
+%{_libdir}/erlang/man/man3/CosFileTransfer_FileTransferSession.*
+%{_libdir}/erlang/man/man3/CosFileTransfer_VirtualFileSystem.*
 
 %files cosNotification
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/cosNotification-*/
+%{_libdir}/erlang/man/man3/CosNotification.*
+%{_libdir}/erlang/man/man3/CosNotification_AdminPropertiesAdmin.*
+%{_libdir}/erlang/man/man3/cosNotificationApp.*
+%{_libdir}/erlang/man/man3/CosNotification_QoSAdmin.*
+%{_libdir}/erlang/man/man3/CosNotifyChannelAdmin_ConsumerAdmin.*
+%{_libdir}/erlang/man/man3/CosNotifyChannelAdmin_EventChannel.*
+%{_libdir}/erlang/man/man3/CosNotifyChannelAdmin_EventChannelFactory.*
+%{_libdir}/erlang/man/man3/CosNotifyChannelAdmin_ProxyConsumer.*
+%{_libdir}/erlang/man/man3/CosNotifyChannelAdmin_ProxyPullConsumer.*
+%{_libdir}/erlang/man/man3/CosNotifyChannelAdmin_ProxyPullSupplier.*
+%{_libdir}/erlang/man/man3/CosNotifyChannelAdmin_ProxyPushConsumer.*
+%{_libdir}/erlang/man/man3/CosNotifyChannelAdmin_ProxyPushSupplier.*
+%{_libdir}/erlang/man/man3/CosNotifyChannelAdmin_ProxySupplier.*
+%{_libdir}/erlang/man/man3/CosNotifyChannelAdmin_SequenceProxyPullConsumer.*
+%{_libdir}/erlang/man/man3/CosNotifyChannelAdmin_SequenceProxyPullSupplier.*
+%{_libdir}/erlang/man/man3/CosNotifyChannelAdmin_SequenceProxyPushConsumer.*
+%{_libdir}/erlang/man/man3/CosNotifyChannelAdmin_SequenceProxyPushSupplier.*
+%{_libdir}/erlang/man/man3/CosNotifyChannelAdmin_StructuredProxyPullConsumer.*
+%{_libdir}/erlang/man/man3/CosNotifyChannelAdmin_StructuredProxyPullSupplier.*
+%{_libdir}/erlang/man/man3/CosNotifyChannelAdmin_StructuredProxyPushConsumer.*
+%{_libdir}/erlang/man/man3/CosNotifyChannelAdmin_StructuredProxyPushSupplier.*
+%{_libdir}/erlang/man/man3/CosNotifyChannelAdmin_SupplierAdmin.*
+%{_libdir}/erlang/man/man3/CosNotifyComm_NotifyPublish.*
+%{_libdir}/erlang/man/man3/CosNotifyComm_NotifySubscribe.*
+%{_libdir}/erlang/man/man3/CosNotifyFilter_Filter.*
+%{_libdir}/erlang/man/man3/CosNotifyFilter_FilterAdmin.*
+%{_libdir}/erlang/man/man3/CosNotifyFilter_FilterFactory.*
+%{_libdir}/erlang/man/man3/CosNotifyFilter_MappingFilter.*
 
 %files cosProperty
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/cosProperty-*/
+%{_libdir}/erlang/man/man3/cosProperty.*
+%{_libdir}/erlang/man/man3/CosPropertyService_PropertiesIterator.*
+%{_libdir}/erlang/man/man3/CosPropertyService_PropertyNamesIterator.*
+%{_libdir}/erlang/man/man3/CosPropertyService_PropertySet.*
+%{_libdir}/erlang/man/man3/CosPropertyService_PropertySetDef.*
+%{_libdir}/erlang/man/man3/CosPropertyService_PropertySetDefFactory.*
+%{_libdir}/erlang/man/man3/CosPropertyService_PropertySetFactory.*
 
 %files cosTime
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/cosTime-*/
+%{_libdir}/erlang/man/man3/cosTime.*
+%{_libdir}/erlang/man/man3/CosTimerEvent_TimerEventHandler.*
+%{_libdir}/erlang/man/man3/CosTimerEvent_TimerEventService.*
+%{_libdir}/erlang/man/man3/CosTime_TimeService.*
+%{_libdir}/erlang/man/man3/CosTime_TIO.*
+%{_libdir}/erlang/man/man3/CosTime_UTO.*
 
-%files cosTransaction
+%files cosTransactions
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/cosTransactions-*/
+%{_libdir}/erlang/man/man3/cosTransactions.*
+%{_libdir}/erlang/man/man3/CosTransactions_Control.*
+%{_libdir}/erlang/man/man3/CosTransactions_Coordinator.*
+%{_libdir}/erlang/man/man3/CosTransactions_RecoveryCoordinator.*
+%{_libdir}/erlang/man/man3/CosTransactions_Resource.*
+%{_libdir}/erlang/man/man3/CosTransactions_SubtransactionAwareResource.*
+%{_libdir}/erlang/man/man3/CosTransactions_Terminator.*
+%{_libdir}/erlang/man/man3/CosTransactions_TransactionFactory.*
 
 %files crypto
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/crypto-*/
+%{_libdir}/erlang/man/man3/crypto.*
+%{_libdir}/erlang/man/man6/crypto.*
 
 %files debugger
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/debugger-*/
+%{_libdir}/erlang/man/man3/debugger.*
+%{_libdir}/erlang/man/man3/i.*
+%{_libdir}/erlang/man/man3/int.*
 
 %files dialyzer
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/dialyzer-*/
+%{_libdir}/erlang/man/man3/dialyzer.*
 
 %files doc
 %defattr(-,root,root)
-%doc erlang_doc/*
+%doc %{_docdir}/%{name}-%{ver}-%{rel}/doc
+%doc %{_docdir}/%{name}-%{ver}-%{rel}/erts-*/
+%doc %{_docdir}/%{name}-%{ver}-%{rel}/lib/
+
 
 %files docbuilder
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/docbuilder-*/
+%{_libdir}/erlang/man/man3/docb_gen.*
+%{_libdir}/erlang/man/man3/docb_transform.*
+%{_libdir}/erlang/man/man3/docb_xml_check.*
+%{_libdir}/erlang/man/man6/docbuilder.*
 
 %files edoc
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/edoc-*/
+%{_libdir}/erlang/man/man3/edoc.*
+%{_libdir}/erlang/man/man3/edoc_doclet.*
+%{_libdir}/erlang/man/man3/edoc_extract.*
+%{_libdir}/erlang/man/man3/edoc_layout.*
+%{_libdir}/erlang/man/man3/edoc_lib.*
+%{_libdir}/erlang/man/man3/edoc_run.*
 
 %files erl_docgen
 %defattr(-,root,root)
@@ -831,19 +950,53 @@ rm -rf $RPM_BUILD_ROOT
 %files erl_interface
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/erl_interface-*/
+%{_libdir}/erlang/man/man1/erl_call.*
+%{_libdir}/erlang/man/man3/ei.*
+%{_libdir}/erlang/man/man3/ei_connect.*
+%{_libdir}/erlang/man/man3/erl_connect.*
+%{_libdir}/erlang/man/man3/erl_error.*
+%{_libdir}/erlang/man/man3/erl_eterm.*
+%{_libdir}/erlang/man/man3/erl_format.*
+%{_libdir}/erlang/man/man3/erl_global.*
+%{_libdir}/erlang/man/man3/erl_malloc.*
+%{_libdir}/erlang/man/man3/erl_marshal.*
+%{_libdir}/erlang/man/man3/registry.*
 
 %files erts
 %defattr(-,root,root)
-%dir %{_libdir}/erlang
+
+# TODO these directories should be packaged separately
+%dir %{_libdir}/erlang/
+%dir %{_libdir}/erlang/bin/
 %dir %{_libdir}/erlang/lib/
+%dir %{_libdir}/erlang/man/
+%dir %{_libdir}/erlang/man/man1/
+%dir %{_libdir}/erlang/man/man3/
+%dir %{_libdir}/erlang/man/man4/
+%dir %{_libdir}/erlang/man/man6/
+%dir %{_libdir}/erlang/man/man7/
+%dir %{_libdir}/erlang/releases/
+
 %{_bindir}/*
 %{_libdir}/erlang/bin/
 %{_libdir}/erlang/erts-*/
 %{_libdir}/erlang/lib/erts-*/
-%{_libdir}/erlang/man/
-%{_libdir}/erlang/releases/
+%{_libdir}/erlang/man/man1/epmd.*
+%{_libdir}/erlang/man/man1/erl.*
+%{_libdir}/erlang/man/man1/erlc.*
+%{_libdir}/erlang/man/man1/escript.*
+%{_libdir}/erlang/man/man1/run_erl.*
+%{_libdir}/erlang/man/man1/start.*
+%{_libdir}/erlang/man/man1/start_erl.*
+%{_libdir}/erlang/man/man3/driver_entry.*
+%{_libdir}/erlang/man/man3/erl_driver.*
+%{_libdir}/erlang/man/man3/erl_prim_loader.*
+%{_libdir}/erlang/man/man3/erlang.*
+%{_libdir}/erlang/man/man3/erts_alloc.*
+%{_libdir}/erlang/man/man3/init.*
+%{_libdir}/erlang/man/man3/zlib.*
+%{_libdir}/erlang/releases/*
 %{_libdir}/erlang/usr/
-%{_libdir}/erlang/Install
 
 %files et
 %defattr(-,root,root)
@@ -851,12 +1004,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/et-*/ebin
 %{_libdir}/erlang/lib/et-*/include
 %{_libdir}/erlang/lib/et-*/src
+%{_libdir}/erlang/man/man3/et.*
+%{_libdir}/erlang/man/man3/et_collector.*
+%{_libdir}/erlang/man/man3/et_selector.*
+%{_libdir}/erlang/man/man3/et_viewer.*
 
 %files eunit
 %defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/eunit-*/
 %{_libdir}/erlang/lib/eunit-*/ebin
 %{_libdir}/erlang/lib/eunit-*/include
+%{_libdir}/erlang/man/man3/eunit.*
+%{_libdir}/erlang/man/man3/eunit_surefire.*
 
 %files examples
 %defattr(-,root,root)
@@ -885,6 +1044,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/gs-*/ebin
 %{_libdir}/erlang/lib/gs-*/priv
 %{_libdir}/erlang/lib/gs-*/src
+%{_libdir}/erlang/man/man3/gs.*
 
 %files hipe
 %defattr(-,root,root)
@@ -897,6 +1057,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/ic-*/include
 %{_libdir}/erlang/lib/ic-*/priv
 %{_libdir}/erlang/lib/ic-*/src
+%{_libdir}/erlang/man/man3/ic.*
+%{_libdir}/erlang/man/man3/ic_clib.*
+%{_libdir}/erlang/man/man3/ic_c_protocol.*
 
 %files inets
 %defattr(-,root,root)
@@ -904,10 +1067,28 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/inets-*/ebin
 %{_libdir}/erlang/lib/inets-*/priv
 %{_libdir}/erlang/lib/inets-*/src
+%{_libdir}/erlang/man/man3/ftp.*
+%{_libdir}/erlang/man/man3/httpc.*
+%{_libdir}/erlang/man/man3/httpd.*
+%{_libdir}/erlang/man/man3/httpd_conf.*
+%{_libdir}/erlang/man/man3/httpd_socket.*
+%{_libdir}/erlang/man/man3/httpd_util.*
+%{_libdir}/erlang/man/man3/inets.*
+%{_libdir}/erlang/man/man3/mod_alias.*
+%{_libdir}/erlang/man/man3/mod_auth.*
+%{_libdir}/erlang/man/man3/mod_esi.*
+%{_libdir}/erlang/man/man3/mod_security.*
+%{_libdir}/erlang/man/man3/tftp.*
 
 %files inviso
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/inviso-*/
+%{_libdir}/erlang/man/man3/inviso.*
+%{_libdir}/erlang/man/man3/inviso_as_lib.*
+%{_libdir}/erlang/man/man3/inviso_lfm.*
+%{_libdir}/erlang/man/man3/inviso_lfm_tpfreader.*
+%{_libdir}/erlang/man/man3/inviso_rt.*
+%{_libdir}/erlang/man/man3/inviso_rt_meta.*
 
 %files jinterface
 %defattr(-,root,root)
@@ -919,6 +1100,39 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/kernel-*/ebin
 %{_libdir}/erlang/lib/kernel-*/include
 %{_libdir}/erlang/lib/kernel-*/src
+%{_libdir}/erlang/man/man3/application.*
+%{_libdir}/erlang/man/man3/auth.*
+%{_libdir}/erlang/man/man3/code.*
+%{_libdir}/erlang/man/man3/disk_log.*
+%{_libdir}/erlang/man/man3/erl_boot_server.*
+%{_libdir}/erlang/man/man3/erl_ddll.*
+%{_libdir}/erlang/man/man3/erl_prim_loader_stub.*
+%{_libdir}/erlang/man/man3/erlang_stub.*
+%{_libdir}/erlang/man/man3/error_handler.*
+%{_libdir}/erlang/man/man3/error_logger.*
+%{_libdir}/erlang/man/man3/file.*
+%{_libdir}/erlang/man/man3/gen_sctp.*
+%{_libdir}/erlang/man/man3/gen_tcp.*
+%{_libdir}/erlang/man/man3/gen_udp.*
+%{_libdir}/erlang/man/man3/global.*
+%{_libdir}/erlang/man/man3/global_group.*
+%{_libdir}/erlang/man/man3/heart.*
+%{_libdir}/erlang/man/man3/inet.*
+%{_libdir}/erlang/man/man3/inet_res.*
+%{_libdir}/erlang/man/man3/init_stub.*
+%{_libdir}/erlang/man/man3/net_adm.*
+%{_libdir}/erlang/man/man3/net_kernel.*
+%{_libdir}/erlang/man/man3/os.*
+%{_libdir}/erlang/man/man3/packages.*
+%{_libdir}/erlang/man/man3/pg2.*
+%{_libdir}/erlang/man/man3/rpc.*
+%{_libdir}/erlang/man/man3/seq_trace.*
+%{_libdir}/erlang/man/man3/user.*
+%{_libdir}/erlang/man/man3/wrap_log_reader.*
+%{_libdir}/erlang/man/man3/zlib_stub.*
+%{_libdir}/erlang/man/man4/app.*
+%{_libdir}/erlang/man/man4/config.*
+%{_libdir}/erlang/man/man6/kernel.*
 
 %files megaco
 %defattr(-,root,root)
@@ -927,6 +1141,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/megaco-*/include
 %{_libdir}/erlang/lib/megaco-*/priv
 %{_libdir}/erlang/lib/megaco-*/src
+%{_libdir}/erlang/man/man3/megaco.*
+%{_libdir}/erlang/man/man3/megaco_codec_meas.*
+%{_libdir}/erlang/man/man3/megaco_codec_mstone1.*
+%{_libdir}/erlang/man/man3/megaco_codec_mstone2.*
+%{_libdir}/erlang/man/man3/megaco_codec_transform.*
+%{_libdir}/erlang/man/man3/megaco_edist_compress.*
+%{_libdir}/erlang/man/man3/megaco_encoder.*
+%{_libdir}/erlang/man/man3/megaco_flex_scanner.*
+%{_libdir}/erlang/man/man3/megaco_tcp.*
+%{_libdir}/erlang/man/man3/megaco_transport.*
+%{_libdir}/erlang/man/man3/megaco_udp.*
+%{_libdir}/erlang/man/man3/megaco_user.*
 
 %files mnesia
 %defattr(-,root,root)
@@ -934,14 +1160,21 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/mnesia-*/ebin
 %{_libdir}/erlang/lib/mnesia-*/include
 %{_libdir}/erlang/lib/mnesia-*/src
+%{_libdir}/erlang/man/man3/mnesia.*
+%{_libdir}/erlang/man/man3/mnesia_frag_hash.*
+%{_libdir}/erlang/man/man3/mnesia_registry.*
 
 %files observer
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/observer-*/
+%{_libdir}/erlang/man/man3/crashdump.*
+%{_libdir}/erlang/man/man3/ttb.*
+%{_libdir}/erlang/man/man6/observer.*
 
 %files odbc
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/odbc-*/
+%{_libdir}/erlang/man/man3/odbc.*
 
 %files orber
 %defattr(-,root,root)
@@ -952,36 +1185,69 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/orber-*/java_src
 %{_libdir}/erlang/lib/orber-*/priv
 %{_libdir}/erlang/lib/orber-*/src
+%{_libdir}/erlang/man/man3/CosNaming.*
+%{_libdir}/erlang/man/man3/CosNaming_BindingIterator.*
+%{_libdir}/erlang/man/man3/CosNaming_NamingContext.*
+%{_libdir}/erlang/man/man3/CosNaming_NamingContextExt.*
+%{_libdir}/erlang/man/man3/Module_Interface.*
+%{_libdir}/erlang/man/man3/any.*
+%{_libdir}/erlang/man/man3/corba.*
+%{_libdir}/erlang/man/man3/corba_object.*
+%{_libdir}/erlang/man/man3/etop.*
+%{_libdir}/erlang/man/man3/fixed.*
+%{_libdir}/erlang/man/man3/interceptors.*
+%{_libdir}/erlang/man/man3/lname.*
+%{_libdir}/erlang/man/man3/lname_component.*
+%{_libdir}/erlang/man/man3/orber.*
+%{_libdir}/erlang/man/man3/orber_acl.*
+%{_libdir}/erlang/man/man3/orber_diagnostics.*
+%{_libdir}/erlang/man/man3/orber_ifr.*
+%{_libdir}/erlang/man/man3/orber_tc.*
 
 %files os_mon
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/os_mon-*/
+%{_libdir}/erlang/man/man3/cpu_sup.*
+%{_libdir}/erlang/man/man3/disksup.*
+%{_libdir}/erlang/man/man3/memsup.*
+%{_libdir}/erlang/man/man3/os_mon_mib.*
+%{_libdir}/erlang/man/man3/os_sup.*
+%{_libdir}/erlang/man/man6/os_mon.*
 
 %files otp_mibs
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/otp_mibs-*/
+%{_libdir}/erlang/man/man3/otp_mib.*
 
 %files parsetools
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/parsetools-*/
+%{_libdir}/erlang/man/man3/leex.*
+%{_libdir}/erlang/man/man3/yecc.*
 
 %files percept
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/percept-*/
+%{_libdir}/erlang/man/man3/egd.*
+%{_libdir}/erlang/man/man3/percept.*
+%{_libdir}/erlang/man/man3/percept_profile.*
 
 %files pman
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/pman-*/
+%{_libdir}/erlang/man/man3/pman.*
 
 %files public_key
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/public_key-*/
+%{_libdir}/erlang/man/man3/public_key.*
 
 %files reltool
 %defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/reltool-*/
 %{_libdir}/erlang/lib/reltool-*/ebin
 %{_libdir}/erlang/lib/reltool-*/src
+%{_libdir}/erlang/man/man3/reltool.*
 
 %files rpm-macros
 %defattr(-,root,root)
@@ -994,10 +1260,23 @@ rm -rf $RPM_BUILD_ROOT
 %files runtime_tools
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/runtime_tools-*/
+%{_libdir}/erlang/man/man3/dbg.*
+%{_libdir}/erlang/man/man3/erts_alloc_config.*
+%{_libdir}/erlang/man/man6/runtime_tools.*
 
 %files sasl
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/sasl-*/
+%{_libdir}/erlang/man/man3/alarm_handler.*
+%{_libdir}/erlang/man/man3/overload.*
+%{_libdir}/erlang/man/man3/rb.*
+%{_libdir}/erlang/man/man3/release_handler.*
+%{_libdir}/erlang/man/man3/systools.*
+%{_libdir}/erlang/man/man4/appup.*
+%{_libdir}/erlang/man/man4/rel.*
+%{_libdir}/erlang/man/man4/relup.*
+%{_libdir}/erlang/man/man4/script.*
+%{_libdir}/erlang/man/man6/sasl.*
 
 %files snmp
 %defattr(-,root,root)
@@ -1007,10 +1286,62 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/snmp-*/mibs
 %{_libdir}/erlang/lib/snmp-*/priv
 %{_libdir}/erlang/lib/snmp-*/src
+%{_libdir}/erlang/man/man3/snmp.*
+%{_libdir}/erlang/man/man3/snmpa.*
+%{_libdir}/erlang/man/man3/snmpa_conf.*
+%{_libdir}/erlang/man/man3/snmpa_discovery_handler.*
+%{_libdir}/erlang/man/man3/snmpa_error.*
+%{_libdir}/erlang/man/man3/snmpa_error_io.*
+%{_libdir}/erlang/man/man3/snmpa_error_logger.*
+%{_libdir}/erlang/man/man3/snmpa_error_report.*
+%{_libdir}/erlang/man/man3/snmpa_local_db.*
+%{_libdir}/erlang/man/man3/snmpa_mpd.*
+%{_libdir}/erlang/man/man3/snmpa_network_interface.*
+%{_libdir}/erlang/man/man3/snmpa_network_interface_filter.*
+%{_libdir}/erlang/man/man3/snmpa_notification_delivery_info_receiver.*
+%{_libdir}/erlang/man/man3/snmpa_notification_filter.*
+%{_libdir}/erlang/man/man3/snmpa_supervisor.*
+%{_libdir}/erlang/man/man3/snmpc.*
+%{_libdir}/erlang/man/man3/snmp_community_mib.*
+%{_libdir}/erlang/man/man3/snmp_framework_mib.*
+%{_libdir}/erlang/man/man3/snmp_generic.*
+%{_libdir}/erlang/man/man3/snmp_index.*
+%{_libdir}/erlang/man/man3/snmpm.*
+%{_libdir}/erlang/man/man3/snmpm_conf.*
+%{_libdir}/erlang/man/man3/snmpm_mpd.*
+%{_libdir}/erlang/man/man3/snmpm_network_interface.*
+%{_libdir}/erlang/man/man3/snmpm_network_interface_filter.*
+%{_libdir}/erlang/man/man3/snmpm_user.*
+%{_libdir}/erlang/man/man3/snmp_notification_mib.*
+%{_libdir}/erlang/man/man3/snmp_pdus.*
+%{_libdir}/erlang/man/man3/snmp_standard_mib.*
+%{_libdir}/erlang/man/man3/snmp_target_mib.*
+%{_libdir}/erlang/man/man3/snmp_user_based_sm_mib.*
+%{_libdir}/erlang/man/man3/snmp_view_based_acm_mib.*
+%{_libdir}/erlang/man/man6/snmp.*
+%{_libdir}/erlang/man/man7/INET-ADDRESS-MIB.*
+%{_libdir}/erlang/man/man7/OTP-SNMPEA-MIB.*
+%{_libdir}/erlang/man/man7/RFC1213-MIB.*
+%{_libdir}/erlang/man/man7/SNMP-COMMUNITY-MIB.*
+%{_libdir}/erlang/man/man7/SNMP-FRAMEWORK-MIB.*
+%{_libdir}/erlang/man/man7/SNMP-MPD-MIB.*
+%{_libdir}/erlang/man/man7/SNMP-NOTIFICATION-MIB.*
+%{_libdir}/erlang/man/man7/SNMP-TARGET-MIB.*
+%{_libdir}/erlang/man/man7/SNMP-USER-BASED-SM-MIB.*
+%{_libdir}/erlang/man/man7/SNMP-USM-AES-MIB.*
+%{_libdir}/erlang/man/man7/SNMPv2-MIB.*
+%{_libdir}/erlang/man/man7/SNMPv2-TM.*
+%{_libdir}/erlang/man/man7/SNMP-VIEW-BASED-ACM-MIB.*
+%{_libdir}/erlang/man/man7/STANDARD-MIB.*
 
 %files ssh
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/ssh-*/
+%{_libdir}/erlang/man/man3/ssh.*
+%{_libdir}/erlang/man/man3/ssh_channel.*
+%{_libdir}/erlang/man/man3/ssh_connection.*
+%{_libdir}/erlang/man/man3/ssh_sftp.*
+%{_libdir}/erlang/man/man3/ssh_sftpd.*
 
 %files ssl
 %defattr(-,root,root)
@@ -1020,6 +1351,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/ssl-*/pkix
 %{_libdir}/erlang/lib/ssl-*/priv
 %{_libdir}/erlang/lib/ssl-*/src
+%{_libdir}/erlang/man/man3/new_ssl.*
+%{_libdir}/erlang/man/man3/ssl.*
+%{_libdir}/erlang/man/man6/ssl.*
 
 %files stdlib
 %defattr(-,root,root)
@@ -1027,19 +1361,91 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/stdlib-*/ebin
 %{_libdir}/erlang/lib/stdlib-*/include
 %{_libdir}/erlang/lib/stdlib-*/src
+%{_libdir}/erlang/man/man3/array.*
+%{_libdir}/erlang/man/man3/base64.*
+%{_libdir}/erlang/man/man3/beam_lib.*
+%{_libdir}/erlang/man/man3/c.*
+%{_libdir}/erlang/man/man3/calendar.*
+%{_libdir}/erlang/man/man3/dets.*
+%{_libdir}/erlang/man/man3/dict.*
+%{_libdir}/erlang/man/man3/digraph.*
+%{_libdir}/erlang/man/man3/digraph_utils.*
+%{_libdir}/erlang/man/man3/epp.*
+%{_libdir}/erlang/man/man3/erl_eval.*
+%{_libdir}/erlang/man/man3/erl_expand_records.*
+%{_libdir}/erlang/man/man3/erl_id_trans.*
+%{_libdir}/erlang/man/man3/erl_internal.*
+%{_libdir}/erlang/man/man3/erl_lint.*
+%{_libdir}/erlang/man/man3/erl_parse.*
+%{_libdir}/erlang/man/man3/erl_pp.*
+%{_libdir}/erlang/man/man3/erl_scan.*
+%{_libdir}/erlang/man/man3/erl_tar.*
+%{_libdir}/erlang/man/man3/ets.*
+%{_libdir}/erlang/man/man3/file_sorter.*
+%{_libdir}/erlang/man/man3/filelib.*
+%{_libdir}/erlang/man/man3/filename.*
+%{_libdir}/erlang/man/man3/gb_sets.*
+%{_libdir}/erlang/man/man3/gb_trees.*
+%{_libdir}/erlang/man/man3/gen_event.*
+%{_libdir}/erlang/man/man3/gen_fsm.*
+%{_libdir}/erlang/man/man3/gen_server.*
+%{_libdir}/erlang/man/man3/io.*
+%{_libdir}/erlang/man/man3/io_lib.*
+%{_libdir}/erlang/man/man3/lib.*
+%{_libdir}/erlang/man/man3/lists.*
+%{_libdir}/erlang/man/man3/log_mf_h.*
+%{_libdir}/erlang/man/man3/math.*
+%{_libdir}/erlang/man/man3/ms_transform.*
+%{_libdir}/erlang/man/man3/orddict.*
+%{_libdir}/erlang/man/man3/ordsets.*
+%{_libdir}/erlang/man/man3/pg.*
+%{_libdir}/erlang/man/man3/pool.*
+%{_libdir}/erlang/man/man3/proc_lib.*
+%{_libdir}/erlang/man/man3/proplists.*
+%{_libdir}/erlang/man/man3/qlc.*
+%{_libdir}/erlang/man/man3/queue.*
+%{_libdir}/erlang/man/man3/random.*
+%{_libdir}/erlang/man/man3/re.*
+%{_libdir}/erlang/man/man3/regexp.*
+%{_libdir}/erlang/man/man3/sets.*
+%{_libdir}/erlang/man/man3/shell.*
+%{_libdir}/erlang/man/man3/shell_default.*
+%{_libdir}/erlang/man/man3/slave.*
+%{_libdir}/erlang/man/man3/sofs.*
+%{_libdir}/erlang/man/man3/string.*
+%{_libdir}/erlang/man/man3/supervisor.*
+%{_libdir}/erlang/man/man3/supervisor_bridge.*
+%{_libdir}/erlang/man/man3/sys.*
+%{_libdir}/erlang/man/man3/timer.*
+%{_libdir}/erlang/man/man3/unicode.*
+%{_libdir}/erlang/man/man3/zip.*
+%{_libdir}/erlang/man/man6/stdlib.*
 
 %files syntax_tools
 %defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/syntax_tools-*/
 %{_libdir}/erlang/lib/syntax_tools-*/ebin
+%{_libdir}/erlang/man/man3/epp_dodger.*
+%{_libdir}/erlang/man/man3/erl_comment_scan.*
+%{_libdir}/erlang/man/man3/erl_prettypr.*
+%{_libdir}/erlang/man/man3/erl_recomment.*
+%{_libdir}/erlang/man/man3/erl_syntax.*
+%{_libdir}/erlang/man/man3/erl_syntax_lib.*
+%{_libdir}/erlang/man/man3/erl_tidy.*
+%{_libdir}/erlang/man/man3/igor.*
+%{_libdir}/erlang/man/man3/prettypr.*
 
 %files test_server
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/test_server-*/
+%{_libdir}/erlang/man/man3/test_server.*
+%{_libdir}/erlang/man/man3/test_server_ctrl.*
+%{_libdir}/erlang/man/man6/test_server.*
 
 %files toolbar
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/toolbar-*/
+%{_libdir}/erlang/man/man3/toolbar.*
 
 %files tools
 %defattr(-,root,root)
@@ -1049,10 +1455,21 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/tools-*/emacs
 %{_libdir}/erlang/lib/tools-*/priv
 %{_libdir}/erlang/lib/tools-*/src
+%{_libdir}/erlang/man/man3/cover.*
+%{_libdir}/erlang/man/man3/cprof.*
+%{_libdir}/erlang/man/man3/eprof.*
+%{_libdir}/erlang/man/man3/erlang_mode.*
+%{_libdir}/erlang/man/man3/fprof.*
+%{_libdir}/erlang/man/man3/instrument.*
+%{_libdir}/erlang/man/man3/lcnt.*
+%{_libdir}/erlang/man/man3/make.*
+%{_libdir}/erlang/man/man3/tags.*
+%{_libdir}/erlang/man/man3/xref.*
 
 %files tv
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/tv-*/
+%{_libdir}/erlang/man/man3/tv.*
 
 %files typer
 %defattr(-,root,root)
@@ -1061,6 +1478,8 @@ rm -rf $RPM_BUILD_ROOT
 %files webtool
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/webtool-*/
+%{_libdir}/erlang/man/man1/start_webtool.*
+%{_libdir}/erlang/man/man3/webtool.*
 
 %files wx
 %defattr(-,root,root)
@@ -1069,17 +1488,249 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/wx-*/include
 %{_libdir}/erlang/lib/wx-*/priv
 %{_libdir}/erlang/lib/wx-*/src
+%{_libdir}/erlang/man/man3/gl.*
+%{_libdir}/erlang/man/man3/glu.*
+%{_libdir}/erlang/man/man3/wx.*
+%{_libdir}/erlang/man/man3/wx_misc.*
+%{_libdir}/erlang/man/man3/wx_object.*
+%{_libdir}/erlang/man/man3/wxAcceleratorEntry.*
+%{_libdir}/erlang/man/man3/wxAcceleratorTable.*
+%{_libdir}/erlang/man/man3/wxArtProvider.*
+%{_libdir}/erlang/man/man3/wxAuiDockArt.*
+%{_libdir}/erlang/man/man3/wxAuiManager.*
+%{_libdir}/erlang/man/man3/wxAuiManagerEvent.*
+%{_libdir}/erlang/man/man3/wxAuiNotebook.*
+%{_libdir}/erlang/man/man3/wxAuiNotebookEvent.*
+%{_libdir}/erlang/man/man3/wxAuiPaneInfo.*
+%{_libdir}/erlang/man/man3/wxAuiTabArt.*
+%{_libdir}/erlang/man/man3/wxBitmap.*
+%{_libdir}/erlang/man/man3/wxBitmapButton.*
+%{_libdir}/erlang/man/man3/wxBitmapDataObject.*
+%{_libdir}/erlang/man/man3/wxBoxSizer.*
+%{_libdir}/erlang/man/man3/wxBrush.*
+%{_libdir}/erlang/man/man3/wxBufferedDC.*
+%{_libdir}/erlang/man/man3/wxBufferedPaintDC.*
+%{_libdir}/erlang/man/man3/wxButton.*
+%{_libdir}/erlang/man/man3/wxCalendarCtrl.*
+%{_libdir}/erlang/man/man3/wxCalendarDateAttr.*
+%{_libdir}/erlang/man/man3/wxCalendarEvent.*
+%{_libdir}/erlang/man/man3/wxCaret.*
+%{_libdir}/erlang/man/man3/wxCheckBox.*
+%{_libdir}/erlang/man/man3/wxCheckListBox.*
+%{_libdir}/erlang/man/man3/wxChildFocusEvent.*
+%{_libdir}/erlang/man/man3/wxChoice.*
+%{_libdir}/erlang/man/man3/wxChoicebook.*
+%{_libdir}/erlang/man/man3/wxClientDC.*
+%{_libdir}/erlang/man/man3/wxClipboard.*
+%{_libdir}/erlang/man/man3/wxCloseEvent.*
+%{_libdir}/erlang/man/man3/wxColourData.*
+%{_libdir}/erlang/man/man3/wxColourDialog.*
+%{_libdir}/erlang/man/man3/wxColourPickerCtrl.*
+%{_libdir}/erlang/man/man3/wxColourPickerEvent.*
+%{_libdir}/erlang/man/man3/wxComboBox.*
+%{_libdir}/erlang/man/man3/wxCommandEvent.*
+%{_libdir}/erlang/man/man3/wxContextMenuEvent.*
+%{_libdir}/erlang/man/man3/wxControl.*
+%{_libdir}/erlang/man/man3/wxControlWithItems.*
+%{_libdir}/erlang/man/man3/wxCursor.*
+%{_libdir}/erlang/man/man3/wxDataObject.*
+%{_libdir}/erlang/man/man3/wxDateEvent.*
+%{_libdir}/erlang/man/man3/wxDatePickerCtrl.*
+%{_libdir}/erlang/man/man3/wxDC.*
+%{_libdir}/erlang/man/man3/wxDialog.*
+%{_libdir}/erlang/man/man3/wxDirDialog.*
+%{_libdir}/erlang/man/man3/wxDirPickerCtrl.*
+%{_libdir}/erlang/man/man3/wxDisplayChangedEvent.*
+%{_libdir}/erlang/man/man3/wxEraseEvent.*
+%{_libdir}/erlang/man/man3/wxEvent.*
+%{_libdir}/erlang/man/man3/wxEvtHandler.*
+%{_libdir}/erlang/man/man3/wxFileDataObject.*
+%{_libdir}/erlang/man/man3/wxFileDialog.*
+%{_libdir}/erlang/man/man3/wxFileDirPickerEvent.*
+%{_libdir}/erlang/man/man3/wxFilePickerCtrl.*
+%{_libdir}/erlang/man/man3/wxFindReplaceData.*
+%{_libdir}/erlang/man/man3/wxFindReplaceDialog.*
+%{_libdir}/erlang/man/man3/wxFlexGridSizer.*
+%{_libdir}/erlang/man/man3/wxFocusEvent.*
+%{_libdir}/erlang/man/man3/wxFont.*
+%{_libdir}/erlang/man/man3/wxFontData.*
+%{_libdir}/erlang/man/man3/wxFontDialog.*
+%{_libdir}/erlang/man/man3/wxFontPickerCtrl.*
+%{_libdir}/erlang/man/man3/wxFontPickerEvent.*
+%{_libdir}/erlang/man/man3/wxFrame.*
+%{_libdir}/erlang/man/man3/wxGauge.*
+%{_libdir}/erlang/man/man3/wxGBSizerItem.*
+%{_libdir}/erlang/man/man3/wxGenericDirCtrl.*
+%{_libdir}/erlang/man/man3/wxGLCanvas.*
+%{_libdir}/erlang/man/man3/wxGraphicsBrush.*
+%{_libdir}/erlang/man/man3/wxGraphicsContext.*
+%{_libdir}/erlang/man/man3/wxGraphicsFont.*
+%{_libdir}/erlang/man/man3/wxGraphicsMatrix.*
+%{_libdir}/erlang/man/man3/wxGraphicsObject.*
+%{_libdir}/erlang/man/man3/wxGraphicsPath.*
+%{_libdir}/erlang/man/man3/wxGraphicsPen.*
+%{_libdir}/erlang/man/man3/wxGraphicsRenderer.*
+%{_libdir}/erlang/man/man3/wxGrid.*
+%{_libdir}/erlang/man/man3/wxGridBagSizer.*
+%{_libdir}/erlang/man/man3/wxGridCellAttr.*
+%{_libdir}/erlang/man/man3/wxGridCellBoolEditor.*
+%{_libdir}/erlang/man/man3/wxGridCellBoolRenderer.*
+%{_libdir}/erlang/man/man3/wxGridCellChoiceEditor.*
+%{_libdir}/erlang/man/man3/wxGridCellEditor.*
+%{_libdir}/erlang/man/man3/wxGridCellFloatEditor.*
+%{_libdir}/erlang/man/man3/wxGridCellFloatRenderer.*
+%{_libdir}/erlang/man/man3/wxGridCellNumberEditor.*
+%{_libdir}/erlang/man/man3/wxGridCellNumberRenderer.*
+%{_libdir}/erlang/man/man3/wxGridCellRenderer.*
+%{_libdir}/erlang/man/man3/wxGridCellStringRenderer.*
+%{_libdir}/erlang/man/man3/wxGridCellTextEditor.*
+%{_libdir}/erlang/man/man3/wxGridEvent.*
+%{_libdir}/erlang/man/man3/wxGridSizer.*
+%{_libdir}/erlang/man/man3/wxHelpEvent.*
+%{_libdir}/erlang/man/man3/wxHtmlEasyPrinting.*
+%{_libdir}/erlang/man/man3/wxHtmlLinkEvent.*
+%{_libdir}/erlang/man/man3/wxHtmlWindow.*
+%{_libdir}/erlang/man/man3/wxIcon.*
+%{_libdir}/erlang/man/man3/wxIconBundle.*
+%{_libdir}/erlang/man/man3/wxIconizeEvent.*
+%{_libdir}/erlang/man/man3/wxIdleEvent.*
+%{_libdir}/erlang/man/man3/wxImage.*
+%{_libdir}/erlang/man/man3/wxImageList.*
+%{_libdir}/erlang/man/man3/wxJoystickEvent.*
+%{_libdir}/erlang/man/man3/wxKeyEvent.*
+%{_libdir}/erlang/man/man3/wxLayoutAlgorithm.*
+%{_libdir}/erlang/man/man3/wxListbook.*
+%{_libdir}/erlang/man/man3/wxListBox.*
+%{_libdir}/erlang/man/man3/wxListCtrl.*
+%{_libdir}/erlang/man/man3/wxListEvent.*
+%{_libdir}/erlang/man/man3/wxListItem.*
+%{_libdir}/erlang/man/man3/wxListView.*
+%{_libdir}/erlang/man/man3/wxLogNull.*
+%{_libdir}/erlang/man/man3/wxMask.*
+%{_libdir}/erlang/man/man3/wxMaximizeEvent.*
+%{_libdir}/erlang/man/man3/wxMDIChildFrame.*
+%{_libdir}/erlang/man/man3/wxMDIClientWindow.*
+%{_libdir}/erlang/man/man3/wxMDIParentFrame.*
+%{_libdir}/erlang/man/man3/wxMemoryDC.*
+%{_libdir}/erlang/man/man3/wxMenu.*
+%{_libdir}/erlang/man/man3/wxMenuBar.*
+%{_libdir}/erlang/man/man3/wxMenuEvent.*
+%{_libdir}/erlang/man/man3/wxMenuItem.*
+%{_libdir}/erlang/man/man3/wxMessageDialog.*
+%{_libdir}/erlang/man/man3/wxMiniFrame.*
+%{_libdir}/erlang/man/man3/wxMirrorDC.*
+%{_libdir}/erlang/man/man3/wxMouseCaptureChangedEvent.*
+%{_libdir}/erlang/man/man3/wxMouseEvent.*
+%{_libdir}/erlang/man/man3/wxMoveEvent.*
+%{_libdir}/erlang/man/man3/wxMultiChoiceDialog.*
+%{_libdir}/erlang/man/man3/wxNavigationKeyEvent.*
+%{_libdir}/erlang/man/man3/wxNcPaintEvent.*
+%{_libdir}/erlang/man/man3/wxNotebook.*
+%{_libdir}/erlang/man/man3/wxNotebookEvent.*
+%{_libdir}/erlang/man/man3/wxNotifyEvent.*
+%{_libdir}/erlang/man/man3/wxPageSetupDialog.*
+%{_libdir}/erlang/man/man3/wxPageSetupDialogData.*
+%{_libdir}/erlang/man/man3/wxPaintDC.*
+%{_libdir}/erlang/man/man3/wxPaintEvent.*
+%{_libdir}/erlang/man/man3/wxPalette.*
+%{_libdir}/erlang/man/man3/wxPaletteChangedEvent.*
+%{_libdir}/erlang/man/man3/wxPanel.*
+%{_libdir}/erlang/man/man3/wxPasswordEntryDialog.*
+%{_libdir}/erlang/man/man3/wxPen.*
+%{_libdir}/erlang/man/man3/wxPickerBase.*
+%{_libdir}/erlang/man/man3/wxPostScriptDC.*
+%{_libdir}/erlang/man/man3/wxPreviewCanvas.*
+%{_libdir}/erlang/man/man3/wxPreviewControlBar.*
+%{_libdir}/erlang/man/man3/wxPreviewFrame.*
+%{_libdir}/erlang/man/man3/wxPrintData.*
+%{_libdir}/erlang/man/man3/wxPrintDialog.*
+%{_libdir}/erlang/man/man3/wxPrintDialogData.*
+%{_libdir}/erlang/man/man3/wxPrinter.*
+%{_libdir}/erlang/man/man3/wxPrintout.*
+%{_libdir}/erlang/man/man3/wxPrintPreview.*
+%{_libdir}/erlang/man/man3/wxProgressDialog.*
+%{_libdir}/erlang/man/man3/wxQueryNewPaletteEvent.*
+%{_libdir}/erlang/man/man3/wxRadioBox.*
+%{_libdir}/erlang/man/man3/wxRadioButton.*
+%{_libdir}/erlang/man/man3/wxRegion.*
+%{_libdir}/erlang/man/man3/wxSashEvent.*
+%{_libdir}/erlang/man/man3/wxSashLayoutWindow.*
+%{_libdir}/erlang/man/man3/wxSashWindow.*
+%{_libdir}/erlang/man/man3/wxScreenDC.*
+%{_libdir}/erlang/man/man3/wxScrollBar.*
+%{_libdir}/erlang/man/man3/wxScrolledWindow.*
+%{_libdir}/erlang/man/man3/wxScrollEvent.*
+%{_libdir}/erlang/man/man3/wxScrollWinEvent.*
+%{_libdir}/erlang/man/man3/wxSetCursorEvent.*
+%{_libdir}/erlang/man/man3/wxShowEvent.*
+%{_libdir}/erlang/man/man3/wxSingleChoiceDialog.*
+%{_libdir}/erlang/man/man3/wxSizeEvent.*
+%{_libdir}/erlang/man/man3/wxSizer.*
+%{_libdir}/erlang/man/man3/wxSizerFlags.*
+%{_libdir}/erlang/man/man3/wxSizerItem.*
+%{_libdir}/erlang/man/man3/wxSlider.*
+%{_libdir}/erlang/man/man3/wxSpinButton.*
+%{_libdir}/erlang/man/man3/wxSpinCtrl.*
+%{_libdir}/erlang/man/man3/wxSpinEvent.*
+%{_libdir}/erlang/man/man3/wxSplashScreen.*
+%{_libdir}/erlang/man/man3/wxSplitterEvent.*
+%{_libdir}/erlang/man/man3/wxSplitterWindow.*
+%{_libdir}/erlang/man/man3/wxStaticBitmap.*
+%{_libdir}/erlang/man/man3/wxStaticBox.*
+%{_libdir}/erlang/man/man3/wxStaticBoxSizer.*
+%{_libdir}/erlang/man/man3/wxStaticLine.*
+%{_libdir}/erlang/man/man3/wxStaticText.*
+%{_libdir}/erlang/man/man3/wxStatusBar.*
+%{_libdir}/erlang/man/man3/wxStdDialogButtonSizer.*
+%{_libdir}/erlang/man/man3/wxStyledTextCtrl.*
+%{_libdir}/erlang/man/man3/wxStyledTextEvent.*
+%{_libdir}/erlang/man/man3/wxSysColourChangedEvent.*
+%{_libdir}/erlang/man/man3/wxTextAttr.*
+%{_libdir}/erlang/man/man3/wxTextCtrl.*
+%{_libdir}/erlang/man/man3/wxTextDataObject.*
+%{_libdir}/erlang/man/man3/wxTextEntryDialog.*
+%{_libdir}/erlang/man/man3/wxToggleButton.*
+%{_libdir}/erlang/man/man3/wxToolBar.*
+%{_libdir}/erlang/man/man3/wxToolbook.*
+%{_libdir}/erlang/man/man3/wxToolTip.*
+%{_libdir}/erlang/man/man3/wxTopLevelWindow.*
+%{_libdir}/erlang/man/man3/wxTreebook.*
+%{_libdir}/erlang/man/man3/wxTreeCtrl.*
+%{_libdir}/erlang/man/man3/wxTreeEvent.*
+%{_libdir}/erlang/man/man3/wxUpdateUIEvent.*
+%{_libdir}/erlang/man/man3/wxWindow.*
+%{_libdir}/erlang/man/man3/wxWindowCreateEvent.*
+%{_libdir}/erlang/man/man3/wxWindowDC.*
+%{_libdir}/erlang/man/man3/wxWindowDestroyEvent.*
+%{_libdir}/erlang/man/man3/wxXmlResource.*
 
 %files xmerl
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/xmerl-*/
-
-
-%post
-%{_libdir}/erlang/Install -minimal -cross %{_libdir}/erlang >/dev/null 2>/dev/null
+%{_libdir}/erlang/man/man3/xmerl.*
+%{_libdir}/erlang/man/man3/xmerl_eventp.*
+%{_libdir}/erlang/man/man3/xmerl_sax_parser.*
+%{_libdir}/erlang/man/man3/xmerl_scan.*
+%{_libdir}/erlang/man/man3/xmerl_xpath.*
+%{_libdir}/erlang/man/man3/xmerl_xs.*
+%{_libdir}/erlang/man/man3/xmerl_xsd.*
 
 
 %changelog
+* Wed Apr 28 2010 Peter Lemenkov <lemenkov@gmail.com> - R13B-04.9
+- Added missing files, necessary for emacs (see rhbz #585349)
+- Patches rebased
+
+* Tue Apr 27 2010 Peter Lemenkov <lemenkov@gmail.com> - R13B-04.8
+- Added missing BuildRequires libxslt (for building docs)
+- Removed %%post script completely (resolves rhbz #586428)
+- Since now both docs and man-pages are built from sources
+- No need to manually create symlinks in %%{_bindir}
+
+* Mon Apr 26 2010 Peter Lemenkov <lemenkov@gmail.com> - R13B-04.7
+- Build with erlang-rpm-macros
+- Man-files are packed with packages, they belong to
+
 * Mon Apr 26 2010 Peter Lemenkov <lemenkov@gmail.com> - R13B-04.6
 - Made erlang-rpm-macros as separate package
 - Fix error while installing erlang-rpm-macros

@@ -1,7 +1,7 @@
 From 2e10f728feb56ea96b2832999a8c34f1f19646bc Mon Sep 17 00:00:00 2001
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Thu, 25 Feb 2010 16:57:43 +0300
-Subject: [PATCH 2/9] Remove rpath
+Subject: [PATCH 2/7] Remove rpath
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 ---
