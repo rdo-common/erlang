@@ -3,7 +3,7 @@
 
 Name:		erlang
 Version:	%{ver}
-Release:	%{rel}.11%{?dist}.1
+Release:	%{rel}.11%{?dist}.2
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
