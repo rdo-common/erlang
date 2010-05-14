@@ -3,7 +3,7 @@
 
 Name:		erlang
 Version:	%{ver}
-Release:	%{rel}.10%{?dist}
+Release:	%{rel}.11%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -38,7 +38,7 @@ BuildRequires:	flex
 BuildRequires:	m4
 BuildRequires:	fop
 BuildRequires:	libxslt
-# Required for erlang-rpm-macros
+# Required for building docs (escript)
 BuildRequires:	erlang
 
 Requires: erlang-appmon = %{version}-%{release}
@@ -913,6 +913,8 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/man/man1/erlsrv.*
 rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/man/man1/werl.*
 rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/man/man3/nteventlog.*
 rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/man/man3/win32reg.*
+# Do not mention nteventlog in os_mon.app, see rhbz #592251
+sed -i "s,\,\s*nteventlog,," $RPM_BUILD_ROOT%{_libdir}/erlang/lib/os_mon-*/ebin/os_mon.app
 
 # VxWorks specific
 rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/man/man3/erl_set_memory_block.*
@@ -1184,7 +1186,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/erlang/releases/
 
 %{_bindir}/*
-%{_libdir}/erlang/bin/
+%{_libdir}/erlang/bin/*
 %{_libdir}/erlang/erts-*/
 %{_libdir}/erlang/lib/erts-*/
 %{_libdir}/erlang/man/man1/epmd.*
@@ -1923,6 +1925,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri May 14 2010 Peter Lemenkov <lemenkov@gmail.com> - R13B-04.11
+- Do not mention nteventlog in os_mon.app, see rhbz #592251
+
 * Thu May  6 2010 Peter Lemenkov <lemenkov@gmail.com> - R13B-04.10
 - Disabled automatic requires/provides generation
 
