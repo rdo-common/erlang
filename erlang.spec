@@ -891,7 +891,7 @@ chmod 644 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ssl-*/examples/certs/Makefile
 chmod 644 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ssl-*/examples/src/Makefile
 
 # Relocate doc-files into the proper directory
-#mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}/lib
+mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}
 #pushd .
 #cd $RPM_BUILD_ROOT%{_libdir}/erlang
 #mv -v doc $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}
