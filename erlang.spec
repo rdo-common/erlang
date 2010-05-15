@@ -3,7 +3,7 @@
 
 Name:		erlang
 Version:	%{ver}
-Release:	%{rel}.11%{?dist}.2
+Release:	%{rel}.11%{?dist}.3
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -900,9 +900,9 @@ mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}
 #for i in * ; do mv -v $i/doc $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}/lib/$i || true ; done
 #popd
 cp -av AUTHORS EPLICENCE README.md $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}
-mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/PR.template $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}
-mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/README $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}
-mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/COPYRIGHT $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}
+#mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/PR.template $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}
+#mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/README $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}
+#mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/COPYRIGHT $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}
 
 # Win32-specific functionality
 rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/observer-*/priv/bin/etop.bat
@@ -972,10 +972,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %dir %{_docdir}/%{name}-%{ver}-%{rel}/
 %doc %{_docdir}/%{name}-%{ver}-%{rel}/AUTHORS
-%doc %{_docdir}/%{name}-%{ver}-%{rel}/COPYRIGHT
+#%doc %{_docdir}/%{name}-%{ver}-%{rel}/COPYRIGHT
 %doc %{_docdir}/%{name}-%{ver}-%{rel}/EPLICENCE
-%doc %{_docdir}/%{name}-%{ver}-%{rel}/PR.template
-%doc %{_docdir}/%{name}-%{ver}-%{rel}/README
+#%doc %{_docdir}/%{name}-%{ver}-%{rel}/PR.template
+#%doc %{_docdir}/%{name}-%{ver}-%{rel}/README
 %doc %{_docdir}/%{name}-%{ver}-%{rel}/README.md
 
 %files appmon
@@ -1067,12 +1067,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/erlang/
 %dir %{_libdir}/erlang/bin/
 %dir %{_libdir}/erlang/lib/
-%dir %{_libdir}/erlang/man/
-%dir %{_libdir}/erlang/man/man1/
-%dir %{_libdir}/erlang/man/man3/
-%dir %{_libdir}/erlang/man/man4/
-%dir %{_libdir}/erlang/man/man6/
-%dir %{_libdir}/erlang/man/man7/
 %dir %{_libdir}/erlang/releases/
 
 %{_bindir}/*
