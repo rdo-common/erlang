@@ -3,7 +3,7 @@
 
 Name:		erlang
 Version:	%{ver}
-Release:	%{rel}.11%{?dist}
+Release:	%{rel}.12%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -943,6 +943,7 @@ rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/tools-*/c_src
 rm -r $RPM_BUILD_ROOT%{_libdir}/erlang/erts-*/man
 
 # remove unneeded files
+rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/erts-*/info
 rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/*-*/info
 rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/hipe-*/vsn.mk
 
@@ -1123,6 +1124,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files dialyzer
 %defattr(-,root,root)
+%{_bindir}/dialyzer
+%{_libdir}/erlang/bin/dialyzer
+%{_libdir}/erlang/erts-*/bin/dialyzer
 %{_libdir}/erlang/lib/dialyzer-*/
 %{_libdir}/erlang/man/man3/dialyzer.*
 
@@ -1185,9 +1189,45 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/erlang/man/man7/
 %dir %{_libdir}/erlang/releases/
 
-%{_bindir}/*
-%{_libdir}/erlang/bin/*
-%{_libdir}/erlang/erts-*/
+%{_bindir}/epmd
+%{_bindir}/erl
+%{_bindir}/erlc
+%{_bindir}/escript
+%{_bindir}/run_erl
+%{_bindir}/to_erl
+%{_libdir}/erlang/bin/epmd
+%{_libdir}/erlang/bin/erl
+%{_libdir}/erlang/bin/erlc
+%{_libdir}/erlang/bin/escript
+%{_libdir}/erlang/bin/run_erl
+%{_libdir}/erlang/bin/start
+%{_libdir}/erlang/bin/start.boot
+%{_libdir}/erlang/bin/start.script
+%{_libdir}/erlang/bin/start_clean.boot
+%{_libdir}/erlang/bin/start_erl
+%{_libdir}/erlang/bin/start_sasl.boot
+%{_libdir}/erlang/bin/to_erl
+%dir %{_libdir}/erlang/erts-*/bin
+%{_libdir}/erlang/erts-*/bin/beam
+%{_libdir}/erlang/erts-*/bin/beam.smp
+%{_libdir}/erlang/erts-*/bin/child_setup
+%{_libdir}/erlang/erts-*/bin/dyn_erl
+%{_libdir}/erlang/erts-*/bin/epmd
+%{_libdir}/erlang/erts-*/bin/erl
+%{_libdir}/erlang/erts-*/bin/erl.src
+%{_libdir}/erlang/erts-*/bin/erlc
+%{_libdir}/erlang/erts-*/bin/erlexec
+%{_libdir}/erlang/erts-*/bin/escript
+%{_libdir}/erlang/erts-*/bin/heart
+%{_libdir}/erlang/erts-*/bin/inet_gethost
+%{_libdir}/erlang/erts-*/bin/run_erl
+%{_libdir}/erlang/erts-*/bin/start
+%{_libdir}/erlang/erts-*/bin/start.src
+%{_libdir}/erlang/erts-*/bin/start_erl.src
+%{_libdir}/erlang/erts-*/bin/to_erl
+%{_libdir}/erlang/erts-*/include
+%{_libdir}/erlang/erts-*/lib
+%{_libdir}/erlang/erts-*/src
 %{_libdir}/erlang/lib/erts-*/
 %{_libdir}/erlang/man/man1/epmd.*
 %{_libdir}/erlang/man/man1/erl.*
@@ -1681,6 +1721,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files typer
 %defattr(-,root,root)
+%{_bindir}/typer
+%{_libdir}/erlang/bin/typer
+%{_libdir}/erlang/erts-*/bin/typer
 %{_libdir}/erlang/lib/typer-*/
 
 %files webtool
@@ -1925,6 +1968,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat May 15 2010 Peter Lemenkov <lemenkov@gmail.com> - R13B-04.12
+- Moved dialyzer and typer executables from erts to appropriate rpms
+
 * Fri May 14 2010 Peter Lemenkov <lemenkov@gmail.com> - R13B-04.11
 - Do not mention nteventlog in os_mon.app, see rhbz #592251
 
