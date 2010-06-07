@@ -3,7 +3,7 @@
 
 Name:           erlang
 Version:        %{ver}
-Release:        %{rel}.8%{?dist}
+Release:        %{rel}.9%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -27,7 +27,7 @@ BuildRequires:  unixODBC-devel
 BuildRequires:	tcl-devel
 BuildRequires:	tk-devel
 BuildRequires:  gd-devel
-%if 0%{?rhel}
+%if 0%{?el4}%{?el5}
 BuildRequires:	java-1.4.2-gcj-compat-devel
 %else
 BuildRequires:	java-1.5.0-gcj-devel
@@ -36,6 +36,57 @@ BuildRequires:  flex
 BuildRequires:	m4
 
 Requires:	tk
+
+# Added virtual Provides for each erlang module
+Provides: erlang-appmon = %{version}-%{release}
+Provides: erlang-asn1 = %{version}-%{release}
+Provides: erlang-common_test = %{version}-%{release}
+Provides: erlang-compiler = %{version}-%{release}
+Provides: erlang-cosEvent = %{version}-%{release}
+Provides: erlang-cosEventDomain = %{version}-%{release}
+Provides: erlang-cosFileTransfer = %{version}-%{release}
+Provides: erlang-cosNotification = %{version}-%{release}
+Provides: erlang-cosProperty = %{version}-%{release}
+Provides: erlang-cosTime = %{version}-%{release}
+Provides: erlang-cosTransactions = %{version}-%{release}
+Provides: erlang-crypto = %{version}-%{release}
+Provides: erlang-debugger = %{version}-%{release}
+Provides: erlang-dialyzer = %{version}-%{release}
+Provides: erlang-docbuilder = %{version}-%{release}
+Provides: erlang-edoc = %{version}-%{release}
+Provides: erlang-et = %{version}-%{release}
+Provides: erlang-eunit = %{version}-%{release}
+Provides: erlang-gs = %{version}-%{release}
+Provides: erlang-hipe = %{version}-%{release}
+Provides: erlang-ic = %{version}-%{release}
+Provides: erlang-inets = %{version}-%{release}
+Provides: erlang-inviso = %{version}-%{release}
+Provides: erlang-kernel = %{version}-%{release}
+Provides: erlang-megaco = %{version}-%{release}
+Provides: erlang-mnesia = %{version}-%{release}
+Provides: erlang-observer = %{version}-%{release}
+Provides: erlang-odbc = %{version}-%{release}
+Provides: erlang-orber = %{version}-%{release}
+Provides: erlang-os_mon = %{version}-%{release}
+Provides: erlang-otp_mibs = %{version}-%{release}
+Provides: erlang-parsetools = %{version}-%{release}
+Provides: erlang-percept = %{version}-%{release}
+Provides: erlang-pman = %{version}-%{release}
+Provides: erlang-public_key = %{version}-%{release}
+Provides: erlang-runtime_tools = %{version}-%{release}
+Provides: erlang-sasl = %{version}-%{release}
+Provides: erlang-snmp = %{version}-%{release}
+Provides: erlang-ssh = %{version}-%{release}
+Provides: erlang-ssl = %{version}-%{release}
+Provides: erlang-stdlib = %{version}-%{release}
+Provides: erlang-syntax_tools = %{version}-%{release}
+Provides: erlang-test_server = %{version}-%{release}
+Provides: erlang-toolbar = %{version}-%{release}
+Provides: erlang-tools = %{version}-%{release}
+Provides: erlang-tv = %{version}-%{release}
+Provides: erlang-typer = %{version}-%{release}
+Provides: erlang-webtool = %{version}-%{release}
+Provides: erlang-xmerl = %{version}-%{release}
 
 %description
 Erlang is a general-purpose programming language and runtime
@@ -55,7 +106,7 @@ Documentation for Erlang.
 %prep
 %setup -q -n otp_src_%{ver}-%{rel}
 %patch1 -p1 -b .links
-%patch2 -p1 -b .fyx_epmd_symlink
+%patch2 -p1 -b .fix_epmd_symlink
 %patch3 -p1 -b .manpages
 %patch4 -p1 -b .rpath_removal
 %patch5 -p1 -b .missing_ssl_libraries
@@ -135,6 +186,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue May 25 2010 Peter Lemenkov <lemenkov@gmail.com> - R12B-5.9
+- Use java-1.4.2 only for EL-[45]
+- Added virtual provides for each erlang module
+- Small typo fix
+
 * Mon Apr 19 2010 Peter Lemenkov <lemenkov@gmail.com> - R12B-5.8
 - Patches rebased
 - Added patches 6,7 from trunk
