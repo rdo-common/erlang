@@ -3,7 +3,7 @@
 
 Name:           erlang
 Version:        %{ver}
-Release:        %{rel}.9%{?dist}
+Release:        %{rel}.10%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -54,6 +54,7 @@ Provides: erlang-debugger = %{version}-%{release}
 Provides: erlang-dialyzer = %{version}-%{release}
 Provides: erlang-docbuilder = %{version}-%{release}
 Provides: erlang-edoc = %{version}-%{release}
+Provides: erlang-erts = %{version}-%{release}
 Provides: erlang-et = %{version}-%{release}
 Provides: erlang-eunit = %{version}-%{release}
 Provides: erlang-gs = %{version}-%{release}
@@ -186,6 +187,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jun  7 2010 Peter Lemenkov <lemenkov@gmail.com> - R12B-5.10
+- Added missing virtual provides erlang-erts
+
 * Tue May 25 2010 Peter Lemenkov <lemenkov@gmail.com> - R12B-5.9
 - Use java-1.4.2 only for EL-[45]
 - Added virtual provides for each erlang module
