@@ -1,6 +1,6 @@
 Name:           erlang
 Version:        R11B
-Release:        2.5%{?dist}
+Release:        2.6%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -41,6 +41,7 @@ Provides: erlang-crypto = %{version}-%{release}
 Provides: erlang-debugger = %{version}-%{release}
 Provides: erlang-dialyzer = %{version}-%{release}
 Provides: erlang-edoc = %{version}-%{release}
+Provides: erlang-erts = %{version}-%{release}
 Provides: erlang-et = %{version}-%{release}
 Provides: erlang-gs = %{version}-%{release}
 Provides: erlang-hipe = %{version}-%{release}
@@ -156,6 +157,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jun  7 2010 Peter Lemenkov <lemenkov@gmail.com> - R11B-2.6
+- Added missing virtual provides erlang-erts
+
 * Mon Jun  7 2010 Peter Lemenkov <lemenkov@gmail.com> - R11B-2.5
 - Added virtual provides for erlang modules
 
