@@ -1,6 +1,6 @@
 Name:           erlang
 Version:        R11B
-Release:        2.4%{?dist}
+Release:        2.5%{?dist}
 Summary:        General-purpose programming language and runtime environment
 
 Group:          Development/Languages
@@ -27,7 +27,50 @@ BuildRequires:	tk-devel
 BuildRequires:	java-1.4.2-gcj-compat-devel
 BuildRequires:  flex
 BuildRequires:	m4
-
+Provides: erlang-appmon = %{version}-%{release}
+Provides: erlang-asn1 = %{version}-%{release}
+Provides: erlang-compiler = %{version}-%{release}
+Provides: erlang-cosEvent = %{version}-%{release}
+Provides: erlang-cosEventDomain = %{version}-%{release}
+Provides: erlang-cosFileTransfer = %{version}-%{release}
+Provides: erlang-cosNotification = %{version}-%{release}
+Provides: erlang-cosProperty = %{version}-%{release}
+Provides: erlang-cosTime = %{version}-%{release}
+Provides: erlang-cosTransactions = %{version}-%{release}
+Provides: erlang-crypto = %{version}-%{release}
+Provides: erlang-debugger = %{version}-%{release}
+Provides: erlang-dialyzer = %{version}-%{release}
+Provides: erlang-edoc = %{version}-%{release}
+Provides: erlang-et = %{version}-%{release}
+Provides: erlang-gs = %{version}-%{release}
+Provides: erlang-hipe = %{version}-%{release}
+Provides: erlang-ic = %{version}-%{release}
+Provides: erlang-inets = %{version}-%{release}
+Provides: erlang-inviso = %{version}-%{release}
+Provides: erlang-kernel = %{version}-%{release}
+Provides: erlang-megaco = %{version}-%{release}
+Provides: erlang-mnemosyne = %{version}-%{release}
+Provides: erlang-mnesia = %{version}-%{release}
+Provides: erlang-mnesia_session = %{version}-%{release}
+Provides: erlang-observer = %{version}-%{release}
+Provides: erlang-odbc = %{version}-%{release}
+Provides: erlang-orber = %{version}-%{release}
+Provides: erlang-os_mon = %{version}-%{release}
+Provides: erlang-otp_mibs = %{version}-%{release}
+Provides: erlang-parsetools = %{version}-%{release}
+Provides: erlang-pman = %{version}-%{release}
+Provides: erlang-runtime_tools = %{version}-%{release}
+Provides: erlang-sasl = %{version}-%{release}
+Provides: erlang-snmp = %{version}-%{release}
+Provides: erlang-ssh = %{version}-%{release}
+Provides: erlang-ssl = %{version}-%{release}
+Provides: erlang-stdlib = %{version}-%{release}
+Provides: erlang-syntax_tools = %{version}-%{release}
+Provides: erlang-toolbar = %{version}-%{release}
+Provides: erlang-tools = %{version}-%{release}
+Provides: erlang-tv = %{version}-%{release}
+Provides: erlang-webtool = %{version}-%{release}
+Provides: erlang-xmerl = %{version}-%{release}
 Requires:	tk
 
 %description
@@ -58,6 +101,7 @@ Documentation for Erlang.
 
 
 %build
+# cannot be built with %%configure macros
 ./configure --prefix=%{_prefix} --exec-prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir}
 chmod -R u+w .
 make
@@ -112,6 +156,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jun  7 2010 Peter Lemenkov <lemenkov@gmail.com> - R11B-2.5
+- Added virtual provides for erlang modules
+
 * Mon Apr 19 2010 Peter Lemenkov <lemenkov@gmail.com> - R11B-2.4
 - Patches rebased
 - Added patches 6,7 from trunk
