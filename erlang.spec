@@ -1,34 +1,40 @@
-%define ver R13B
-%define rel 04
+%define ver R14A
+%define rel 0
 
 Name:		erlang
 Version:	%{ver}
-Release:	%{rel}.12%{?dist}
+Release:	%{rel}.1%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
 License:	ERPL
 URL:		http://www.erlang.org
-Source0:	http://www.erlang.org/download/otp_src_%{ver}%{rel}.tar.gz
+Source0:	http://www.erlang.org/download/otp_src_%{ver}.tar.gz
 Source3:	erlang-find-provides.escript
 Source4:	erlang-find-provides.sh
 Source5:	erlang-find-requires.escript
 Source6:	erlang-find-requires.sh
 Source7:	macros.erlang
-# TODO this patch needs rebase against current tree
-Patch0:		otp-links.patch
 # Fedora-specific
-Patch1:		otp-0001-Do-not-format-man-pages.patch
+Patch1:		otp-0001-Do-not-format-man-pages-and-do-not-install-miscellan.patch
 # Fedora-specific
 Patch2:		otp-0002-Remove-rpath.patch
-# Upstreamed
-Patch4:		otp-0004-Fix-shared-libraries-installation.patch
 # Fedora-specific
-Patch5:		otp-0005-Fix-for-dlopening-libGL-and-libGLU.patch
-# Upstreamed
-Patch6:		otp-0006-Fix-check-for-compile-workspace-overflow.patch
-# Install accidentally forgotten emacs files (see rhbz #585349) (already fixed upstream)
-Patch7:		otp-0007-Install-missing-emacs-files.patch
+Patch4:		otp-0004-Fix-for-dlopening-libGL-and-libGLU.patch
+# Fedora-specific
+Patch5:		otp-0005-Do-not-install-C-sources.patch
+# Fedora-specific
+Patch6:		otp-0006-Do-not-install-Java-sources.patch
+# Fedora-specific
+Patch7:		otp-0007-Do-not-install-info-files-they-are-almost-empty-and-.patch
+# Fedora-specific
+Patch8:		otp-0008-Do-not-install-nteventlog-and-related-doc-files-on-n.patch
+# Fedora-specific
+Patch9:		otp-0009-Do-not-install-.bat-files-on-non-win32-machines.patch
+# Fedora-specific
+Patch10:	otp-0010-Do-not-install-VxWorks-specific-docs.patch
+# Fedora-specific
+Patch11:	otp-0011-Do-not-install-erlang-sources.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	ncurses-devel
@@ -855,15 +861,29 @@ Obsoletes:	%{name} < R13B-04.5
 Provides support for XML 1.0.
 
 %prep
-%setup -q -n otp_src_%{ver}%{rel}
+%setup -q -n otp_src_%{ver}
 %patch1 -p1 -b .do_not_format_manpages
 %patch2 -p1 -b .rpath
-%patch4 -p1 -b .fix_shared_lib_install
-%patch5 -p1 -b .dlopen_opengl_libs
-%patch6 -p1 -b .pcre_overflow
-%patch7 -p1 -b .missing_emacs_files
+%patch4 -p1 -b .dlopen_opengl_libs
+%patch5 -p1 -b .no_c_sources
+%patch6 -p1 -b .no_java_sources
+%patch7 -p1 -b .no_info_files
+%patch8 -p1 -b .no_win32_nteventlog
+%patch9 -p1 -b .no_win32_bat_files
+%patch10 -p1 -b .no_vxworks_specific
+%patch11 -p1 -b .no_erlang_sources
 # remove shipped zlib sources
 rm -f erts/emulator/zlib/*.[ch]
+
+# Fix 664 file mode
+chmod 644 lib/kernel/examples/uds_dist/c_src/Makefile
+chmod 644 lib/kernel/examples/uds_dist/src/Makefile
+chmod 644 lib/ssl/examples/certs/Makefile
+chmod 644 lib/ssl/examples/src/Makefile
+
+# Remove old txt files
+rm -f lib/ssl/examples/certs/etc/otpCA/index.txt.old
+rm -f lib/ssl/examples/certs/etc/erlangCA/index.txt.old
 
 
 %build
@@ -882,13 +902,9 @@ make DESTDIR=$RPM_BUILD_ROOT install
 make DESTDIR=$RPM_BUILD_ROOT install-docs
 
 # fix 0775 permission on some directories
-find $RPM_BUILD_ROOT%{_libdir}/erlang -type d -perm 0775 | xargs chmod 755
-
-# Fix 664 file mode
-chmod 644 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/kernel-*/examples/uds_dist/c_src/Makefile
-chmod 644 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/kernel-*/examples/uds_dist/src/Makefile
-chmod 644 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ssl-*/examples/certs/Makefile
-chmod 644 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ssl-*/examples/src/Makefile
+find $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ssl-*/examples/ -type d -perm 0775 | xargs chmod 755
+find $RPM_BUILD_ROOT%{_libdir}/erlang/lib/kernel-*/examples/uds_dist -type d -perm 0775 | xargs chmod 755
+chmod 0755 $RPM_BUILD_ROOT%{_libdir}/erlang/bin
 
 # Relocate doc-files into the proper directory
 mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}/lib
@@ -904,56 +920,13 @@ mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/PR.template $RPM_BUILD_ROOT%{_docdir}/%{n
 mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/README $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}
 mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/COPYRIGHT $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}
 
-# Win32-specific functionality
-rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/observer-*/priv/bin/etop.bat
-rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/observer-*/priv/bin/getop.bat
-rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/os_mon-*/ebin/nteventlog.beam
-rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/webtool-*/priv/bin/start_webtool.bat
+# Win32-specific man-pages
 rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/man/man1/erlsrv.*
 rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/man/man1/werl.*
-rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/man/man3/nteventlog.*
 rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/man/man3/win32reg.*
-# Do not mention nteventlog in os_mon.app, see rhbz #592251
-sed -i "s,\,\s*nteventlog,," $RPM_BUILD_ROOT%{_libdir}/erlang/lib/os_mon-*/ebin/os_mon.app
-
-# VxWorks specific
-rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/man/man3/erl_set_memory_block.*
-
-# Remove old txt files
-rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ssl-*/examples/certs/etc/otpCA/index.txt.old
-rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ssl-*/examples/certs/etc/erlangCA/index.txt.old
-
-# remove unneeded Erlang sources, but keep *.hrl files
-for d in $RPM_BUILD_ROOT%{_libdir}/erlang/lib/* ; do find $d/src -type f ! -name "*.hrl" -print -delete || true ; done
-rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/hipe-*/{cerl,flow,icode,main,misc,util}/*.erl
-rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/orber-*/COSS/CosNaming/*.erl
-find $RPM_BUILD_ROOT%{_libdir}/erlang/lib/*/src -type d -empty -delete
-rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/cosFileTransfer-*/src
-
-# remove C and Java sources
-rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/asn1-*/c_src
-rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/erl_interface-*/src
-rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ic-*/c_src
-rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ic-*/java_src
-rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/jinterface-*/java_src
-rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/odbc-*/c_src
-rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/tools-*/c_src
 
 # remove empty directory
 rm -r $RPM_BUILD_ROOT%{_libdir}/erlang/erts-*/man
-
-# remove unneeded files
-rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/erts-*/info
-rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/*-*/info
-rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/hipe-*/vsn.mk
-
-# No longer needed utilities for formatting man-pages
-rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/misc
-
-# Remove *.o files
-rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/crypto-*/priv/obj
-rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/odbc-*/priv/obj
-rm -rf $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ssl-*/priv/obj
 
 # Install RPM related files
 install -D -p -m 0755 %{SOURCE3} $RPM_BUILD_ROOT%{_rpmconfigdir}/erlang-find-provides.escript
@@ -1002,6 +975,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/ct_ftp.*
 %{_libdir}/erlang/man/man3/ct_master.*
 %{_libdir}/erlang/man/man3/ct_rpc.*
+%{_libdir}/erlang/man/man3/ct_slave.*
 %{_libdir}/erlang/man/man3/ct_snmp.*
 %{_libdir}/erlang/man/man3/ct_ssh.*
 %{_libdir}/erlang/man/man3/ct_telnet.*
@@ -1194,12 +1168,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/erlc
 %{_bindir}/escript
 %{_bindir}/run_erl
+%{_bindir}/run_test
 %{_bindir}/to_erl
 %{_libdir}/erlang/bin/epmd
 %{_libdir}/erlang/bin/erl
 %{_libdir}/erlang/bin/erlc
 %{_libdir}/erlang/bin/escript
 %{_libdir}/erlang/bin/run_erl
+%{_libdir}/erlang/bin/run_test
 %{_libdir}/erlang/bin/start
 %{_libdir}/erlang/bin/start.boot
 %{_libdir}/erlang/bin/start.script
@@ -1221,6 +1197,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/erts-*/bin/heart
 %{_libdir}/erlang/erts-*/bin/inet_gethost
 %{_libdir}/erlang/erts-*/bin/run_erl
+%{_libdir}/erlang/erts-*/bin/run_test
 %{_libdir}/erlang/erts-*/bin/start
 %{_libdir}/erlang/erts-*/bin/start.src
 %{_libdir}/erlang/erts-*/bin/start_erl.src
@@ -1238,6 +1215,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man1/start_erl.*
 %{_libdir}/erlang/man/man3/driver_entry.*
 %{_libdir}/erlang/man/man3/erl_driver.*
+%{_libdir}/erlang/man/man3/erl_nif.*
 %{_libdir}/erlang/man/man3/erl_prim_loader.*
 %{_libdir}/erlang/man/man3/erlang.*
 %{_libdir}/erlang/man/man3/erts_alloc.*
@@ -1595,11 +1573,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/ssl-*/
 %{_libdir}/erlang/lib/ssl-*/ebin
-%{_libdir}/erlang/lib/ssl-*/include
-%{_libdir}/erlang/lib/ssl-*/pkix
 %{_libdir}/erlang/lib/ssl-*/priv
 %{_libdir}/erlang/lib/ssl-*/src
-%{_libdir}/erlang/man/man3/new_ssl.*
+%{_libdir}/erlang/man/man3/old_ssl.*
 %{_libdir}/erlang/man/man3/ssl.*
 %{_libdir}/erlang/man/man6/ssl.*
 
@@ -1612,6 +1588,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/array.*
 %{_libdir}/erlang/man/man3/base64.*
 %{_libdir}/erlang/man/man3/beam_lib.*
+%{_libdir}/erlang/man/man3/binary.*
 %{_libdir}/erlang/man/man3/c.*
 %{_libdir}/erlang/man/man3/calendar.*
 %{_libdir}/erlang/man/man3/dets.*
@@ -1968,6 +1945,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jun 18 2010 Peter Lemenkov <lemenkov@gmail.com> - R14A-0.1
+- R14A release
+
 * Sat May 15 2010 Peter Lemenkov <lemenkov@gmail.com> - R13B-04.12
 - Moved dialyzer and typer executables from erts to appropriate rpms
 

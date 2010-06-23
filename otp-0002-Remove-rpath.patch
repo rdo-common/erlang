@@ -1,7 +1,7 @@
-From 2e10f728feb56ea96b2832999a8c34f1f19646bc Mon Sep 17 00:00:00 2001
+From b4f00d41b29982a0fb2362b9d63caf78b4c6f83a Mon Sep 17 00:00:00 2001
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Thu, 25 Feb 2010 16:57:43 +0300
-Subject: [PATCH 2/7] Remove rpath
+Subject: [PATCH 02/11] Remove rpath
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 ---
@@ -11,7 +11,7 @@ Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
  3 files changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/lib/crypto/c_src/Makefile.in b/lib/crypto/c_src/Makefile.in
-index 18040a3..b169930 100644
+index e728db1..b797ed7 100644
 --- a/lib/crypto/c_src/Makefile.in
 +++ b/lib/crypto/c_src/Makefile.in
 @@ -83,7 +83,7 @@ endif
@@ -24,18 +24,18 @@ index 18040a3..b169930 100644
  else
  SSL_DED_LD_RUNTIME_LIBRARY_PATH=
 diff --git a/lib/crypto/priv/Makefile b/lib/crypto/priv/Makefile
-index b8acdac..2c2989a 100644
+index 0989f14..0d29444 100644
 --- a/lib/crypto/priv/Makefile
 +++ b/lib/crypto/priv/Makefile
-@@ -60,7 +60,7 @@ OBJS = $(OBJDIR)/crypto_drv.o
+@@ -60,7 +60,7 @@ OBJS = $(OBJDIR)/crypto.o
  # ----------------------------------------------------
  
- $(SO_DRIVER): $(OBJS)
+ $(SO_NIFLIB): $(OBJS)
 -	$(SO_LD) $(SO_LDFLAGS) -L$(SO_SSL_LIBDIR) -Wl,-R$(SO_SSL_LIBDIR) \
 +	$(SO_LD) $(SO_LDFLAGS) -L$(SO_SSL_LIBDIR) \
  	-o $@ $^ -lcrypto
  
- $(DLL_DRIVER): $(OBJS)
+ $(DLL_NIFLIB): $(OBJS)
 diff --git a/lib/ssl/c_src/Makefile.in b/lib/ssl/c_src/Makefile.in
 index 49a209f..5e6c74e 100644
 --- a/lib/ssl/c_src/Makefile.in
@@ -68,5 +68,5 @@ index 49a209f..5e6c74e 100644
  
  SSL_CC_RUNTIME_LIBRARY_PATH=@SSL_CC_RUNTIME_LIBRARY_PATH@
 -- 
-1.6.6.1
+1.7.0.1
 
