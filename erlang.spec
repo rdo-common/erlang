@@ -3,7 +3,7 @@
 
 Name:		erlang
 Version:	%{ver}
-Release:	%{rel}.1%{?dist}
+Release:	%{rel}.2%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -152,6 +152,7 @@ Requires: %{name}-stdlib = %{version}-%{release}
 Requires: %{name}-test_server = %{version}-%{release}
 Requires: %{name}-tools = %{version}-%{release}
 Requires: %{name}-webtool = %{version}-%{release}
+Requires: %{name}-xmerl = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description common_test
@@ -1945,6 +1946,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jun 26 2010 Peter Lemenkov <lemenkov@gmail.com> - R14A-0.2
+- Updated list of explicit requirements
+
 * Fri Jun 18 2010 Peter Lemenkov <lemenkov@gmail.com> - R14A-0.1
 - R14A release
 
