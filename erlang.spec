@@ -1,5 +1,5 @@
 %define ver R14A
-%define rel 0
+%define rel 1
 
 Name:		erlang
 Version:	%{ver}
@@ -1946,6 +1946,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jul 14 2010 Dan Horák <dan@danny.cz> - R14A-1.2
+- rebuilt against wxGTK-2.8.11-2
+
 * Sat Jun 26 2010 Peter Lemenkov <lemenkov@gmail.com> - R14A-0.2
 - Updated list of explicit requirements
 
