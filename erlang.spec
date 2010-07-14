@@ -1,9 +1,11 @@
 %define ver R14A
-%define rel 1
+# Please, dont increment %%{rel} during rebuilds - it's a mainstream's
+# version which should be increased only during major upgrades
+%define rel 0
 
 Name:		erlang
 Version:	%{ver}
-Release:	%{rel}.2%{?dist}
+Release:	%{rel}.3%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -1946,7 +1948,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Wed Jul 14 2010 Dan Horák <dan@danny.cz> - R14A-1.2
+* Wed Jul 14 2010 Dan Horák <dan@danny.cz> - R14A-0.3
 - rebuilt against wxGTK-2.8.11-2
 
 * Sat Jun 26 2010 Peter Lemenkov <lemenkov@gmail.com> - R14A-0.2
