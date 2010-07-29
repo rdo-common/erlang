@@ -1,15 +1,18 @@
-%define ver R13B
-%define rel 04
+%global upstream_ver R13B
+# Do NOT change %%{upstream_rel} unless UPSTREAM has actually changed it!
+%global upstream_rel 04
+
+%global n_uvr %{name}-%{upstream_ver}-%{upstream_rel}
 
 Name:		erlang
-Version:	%{ver}
-Release:	%{rel}.12%{?dist}
+Version:	%{upstream_ver}
+Release:	%{upstream_rel}.13%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
 License:	ERPL
 URL:		http://www.erlang.org
-Source0:	http://www.erlang.org/download/otp_src_%{ver}%{rel}.tar.gz
+Source0:	http://www.erlang.org/download/otp_src_%{upstream_ver}%{upstream_rel}.tar.gz
 Source3:	erlang-find-provides.escript
 Source4:	erlang-find-provides.sh
 Source5:	erlang-find-requires.escript
@@ -406,7 +409,7 @@ Requires: %{name}-kernel = %{version}-%{release}
 Requires: %{name}-stdlib = %{version}-%{release}
 BuildRequires:	tcl-devel
 BuildRequires:	tk-devel
-Requires:       tk
+Requires:	tk
 Obsoletes:	%{name} < R13B-04.5
 
 %description gs
@@ -533,7 +536,7 @@ Requires: %{name}-erts = %{version}-%{release}
 Requires: %{name}-kernel = %{version}-%{release}
 Requires: %{name}-stdlib = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
-BuildRequires:  unixODBC-devel
+BuildRequires:	unixODBC-devel
 
 %description odbc
 An interface to relational SQL-databases built on ODBC (Open Database
@@ -838,7 +841,7 @@ Requires: %{name}-stdlib = %{version}-%{release}
 Requires:	mesa-libGL
 Requires:	mesa-libGLU
 Obsoletes:	%{name} < R13B-04.5
-BuildRequires:  wxGTK-devel
+BuildRequires:	wxGTK-devel
 
 %description wx
 A Graphics System used to write platform independent user interfaces.
@@ -855,7 +858,7 @@ Obsoletes:	%{name} < R13B-04.5
 Provides support for XML 1.0.
 
 %prep
-%setup -q -n otp_src_%{ver}%{rel}
+%setup -q -n otp_src_%{upstream_ver}%{upstream_rel}
 %patch1 -p1 -b .do_not_format_manpages
 %patch2 -p1 -b .rpath
 %patch4 -p1 -b .fix_shared_lib_install
@@ -891,18 +894,18 @@ chmod 644 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ssl-*/examples/certs/Makefile
 chmod 644 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ssl-*/examples/src/Makefile
 
 # Relocate doc-files into the proper directory
-mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}/lib
+mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{n_uvr}/lib
 pushd .
 cd $RPM_BUILD_ROOT%{_libdir}/erlang
-mv -v doc $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}
-for i in erts-* ; do mv -v $i/doc $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}/$i ; done
+mv -v doc $RPM_BUILD_ROOT%{_docdir}/%{n_uvr}
+for i in erts-* ; do mv -v $i/doc $RPM_BUILD_ROOT%{_docdir}/%{n_uvr}/$i ; done
 cd $RPM_BUILD_ROOT%{_libdir}/erlang/lib
-for i in * ; do mv -v $i/doc $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}/lib/$i || true ; done
+for i in * ; do mv -v $i/doc $RPM_BUILD_ROOT%{_docdir}/%{n_uvr}/lib/$i || true ; done
 popd
-cp -av AUTHORS EPLICENCE README.md $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}
-mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/PR.template $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}
-mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/README $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}
-mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/COPYRIGHT $RPM_BUILD_ROOT%{_docdir}/%{name}-%{ver}-%{rel}
+cp -av AUTHORS EPLICENCE README.md $RPM_BUILD_ROOT%{_docdir}/%{n_uvr}
+mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/PR.template $RPM_BUILD_ROOT%{_docdir}/%{n_uvr}
+mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/README $RPM_BUILD_ROOT%{_docdir}/%{n_uvr}
+mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/COPYRIGHT $RPM_BUILD_ROOT%{_docdir}/%{n_uvr}
 
 # Win32-specific functionality
 rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/observer-*/priv/bin/etop.bat
@@ -971,13 +974,13 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%dir %{_docdir}/%{name}-%{ver}-%{rel}/
-%doc %{_docdir}/%{name}-%{ver}-%{rel}/AUTHORS
-%doc %{_docdir}/%{name}-%{ver}-%{rel}/COPYRIGHT
-%doc %{_docdir}/%{name}-%{ver}-%{rel}/EPLICENCE
-%doc %{_docdir}/%{name}-%{ver}-%{rel}/PR.template
-%doc %{_docdir}/%{name}-%{ver}-%{rel}/README
-%doc %{_docdir}/%{name}-%{ver}-%{rel}/README.md
+%dir %{_docdir}/%{n_uvr}/
+%doc %{_docdir}/%{n_uvr}/AUTHORS
+%doc %{_docdir}/%{n_uvr}/COPYRIGHT
+%doc %{_docdir}/%{n_uvr}/EPLICENCE
+%doc %{_docdir}/%{n_uvr}/PR.template
+%doc %{_docdir}/%{n_uvr}/README
+%doc %{_docdir}/%{n_uvr}/README.md
 
 %files appmon
 %defattr(-,root,root)
@@ -1132,9 +1135,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files doc
 %defattr(-,root,root)
-%doc %{_docdir}/%{name}-%{ver}-%{rel}/doc
-%doc %{_docdir}/%{name}-%{ver}-%{rel}/erts-*/
-%doc %{_docdir}/%{name}-%{ver}-%{rel}/lib/
+%doc %{_docdir}/%{n_uvr}/doc
+%doc %{_docdir}/%{n_uvr}/erts-*/
+%doc %{_docdir}/%{n_uvr}/lib/
 
 
 %files docbuilder
@@ -1968,6 +1971,14 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jul 29 2010 Hans Ulrich Niedermann <hun@n-dimensional.de> - R13B-04.13
+- Spec file cleanups:
+  - Avoid accidental %%rel increments by rpmdev-bumpspec.
+  - Use %%global for our spec file macros.
+  - Use macro for redundant directory names.
+  - Whitespace cleanups (tabs vs. spaces).
+  - Fix accidental macro usage in %%changelog.
+
 * Sat May 15 2010 Peter Lemenkov <lemenkov@gmail.com> - R13B-04.12
 - Moved dialyzer and typer executables from erts to appropriate rpms
 
@@ -2047,7 +2058,7 @@ rm -rf $RPM_BUILD_ROOT
 
 * Sun Mar  1 2009 Gerard Milmeister <gemi@bluewin.ch> - R12B-5.6
 - new release R12B-5
-- link escript and dialyzer to %{_bindir}
+- link escript and dialyzer to %%{_bindir}
 
 * Tue Feb 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - R12B-5.5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
