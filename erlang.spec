@@ -3,7 +3,7 @@
 
 Name:		erlang
 Version:	%{ver}
-Release:	%{rel}.12%{?dist}
+Release:	%{rel}.13%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -1968,6 +1968,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jul 29 2010 Hans Ulrich Niedermann <hun@n-dimensional.de> - R13B-04.13
+- Spec file cleanups:
+  - Fix accidental macro usage in %%changelog.
+
 * Sat May 15 2010 Peter Lemenkov <lemenkov@gmail.com> - R13B-04.12
 - Moved dialyzer and typer executables from erts to appropriate rpms
 
@@ -2047,7 +2051,7 @@ rm -rf $RPM_BUILD_ROOT
 
 * Sun Mar  1 2009 Gerard Milmeister <gemi@bluewin.ch> - R12B-5.6
 - new release R12B-5
-- link escript and dialyzer to %{_bindir}
+- link escript and dialyzer to %%{_bindir}
 
 * Tue Feb 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - R12B-5.5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
