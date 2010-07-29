@@ -409,7 +409,7 @@ Requires: %{name}-kernel = %{version}-%{release}
 Requires: %{name}-stdlib = %{version}-%{release}
 BuildRequires:	tcl-devel
 BuildRequires:	tk-devel
-Requires:       tk
+Requires:	tk
 Obsoletes:	%{name} < R13B-04.5
 
 %description gs
@@ -536,7 +536,7 @@ Requires: %{name}-erts = %{version}-%{release}
 Requires: %{name}-kernel = %{version}-%{release}
 Requires: %{name}-stdlib = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
-BuildRequires:  unixODBC-devel
+BuildRequires:	unixODBC-devel
 
 %description odbc
 An interface to relational SQL-databases built on ODBC (Open Database
@@ -841,7 +841,7 @@ Requires: %{name}-stdlib = %{version}-%{release}
 Requires:	mesa-libGL
 Requires:	mesa-libGLU
 Obsoletes:	%{name} < R13B-04.5
-BuildRequires:  wxGTK-devel
+BuildRequires:	wxGTK-devel
 
 %description wx
 A Graphics System used to write platform independent user interfaces.
@@ -1976,6 +1976,7 @@ rm -rf $RPM_BUILD_ROOT
   - Avoid accidental %%rel increments by rpmdev-bumpspec.
   - Use %%global for our spec file macros.
   - Use macro for redundant directory names.
+  - Whitespace cleanups (tabs vs. spaces).
   - Fix accidental macro usage in %%changelog.
 
 * Sat May 15 2010 Peter Lemenkov <lemenkov@gmail.com> - R13B-04.12
