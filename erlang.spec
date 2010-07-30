@@ -6,7 +6,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel}.13%{?dist}
+Release:	%{upstream_rel}.14%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -43,6 +43,11 @@ BuildRequires:	fop
 BuildRequires:	libxslt
 # Required for building docs (escript)
 BuildRequires:	erlang
+
+BuildRequires:	emacs
+BuildRequires:	xemacs
+BuildRequires:	emacs-el
+BuildRequires:	xemacs-packages-extra-el
 
 Requires: erlang-appmon = %{version}-%{release}
 Requires: erlang-asn1 = %{version}-%{release}
@@ -787,6 +792,7 @@ Requires: %{name}-runtime_tools = %{version}-%{release}
 Requires: %{name}-stdlib = %{version}-%{release}
 Requires: %{name}-webtool = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
+Provides:	emacs-common-erlang = %{version}-%{release}
 
 %description tools
 A set of programming tools including a coverage analyzer etc.
@@ -857,6 +863,44 @@ Obsoletes:	%{name} < R13B-04.5
 %description xmerl
 Provides support for XML 1.0.
 
+%package -n emacs-erlang
+Summary:	Compiled elisp files for erlang-mode under GNU Emacs
+Requires:	emacs-common-erlang = %{version}-%{release}
+Requires:	emacs(bin) >= %{_emacs_version}
+Group:		Applications/Editors
+BuildArch:	noarch
+
+%description -n emacs-erlang
+Erlang mode for GNU Emacs.
+
+%package -n emacs-erlang-el
+Summary:	Elisp source files for erlang-mode under GNU Emacs
+Requires:	emacs-erlang = %{version}-%{release}
+Group:		Applications/Editors
+BuildArch:	noarch
+
+%description -n emacs-erlang-el
+Erlang mode for GNU Emacs (source lisp files).
+
+%package -n xemacs-erlang
+Summary:	Compiled elisp files for erlang-mode under XEmacs
+Requires:	emacs-common-erlang = %{version}-%{release}
+Group:		Applications/Editors
+BuildArch:	noarch
+Requires:	xemacs(bin) >= %{_xemacs_version}
+
+%description -n xemacs-erlang
+Erlang mode for XEmacs.
+
+%package -n xemacs-erlang-el
+Summary:	Elisp source files for erlang-mode under XEmacs
+Requires:	xemacs-erlang = %{version}-%{release}
+Group:		Applications/Editors
+BuildArch:	noarch
+
+%description -n xemacs-erlang-el
+Erlang mode for XEmacs (source lisp files).
+
 %prep
 %setup -q -n otp_src_%{upstream_ver}%{upstream_rel}
 %patch1 -p1 -b .do_not_format_manpages
@@ -875,12 +919,68 @@ CFLAGS="$RPM_OPT_FLAGS -mcpu=ultrasparc -fno-strict-aliasing" %configure --enabl
 %else
 CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing" %configure --enable-shared-zlib
 %endif
+
+# GNU Emacs/XEmacs related stuff
+erlang_tools_vsn="$(sed -n 's/TOOLS_VSN = //p' lib/tools/vsn.mk)"
+
+# GNU Emacs related stuff
+cat > emacs-erlang-init.el << EOF
+(setq load-path (cons "%{_emacs_sitelispdir}/erlang" load-path))
+(setq erlang-root-dir "%{_libdir}/erlang")
+(setq exec-path (cons "%{_libdir}/erlang/bin" exec-path))
+(require 'erlang-start)
+EOF
+mkdir emacs-erlang
+cp lib/tools/emacs/*.el emacs-erlang/
+pushd emacs-erlang
+%{_emacs_bytecompile} *.el
+popd
+
+# XEmacs related stuff
+cat > xemacs-erlang-init.el << EOF
+(setq load-path (cons "%{_xemacs_sitelispdir}/erlang" load-path))
+(setq erlang-root-dir "%{_libdir}/erlang")
+(setq exec-path (cons "%{_libdir}/erlang/bin" exec-path))
+(require 'erlang-start)
+EOF
+mkdir xemacs-erlang
+cp lib/tools/emacs/*.el xemacs-erlang/
+pushd xemacs-erlang
+%{_xemacs_bytecompile} *.el
+popd
+
 make
 make docs
 
 
 %install
 rm -rf $RPM_BUILD_ROOT
+
+# GNU Emacs/XEmacs related stuff
+erlang_tools_vsn="$(sed -n 's/TOOLS_VSN = //p' lib/tools/vsn.mk)"
+
+# GNU Emacs related stuff
+install -m 0755 -d "$RPM_BUILD_ROOT%{_emacs_sitestartdir}"
+install -m 0755 -d "$RPM_BUILD_ROOT%{_emacs_sitelispdir}/erlang"
+install -m 0644 emacs-erlang-init.el "$RPM_BUILD_ROOT%{_emacs_sitestartdir}/erlang-init.el"
+for f in lib/tools/emacs/{README,*.el}; do
+	b="$(basename "$f")";
+	ln -s "%{_libdir}/erlang/lib/tools-${erlang_tools_vsn}/emacs/$b" \
+		"$RPM_BUILD_ROOT%{_emacs_sitelispdir}/erlang/"
+done
+install -m 0644 emacs-erlang/*.elc "$RPM_BUILD_ROOT%{_emacs_sitelispdir}/erlang/"
+
+# XEmacs related stuff
+install -m 0755 -d "$RPM_BUILD_ROOT%{_xemacs_sitestartdir}"
+install -m 0755 -d "$RPM_BUILD_ROOT%{_xemacs_sitelispdir}/erlang"
+install -m 0644 xemacs-erlang-init.el "$RPM_BUILD_ROOT%{_xemacs_sitestartdir}/erlang-init.el"
+for f in lib/tools/emacs/{README,*.el}; do
+	b="$(basename "$f")";
+	ln -s "%{_libdir}/erlang/lib/tools-${erlang_tools_vsn}/emacs/$b" \
+		"$RPM_BUILD_ROOT%{_xemacs_sitelispdir}/erlang/"
+done
+install -m 0644 xemacs-erlang/*.elc "$RPM_BUILD_ROOT%{_xemacs_sitelispdir}/erlang/"
+
 make DESTDIR=$RPM_BUILD_ROOT install
 make DESTDIR=$RPM_BUILD_ROOT install-docs
 
@@ -1969,8 +2069,33 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/xmerl_xs.*
 %{_libdir}/erlang/man/man3/xmerl_xsd.*
 
+%files -n emacs-erlang
+%defattr(-,root,root,-)
+%dir %{_emacs_sitelispdir}/erlang
+%doc %{_emacs_sitelispdir}/erlang/README
+%{_emacs_sitelispdir}/erlang/*.elc
+%{_emacs_sitestartdir}/erlang-init.el
+
+%files -n emacs-erlang-el
+%defattr(-,root,root,-)
+%{_emacs_sitelispdir}/erlang/*.el
+
+%files -n xemacs-erlang
+%defattr(-,root,root,-)
+%dir %{_xemacs_sitelispdir}/erlang
+%doc %{_xemacs_sitelispdir}/erlang/README
+%{_xemacs_sitelispdir}/erlang/*.elc
+%{_xemacs_sitestartdir}/erlang-init.el
+
+%files -n xemacs-erlang-el
+%defattr(-,root,root,-)
+%{_xemacs_sitelispdir}/erlang/*.el
+
 
 %changelog
+* Fri Jul 30 2010 Hans Ulrich Niedermann <hun@n-dimensional.de> - R13B-04.14
+- Properly hook up (X)Emacs erlang-mode (#491165)
+
 * Mon Jul 29 2010 Hans Ulrich Niedermann <hun@n-dimensional.de> - R13B-04.13
 - Spec file cleanups:
   - Avoid accidental %%rel increments by rpmdev-bumpspec.
