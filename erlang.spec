@@ -966,6 +966,7 @@ cat > xemacs-erlang-init.el << EOF
 EOF
 mkdir xemacs-erlang
 cp lib/tools/emacs/*.el xemacs-erlang/
+rm -f xemacs-erlang/erlang-flymake.el
 pushd xemacs-erlang
 %{_xemacs_bytecompile} *.el
 popd
@@ -1000,6 +1001,7 @@ for f in lib/tools/emacs/{README,*.el}; do
 	ln -s "%{_libdir}/erlang/lib/tools-${erlang_tools_vsn}/emacs/$b" \
 		"$RPM_BUILD_ROOT%{_xemacs_sitelispdir}/erlang/"
 done
+rm -f "$RPM_BUILD_ROOT%{_xemacs_sitelispdir}/erlang/erlang-flymake.el"
 install -m 0644 xemacs-erlang/*.elc "$RPM_BUILD_ROOT%{_xemacs_sitelispdir}/erlang/"
 
 make DESTDIR=$RPM_BUILD_ROOT install
