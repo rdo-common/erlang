@@ -2,11 +2,13 @@
 # Do NOT change %%{upstream_rel} unless UPSTREAM has actually changed it!
 %global upstream_rel 04
 
+%bcond_without doc
+
 %global n_uvr %{name}-%{upstream_ver}-%{upstream_rel}
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel}.14%{?dist}
+Release:	%{upstream_rel}.15%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -950,7 +952,9 @@ pushd xemacs-erlang
 popd
 
 make
+%if %{with doc}
 make docs
+%endif
 
 
 %install
@@ -982,7 +986,9 @@ done
 install -m 0644 xemacs-erlang/*.elc "$RPM_BUILD_ROOT%{_xemacs_sitelispdir}/erlang/"
 
 make DESTDIR=$RPM_BUILD_ROOT install
+%if %{with doc}
 make DESTDIR=$RPM_BUILD_ROOT install-docs
+%endif
 
 # fix 0775 permission on some directories
 find $RPM_BUILD_ROOT%{_libdir}/erlang -type d -perm 0775 | xargs chmod 755
@@ -994,6 +1000,7 @@ chmod 644 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ssl-*/examples/certs/Makefile
 chmod 644 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ssl-*/examples/src/Makefile
 
 # Relocate doc-files into the proper directory
+%if %{with doc}
 mkdir -p $RPM_BUILD_ROOT%{_docdir}/%{n_uvr}/lib
 pushd .
 cd $RPM_BUILD_ROOT%{_libdir}/erlang
@@ -1006,6 +1013,7 @@ cp -av AUTHORS EPLICENCE README.md $RPM_BUILD_ROOT%{_docdir}/%{n_uvr}
 mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/PR.template $RPM_BUILD_ROOT%{_docdir}/%{n_uvr}
 mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/README $RPM_BUILD_ROOT%{_docdir}/%{n_uvr}
 mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/COPYRIGHT $RPM_BUILD_ROOT%{_docdir}/%{n_uvr}
+%endif
 
 # Win32-specific functionality
 rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/observer-*/priv/bin/etop.bat
@@ -1074,6 +1082,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
+%if %{with doc}
 %dir %{_docdir}/%{n_uvr}/
 %doc %{_docdir}/%{n_uvr}/AUTHORS
 %doc %{_docdir}/%{n_uvr}/COPYRIGHT
@@ -1081,11 +1090,14 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_docdir}/%{n_uvr}/PR.template
 %doc %{_docdir}/%{n_uvr}/README
 %doc %{_docdir}/%{n_uvr}/README.md
+%endif
 
 %files appmon
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/appmon-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/appmon.*
+%endif
 
 %files asn1
 %defattr(-,root,root)
@@ -1093,12 +1105,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/asn1-*/ebin
 %{_libdir}/erlang/lib/asn1-*/priv
 %{_libdir}/erlang/lib/asn1-*/src
+%if %{with doc}
 %{_libdir}/erlang/man/man3/asn1ct.*
 %{_libdir}/erlang/man/man3/asn1rt.*
+%endif
 
 %files common_test
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/common_test-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man1/run_test.*
 %{_libdir}/erlang/man/man3/ct.*
 %{_libdir}/erlang/man/man3/ct_cover.*
@@ -1110,15 +1125,19 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/ct_telnet.*
 %{_libdir}/erlang/man/man3/unix_telnet.*
 %{_libdir}/erlang/man/man6/common_test.*
+%endif
 
 %files compiler
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/compiler-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/compile.*
+%endif
 
 %files cosEvent
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/cosEvent-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/cosEventApp.*
 %{_libdir}/erlang/man/man3/CosEventChannelAdmin.*
 %{_libdir}/erlang/man/man3/CosEventChannelAdmin_ConsumerAdmin.*
@@ -1128,28 +1147,34 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/CosEventChannelAdmin_ProxyPushConsumer.*
 %{_libdir}/erlang/man/man3/CosEventChannelAdmin_ProxyPushSupplier.*
 %{_libdir}/erlang/man/man3/CosEventChannelAdmin_SupplierAdmin.*
+%endif
 
 %files cosEventDomain
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/cosEventDomain-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/CosEventDomainAdmin.*
 %{_libdir}/erlang/man/man3/CosEventDomainAdmin_EventDomain.*
 %{_libdir}/erlang/man/man3/CosEventDomainAdmin_EventDomainFactory.*
 %{_libdir}/erlang/man/man3/cosEventDomainApp.*
+%endif
 
 %files cosFileTransfer
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/cosFileTransfer-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/cosFileTransferApp.*
 %{_libdir}/erlang/man/man3/CosFileTransfer_Directory.*
 %{_libdir}/erlang/man/man3/CosFileTransfer_File.*
 %{_libdir}/erlang/man/man3/CosFileTransfer_FileIterator.*
 %{_libdir}/erlang/man/man3/CosFileTransfer_FileTransferSession.*
 %{_libdir}/erlang/man/man3/CosFileTransfer_VirtualFileSystem.*
+%endif
 
 %files cosNotification
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/cosNotification-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/CosNotification.*
 %{_libdir}/erlang/man/man3/CosNotification_AdminPropertiesAdmin.*
 %{_libdir}/erlang/man/man3/cosNotificationApp.*
@@ -1178,10 +1203,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/CosNotifyFilter_FilterAdmin.*
 %{_libdir}/erlang/man/man3/CosNotifyFilter_FilterFactory.*
 %{_libdir}/erlang/man/man3/CosNotifyFilter_MappingFilter.*
+%endif
 
 %files cosProperty
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/cosProperty-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/cosProperty.*
 %{_libdir}/erlang/man/man3/CosPropertyService_PropertiesIterator.*
 %{_libdir}/erlang/man/man3/CosPropertyService_PropertyNamesIterator.*
@@ -1189,20 +1216,24 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/CosPropertyService_PropertySetDef.*
 %{_libdir}/erlang/man/man3/CosPropertyService_PropertySetDefFactory.*
 %{_libdir}/erlang/man/man3/CosPropertyService_PropertySetFactory.*
+%endif
 
 %files cosTime
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/cosTime-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/cosTime.*
 %{_libdir}/erlang/man/man3/CosTimerEvent_TimerEventHandler.*
 %{_libdir}/erlang/man/man3/CosTimerEvent_TimerEventService.*
 %{_libdir}/erlang/man/man3/CosTime_TimeService.*
 %{_libdir}/erlang/man/man3/CosTime_TIO.*
 %{_libdir}/erlang/man/man3/CosTime_UTO.*
+%endif
 
 %files cosTransactions
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/cosTransactions-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/cosTransactions.*
 %{_libdir}/erlang/man/man3/CosTransactions_Control.*
 %{_libdir}/erlang/man/man3/CosTransactions_Coordinator.*
@@ -1211,19 +1242,24 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/CosTransactions_SubtransactionAwareResource.*
 %{_libdir}/erlang/man/man3/CosTransactions_Terminator.*
 %{_libdir}/erlang/man/man3/CosTransactions_TransactionFactory.*
+%endif
 
 %files crypto
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/crypto-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/crypto.*
 %{_libdir}/erlang/man/man6/crypto.*
+%endif
 
 %files debugger
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/debugger-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/debugger.*
 %{_libdir}/erlang/man/man3/i.*
 %{_libdir}/erlang/man/man3/int.*
+%endif
 
 %files dialyzer
 %defattr(-,root,root)
@@ -1231,32 +1267,40 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/bin/dialyzer
 %{_libdir}/erlang/erts-*/bin/dialyzer
 %{_libdir}/erlang/lib/dialyzer-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/dialyzer.*
+%endif
 
 %files doc
 %defattr(-,root,root)
+%if %{with doc}
 %doc %{_docdir}/%{n_uvr}/doc
 %doc %{_docdir}/%{n_uvr}/erts-*/
 %doc %{_docdir}/%{n_uvr}/lib/
+%endif
 
 
 %files docbuilder
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/docbuilder-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/docb_gen.*
 %{_libdir}/erlang/man/man3/docb_transform.*
 %{_libdir}/erlang/man/man3/docb_xml_check.*
 %{_libdir}/erlang/man/man6/docbuilder.*
+%endif
 
 %files edoc
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/edoc-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/edoc.*
 %{_libdir}/erlang/man/man3/edoc_doclet.*
 %{_libdir}/erlang/man/man3/edoc_extract.*
 %{_libdir}/erlang/man/man3/edoc_layout.*
 %{_libdir}/erlang/man/man3/edoc_lib.*
 %{_libdir}/erlang/man/man3/edoc_run.*
+%endif
 
 %files erl_docgen
 %defattr(-,root,root)
@@ -1265,6 +1309,7 @@ rm -rf $RPM_BUILD_ROOT
 %files erl_interface
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/erl_interface-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man1/erl_call.*
 %{_libdir}/erlang/man/man3/ei.*
 %{_libdir}/erlang/man/man3/ei_connect.*
@@ -1276,6 +1321,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/erl_malloc.*
 %{_libdir}/erlang/man/man3/erl_marshal.*
 %{_libdir}/erlang/man/man3/registry.*
+%endif
 
 %files erts
 %defattr(-,root,root)
@@ -1284,12 +1330,14 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/erlang/
 %dir %{_libdir}/erlang/bin/
 %dir %{_libdir}/erlang/lib/
+%if %{with doc}
 %dir %{_libdir}/erlang/man/
 %dir %{_libdir}/erlang/man/man1/
 %dir %{_libdir}/erlang/man/man3/
 %dir %{_libdir}/erlang/man/man4/
 %dir %{_libdir}/erlang/man/man6/
 %dir %{_libdir}/erlang/man/man7/
+%endif
 %dir %{_libdir}/erlang/releases/
 
 %{_bindir}/epmd
@@ -1332,6 +1380,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/erts-*/lib
 %{_libdir}/erlang/erts-*/src
 %{_libdir}/erlang/lib/erts-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man1/epmd.*
 %{_libdir}/erlang/man/man1/erl.*
 %{_libdir}/erlang/man/man1/erlc.*
@@ -1346,6 +1395,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/erts_alloc.*
 %{_libdir}/erlang/man/man3/init.*
 %{_libdir}/erlang/man/man3/zlib.*
+%endif
 %{_libdir}/erlang/releases/*
 %{_libdir}/erlang/usr/
 
@@ -1355,18 +1405,22 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/et-*/ebin
 %{_libdir}/erlang/lib/et-*/include
 %{_libdir}/erlang/lib/et-*/src
+%if %{with doc}
 %{_libdir}/erlang/man/man3/et.*
 %{_libdir}/erlang/man/man3/et_collector.*
 %{_libdir}/erlang/man/man3/et_selector.*
 %{_libdir}/erlang/man/man3/et_viewer.*
+%endif
 
 %files eunit
 %defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/eunit-*/
 %{_libdir}/erlang/lib/eunit-*/ebin
 %{_libdir}/erlang/lib/eunit-*/include
+%if %{with doc}
 %{_libdir}/erlang/man/man3/eunit.*
 %{_libdir}/erlang/man/man3/eunit_surefire.*
+%endif
 
 %files examples
 %defattr(-,root,root)
@@ -1395,7 +1449,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/gs-*/ebin
 %{_libdir}/erlang/lib/gs-*/priv
 %{_libdir}/erlang/lib/gs-*/src
+%if %{with doc}
 %{_libdir}/erlang/man/man3/gs.*
+%endif
 
 %files hipe
 %defattr(-,root,root)
@@ -1408,9 +1464,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/ic-*/include
 %{_libdir}/erlang/lib/ic-*/priv
 %{_libdir}/erlang/lib/ic-*/src
+%if %{with doc}
 %{_libdir}/erlang/man/man3/ic.*
 %{_libdir}/erlang/man/man3/ic_clib.*
 %{_libdir}/erlang/man/man3/ic_c_protocol.*
+%endif
 
 %files inets
 %defattr(-,root,root)
@@ -1418,6 +1476,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/inets-*/ebin
 %{_libdir}/erlang/lib/inets-*/priv
 %{_libdir}/erlang/lib/inets-*/src
+%if %{with doc}
 %{_libdir}/erlang/man/man3/ftp.*
 %{_libdir}/erlang/man/man3/httpc.*
 %{_libdir}/erlang/man/man3/httpd.*
@@ -1430,16 +1489,19 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/mod_esi.*
 %{_libdir}/erlang/man/man3/mod_security.*
 %{_libdir}/erlang/man/man3/tftp.*
+%endif
 
 %files inviso
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/inviso-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/inviso.*
 %{_libdir}/erlang/man/man3/inviso_as_lib.*
 %{_libdir}/erlang/man/man3/inviso_lfm.*
 %{_libdir}/erlang/man/man3/inviso_lfm_tpfreader.*
 %{_libdir}/erlang/man/man3/inviso_rt.*
 %{_libdir}/erlang/man/man3/inviso_rt_meta.*
+%endif
 
 %files jinterface
 %defattr(-,root,root)
@@ -1451,6 +1513,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/kernel-*/ebin
 %{_libdir}/erlang/lib/kernel-*/include
 %{_libdir}/erlang/lib/kernel-*/src
+%if %{with doc}
 %{_libdir}/erlang/man/man3/application.*
 %{_libdir}/erlang/man/man3/auth.*
 %{_libdir}/erlang/man/man3/code.*
@@ -1484,6 +1547,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man4/app.*
 %{_libdir}/erlang/man/man4/config.*
 %{_libdir}/erlang/man/man6/kernel.*
+%endif
 
 %files megaco
 %defattr(-,root,root)
@@ -1492,6 +1556,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/megaco-*/include
 %{_libdir}/erlang/lib/megaco-*/priv
 %{_libdir}/erlang/lib/megaco-*/src
+%if %{with doc}
 %{_libdir}/erlang/man/man3/megaco.*
 %{_libdir}/erlang/man/man3/megaco_codec_meas.*
 %{_libdir}/erlang/man/man3/megaco_codec_mstone1.*
@@ -1504,6 +1569,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/megaco_transport.*
 %{_libdir}/erlang/man/man3/megaco_udp.*
 %{_libdir}/erlang/man/man3/megaco_user.*
+%endif
 
 %files mnesia
 %defattr(-,root,root)
@@ -1511,21 +1577,27 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/mnesia-*/ebin
 %{_libdir}/erlang/lib/mnesia-*/include
 %{_libdir}/erlang/lib/mnesia-*/src
+%if %{with doc}
 %{_libdir}/erlang/man/man3/mnesia.*
 %{_libdir}/erlang/man/man3/mnesia_frag_hash.*
 %{_libdir}/erlang/man/man3/mnesia_registry.*
+%endif
 
 %files observer
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/observer-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/crashdump.*
 %{_libdir}/erlang/man/man3/ttb.*
 %{_libdir}/erlang/man/man6/observer.*
+%endif
 
 %files odbc
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/odbc-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/odbc.*
+%endif
 
 %files orber
 %defattr(-,root,root)
@@ -1536,6 +1608,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/orber-*/java_src
 %{_libdir}/erlang/lib/orber-*/priv
 %{_libdir}/erlang/lib/orber-*/src
+%if %{with doc}
 %{_libdir}/erlang/man/man3/CosNaming.*
 %{_libdir}/erlang/man/man3/CosNaming_BindingIterator.*
 %{_libdir}/erlang/man/man3/CosNaming_NamingContext.*
@@ -1554,51 +1627,66 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/orber_diagnostics.*
 %{_libdir}/erlang/man/man3/orber_ifr.*
 %{_libdir}/erlang/man/man3/orber_tc.*
+%endif
 
 %files os_mon
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/os_mon-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/cpu_sup.*
 %{_libdir}/erlang/man/man3/disksup.*
 %{_libdir}/erlang/man/man3/memsup.*
 %{_libdir}/erlang/man/man3/os_mon_mib.*
 %{_libdir}/erlang/man/man3/os_sup.*
 %{_libdir}/erlang/man/man6/os_mon.*
+%endif
 
 %files otp_mibs
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/otp_mibs-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/otp_mib.*
+%endif
 
 %files parsetools
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/parsetools-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/leex.*
 %{_libdir}/erlang/man/man3/yecc.*
+%endif
 
 %files percept
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/percept-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/egd.*
 %{_libdir}/erlang/man/man3/percept.*
 %{_libdir}/erlang/man/man3/percept_profile.*
+%endif
 
 %files pman
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/pman-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/pman.*
+%endif
 
 %files public_key
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/public_key-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/public_key.*
+%endif
 
 %files reltool
 %defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/reltool-*/
 %{_libdir}/erlang/lib/reltool-*/ebin
 %{_libdir}/erlang/lib/reltool-*/src
+%if %{with doc}
 %{_libdir}/erlang/man/man3/reltool.*
+%endif
 
 %files rpm-macros
 %defattr(-,root,root)
@@ -1611,13 +1699,16 @@ rm -rf $RPM_BUILD_ROOT
 %files runtime_tools
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/runtime_tools-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/dbg.*
 %{_libdir}/erlang/man/man3/erts_alloc_config.*
 %{_libdir}/erlang/man/man6/runtime_tools.*
+%endif
 
 %files sasl
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/sasl-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/alarm_handler.*
 %{_libdir}/erlang/man/man3/overload.*
 %{_libdir}/erlang/man/man3/rb.*
@@ -1628,6 +1719,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man4/relup.*
 %{_libdir}/erlang/man/man4/script.*
 %{_libdir}/erlang/man/man6/sasl.*
+%endif
 
 %files snmp
 %defattr(-,root,root)
@@ -1637,6 +1729,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/snmp-*/mibs
 %{_libdir}/erlang/lib/snmp-*/priv
 %{_libdir}/erlang/lib/snmp-*/src
+%if %{with doc}
 %{_libdir}/erlang/man/man3/snmp.*
 %{_libdir}/erlang/man/man3/snmpa.*
 %{_libdir}/erlang/man/man3/snmpa_conf.*
@@ -1684,15 +1777,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man7/SNMPv2-TM.*
 %{_libdir}/erlang/man/man7/SNMP-VIEW-BASED-ACM-MIB.*
 %{_libdir}/erlang/man/man7/STANDARD-MIB.*
+%endif
 
 %files ssh
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/ssh-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/ssh.*
 %{_libdir}/erlang/man/man3/ssh_channel.*
 %{_libdir}/erlang/man/man3/ssh_connection.*
 %{_libdir}/erlang/man/man3/ssh_sftp.*
 %{_libdir}/erlang/man/man3/ssh_sftpd.*
+%endif
 
 %files ssl
 %defattr(-,root,root)
@@ -1702,9 +1798,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/ssl-*/pkix
 %{_libdir}/erlang/lib/ssl-*/priv
 %{_libdir}/erlang/lib/ssl-*/src
+%if %{with doc}
 %{_libdir}/erlang/man/man3/new_ssl.*
 %{_libdir}/erlang/man/man3/ssl.*
 %{_libdir}/erlang/man/man6/ssl.*
+%endif
 
 %files stdlib
 %defattr(-,root,root)
@@ -1712,6 +1810,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/stdlib-*/ebin
 %{_libdir}/erlang/lib/stdlib-*/include
 %{_libdir}/erlang/lib/stdlib-*/src
+%if %{with doc}
 %{_libdir}/erlang/man/man3/array.*
 %{_libdir}/erlang/man/man3/base64.*
 %{_libdir}/erlang/man/man3/beam_lib.*
@@ -1771,11 +1870,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/unicode.*
 %{_libdir}/erlang/man/man3/zip.*
 %{_libdir}/erlang/man/man6/stdlib.*
+%endif
 
 %files syntax_tools
 %defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/syntax_tools-*/
 %{_libdir}/erlang/lib/syntax_tools-*/ebin
+%if %{with doc}
 %{_libdir}/erlang/man/man3/epp_dodger.*
 %{_libdir}/erlang/man/man3/erl_comment_scan.*
 %{_libdir}/erlang/man/man3/erl_prettypr.*
@@ -1785,18 +1886,23 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/erl_tidy.*
 %{_libdir}/erlang/man/man3/igor.*
 %{_libdir}/erlang/man/man3/prettypr.*
+%endif
 
 %files test_server
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/test_server-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/test_server.*
 %{_libdir}/erlang/man/man3/test_server_ctrl.*
 %{_libdir}/erlang/man/man6/test_server.*
+%endif
 
 %files toolbar
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/toolbar-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/toolbar.*
+%endif
 
 %files tools
 %defattr(-,root,root)
@@ -1806,6 +1912,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/tools-*/emacs
 %{_libdir}/erlang/lib/tools-*/priv
 %{_libdir}/erlang/lib/tools-*/src
+%if %{with doc}
 %{_libdir}/erlang/man/man3/cover.*
 %{_libdir}/erlang/man/man3/cprof.*
 %{_libdir}/erlang/man/man3/eprof.*
@@ -1816,11 +1923,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/make.*
 %{_libdir}/erlang/man/man3/tags.*
 %{_libdir}/erlang/man/man3/xref.*
+%endif
 
 %files tv
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/tv-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/tv.*
+%endif
 
 %files typer
 %defattr(-,root,root)
@@ -1832,8 +1942,10 @@ rm -rf $RPM_BUILD_ROOT
 %files webtool
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/webtool-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man1/start_webtool.*
 %{_libdir}/erlang/man/man3/webtool.*
+%endif
 
 %files wx
 %defattr(-,root,root)
@@ -1842,6 +1954,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/wx-*/include
 %{_libdir}/erlang/lib/wx-*/priv
 %{_libdir}/erlang/lib/wx-*/src
+%if %{with doc}
 %{_libdir}/erlang/man/man3/gl.*
 %{_libdir}/erlang/man/man3/glu.*
 %{_libdir}/erlang/man/man3/wx.*
@@ -2057,10 +2170,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/wxWindowDC.*
 %{_libdir}/erlang/man/man3/wxWindowDestroyEvent.*
 %{_libdir}/erlang/man/man3/wxXmlResource.*
+%endif
 
 %files xmerl
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/xmerl-*/
+%if %{with doc}
 %{_libdir}/erlang/man/man3/xmerl.*
 %{_libdir}/erlang/man/man3/xmerl_eventp.*
 %{_libdir}/erlang/man/man3/xmerl_sax_parser.*
@@ -2068,6 +2183,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/xmerl_xpath.*
 %{_libdir}/erlang/man/man3/xmerl_xs.*
 %{_libdir}/erlang/man/man3/xmerl_xsd.*
+%endif
 
 %files -n emacs-erlang
 %defattr(-,root,root,-)
@@ -2093,6 +2209,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Aug  1 2010 Hans Ulrich Niedermann <hun@n-dimensional.de> - R13B-04.15
+- Implement '--without doc' conditional for faster test builds (#618245).
+
 * Fri Jul 30 2010 Hans Ulrich Niedermann <hun@n-dimensional.de> - R13B-04.14
 - Properly hook up (X)Emacs erlang-mode (#491165)
 
