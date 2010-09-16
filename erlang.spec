@@ -1,4 +1,4 @@
-%global upstream_ver R14A
+%global upstream_ver R14B
 # Do NOT change %%{upstream_rel} unless UPSTREAM has actually changed it!
 %global upstream_rel 0
 
@@ -8,7 +8,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel}.6%{?dist}
+Release:	%{upstream_rel}.1%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -40,6 +40,8 @@ Patch9:		otp-0009-Do-not-install-.bat-files-on-non-win32-machines.patch
 Patch10:	otp-0010-Do-not-install-VxWorks-specific-docs.patch
 # Fedora-specific
 Patch11:	otp-0011-Do-not-install-erlang-sources.patch
+# Will be proposed for inclusion into upstream
+Patch12:	otp-0012-Fix-installation-of-example-file.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	ncurses-devel
@@ -922,6 +924,7 @@ Erlang mode for XEmacs (source lisp files).
 %patch9 -p1 -b .no_win32_bat_files
 %patch10 -p1 -b .no_vxworks_specific
 %patch11 -p1 -b .no_erlang_sources
+%patch12 -p1 -b .install_example_file_properly
 # remove shipped zlib sources
 rm -f erts/emulator/zlib/*.[ch]
 
@@ -1414,6 +1417,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/kernel-*/examples
 %{_libdir}/erlang/lib/megaco-*/examples
 %{_libdir}/erlang/lib/mnesia-*/examples
+%{_libdir}/erlang/lib/observer-*/examples
 %{_libdir}/erlang/lib/orber-*/examples
 %{_libdir}/erlang/lib/reltool-*/examples
 %{_libdir}/erlang/lib/snmp-*/examples
@@ -1780,6 +1784,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with doc}
 %{_libdir}/erlang/man/man3/old_ssl.*
 %{_libdir}/erlang/man/man3/ssl.*
+%{_libdir}/erlang/man/man3/ssl_session_cache_api.*
 %{_libdir}/erlang/man/man6/ssl.*
 %endif
 
@@ -2189,6 +2194,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Sep 16 2010 Peter Lemenkov <lemenkov@gmail.com> - R14B-0.1
+- R14B release
+
 * Mon Aug  2 2010 Hans Ulrich Niedermann <hun@n-dimensional.de> - R14A-0.6
 - Implement '--without doc' conditional for faster test builds (#618245).
 

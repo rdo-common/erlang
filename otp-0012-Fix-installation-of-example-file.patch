@@ -1,0 +1,27 @@
+From ef692abf68c739722e499f9a564eaa510306fdeb Mon Sep 17 00:00:00 2001
+From: Peter Lemenkov <lemenkov@gmail.com>
+Date: Thu, 16 Sep 2010 14:43:19 +0400
+Subject: [PATCH 12/12] Fix installation of example file
+
+Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
+---
+ lib/observer/src/Makefile |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/lib/observer/src/Makefile b/lib/observer/src/Makefile
+index fa5f2d0..c61d157 100644
+--- a/lib/observer/src/Makefile
++++ b/lib/observer/src/Makefile
+@@ -114,7 +114,8 @@ include $(ERL_TOP)/make/otp_release_targets.mk
+ release_spec: opt
+ 	$(INSTALL_DIR) $(RELSYSDIR)/src
+ 	$(INSTALL_DATA) $(INTERNAL_HRL_FILES) $(RELSYSDIR)/src
+-	$(INSTALL_DATA) $(EXAMPLE_FILES) $(RELSYSDIR)/src
++	$(INSTALL_DIR) $(RELSYSDIR)/examples
++	$(INSTALL_DATA) $(EXAMPLE_FILES) $(RELSYSDIR)/examples
+ 	$(INSTALL_DIR) $(RELSYSDIR)/include
+ 	$(INSTALL_DATA) $(HRL_FILES) $(RELSYSDIR)/include
+ 	$(INSTALL_DIR) $(RELSYSDIR)/ebin
+-- 
+1.7.2.3
+

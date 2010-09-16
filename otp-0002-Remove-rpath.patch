@@ -1,7 +1,7 @@
-From b4f00d41b29982a0fb2362b9d63caf78b4c6f83a Mon Sep 17 00:00:00 2001
+From a2e70caa1cf05c1dd8038cda557de60f935d4d6b Mon Sep 17 00:00:00 2001
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Thu, 25 Feb 2010 16:57:43 +0300
-Subject: [PATCH 02/11] Remove rpath
+Subject: [PATCH 02/12] Remove rpath
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 ---
@@ -11,7 +11,7 @@ Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
  3 files changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/lib/crypto/c_src/Makefile.in b/lib/crypto/c_src/Makefile.in
-index e728db1..b797ed7 100644
+index 040adcf..48f931d 100644
 --- a/lib/crypto/c_src/Makefile.in
 +++ b/lib/crypto/c_src/Makefile.in
 @@ -83,7 +83,7 @@ endif
@@ -68,5 +68,5 @@ index 49a209f..5e6c74e 100644
  
  SSL_CC_RUNTIME_LIBRARY_PATH=@SSL_CC_RUNTIME_LIBRARY_PATH@
 -- 
-1.7.0.1
+1.7.2.3
 

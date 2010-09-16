@@ -1,7 +1,7 @@
-From 61a98426e5fdb296b349675a7e0851f515d7df73 Mon Sep 17 00:00:00 2001
+From 307ed0abc8e61a3b7b6af2e979b3a83d8ff81cce Mon Sep 17 00:00:00 2001
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Fri, 18 Jun 2010 23:41:33 +0400
-Subject: [PATCH 05/11] Do not install C sources
+Subject: [PATCH 05/12] Do not install C sources
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 ---
@@ -30,10 +30,10 @@ index 9e9cb18..1d73d3c 100644
  release_docs_spec:
  
 diff --git a/lib/crypto/c_src/Makefile.in b/lib/crypto/c_src/Makefile.in
-index b797ed7..35ff433 100644
+index 48f931d..4a7a183 100644
 --- a/lib/crypto/c_src/Makefile.in
 +++ b/lib/crypto/c_src/Makefile.in
-@@ -126,10 +126,7 @@ docs:
+@@ -136,10 +136,7 @@ docs:
  include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt
@@ -155,10 +155,10 @@ index 5e6c74e..bf4843b 100644
  release_docs_spec:
  
 diff --git a/lib/tools/c_src/Makefile.in b/lib/tools/c_src/Makefile.in
-index e6b76e2..86da1b7 100644
+index 65a7f5f..144c1ba 100644
 --- a/lib/tools/c_src/Makefile.in
 +++ b/lib/tools/c_src/Makefile.in
-@@ -189,8 +189,6 @@ include ../vsn.mk
+@@ -190,8 +190,6 @@ include ../vsn.mk
  RELSYSDIR = $(RELEASE_PATH)/lib/tools-$(TOOLS_VSN)
  
  release_spec: all
@@ -168,5 +168,5 @@ index e6b76e2..86da1b7 100644
  	$(INSTALL_DIR) $(RELSYSDIR)/bin
  	$(INSTALL_PROGRAM) $(PROGS) $(RELSYSDIR)/bin
 -- 
-1.7.0.1
+1.7.2.3
 

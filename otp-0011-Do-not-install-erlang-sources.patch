@@ -1,7 +1,7 @@
-From 2eabfcf4bbbf8d809c2c58926634ba3f0a8200ab Mon Sep 17 00:00:00 2001
+From dcf186ea937a12d3aa28adc2431774bc56b43335 Mon Sep 17 00:00:00 2001
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Sat, 19 Jun 2010 13:21:10 +0400
-Subject: [PATCH 11/11] Do not install erlang sources
+Subject: [PATCH 11/12] Do not install erlang sources
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 ---
@@ -784,10 +784,10 @@ index e573e57..bdbced1 100644
  	$(INSTALL_DATA) $(TARGET_FILES) $(TARGET_TOOLBOX_FILES) $(RELSYSDIR)/ebin
  
 diff --git a/lib/public_key/src/Makefile b/lib/public_key/src/Makefile
-index c30399f..36a5020 100644
+index 51f4053..6179e0a 100644
 --- a/lib/public_key/src/Makefile
 +++ b/lib/public_key/src/Makefile
-@@ -47,8 +47,6 @@ MODULES = \
+@@ -46,8 +46,6 @@ MODULES = \
  
  HRL_FILES = $(INCLUDE)/public_key.hrl
  
@@ -796,7 +796,7 @@ index c30399f..36a5020 100644
  ERL_FILES = $(MODULES:%=%.erl)
  
  TARGET_FILES= $(MODULES:%=$(EBIN)/%.$(EMULATOR))
-@@ -101,8 +99,6 @@ $(APPUP_TARGET):	$(APPUP_SRC) ../vsn.mk
+@@ -100,8 +98,6 @@ $(APPUP_TARGET):	$(APPUP_SRC) ../vsn.mk
  include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt
@@ -960,7 +960,7 @@ index 50369e6..12c6db4 100644
  release_docs_spec:
  
 diff --git a/lib/test_server/src/Makefile b/lib/test_server/src/Makefile
-index d55a3a5..9b03f8f 100644
+index 3dca551..217129b 100644
 --- a/lib/test_server/src/Makefile
 +++ b/lib/test_server/src/Makefile
 @@ -125,7 +125,6 @@ include $(ERL_TOP)/make/otp_release_targets.mk
@@ -1068,5 +1068,5 @@ index 7009b50..c9c7303 100644
  	$(INSTALL_DATA) $(HRL_FILES) $(RELSYSDIR)/include
  
 -- 
-1.7.0.1
+1.7.2.3
 

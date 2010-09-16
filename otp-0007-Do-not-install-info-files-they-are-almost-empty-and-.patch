@@ -1,7 +1,7 @@
-From 7741f154a2200d1d437991aa4148a99d6ba62f57 Mon Sep 17 00:00:00 2001
+From 71b4e3a73fff283fcf97bfd2f570a5b071a7ae40 Mon Sep 17 00:00:00 2001
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Sat, 19 Jun 2010 09:29:12 +0400
-Subject: [PATCH 07/11] Do not install info files - they are almost empty and useless
+Subject: [PATCH 07/12] Do not install info files - they are almost empty and useless
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 ---
@@ -1638,10 +1638,10 @@ index 41a2a2c..0000000
 -short: Secure Shell application with sftp and ssh support
 \ No newline at end of file
 diff --git a/lib/ssl/doc/src/Makefile b/lib/ssl/doc/src/Makefile
-index d6788c1..acd4a89 100644
+index 3119d37..b092eeb 100644
 --- a/lib/ssl/doc/src/Makefile
 +++ b/lib/ssl/doc/src/Makefile
-@@ -66,7 +66,6 @@ XML_FLAGS += -defs cite cite.defs -booksty otpA4
+@@ -64,7 +64,6 @@ XML_FLAGS += -defs cite cite.defs -booksty otpA4
  HTML_FILES = $(XML_APPLICATION_FILES:%.xml=$(HTMLDIR)/%.html) \
  	$(XML_PART_FILES:%.xml=$(HTMLDIR)/%.html)
  
@@ -1649,7 +1649,7 @@ index d6788c1..acd4a89 100644
  EXTRA_FILES = \
  	$(DEFAULT_GIF_FILES) \
  	$(DEFAULT_HTML_FILES) \
-@@ -124,7 +123,6 @@ release_docs_spec: docs
+@@ -122,7 +121,6 @@ release_docs_spec: docs
  	$(INSTALL_DIR) $(RELSYSDIR)/doc/html
  	$(INSTALL_DATA) $(HTMLDIR)/* \
  		$(RELSYSDIR)/doc/html
@@ -1955,5 +1955,5 @@ index 81d16ab..0000000
 -group: comm
 -short: Provides support for XML 1.0
 -- 
-1.7.0.1
+1.7.2.3
 

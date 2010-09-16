@@ -1,7 +1,7 @@
-From 062aaa0c3f0926a8b57173686985bd3aa74e2435 Mon Sep 17 00:00:00 2001
+From 49170da856728f50c5e5eea9a062ee6cf9718cc3 Mon Sep 17 00:00:00 2001
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Fri, 16 Apr 2010 21:13:47 +0400
-Subject: [PATCH 04/11] Fix for dlopening libGL and libGLU
+Subject: [PATCH 04/12] Fix for dlopening libGL and libGLU
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 ---
@@ -31,5 +31,5 @@ index 63dd68f..36bf15f 100644
  #endif
    // fprintf(stderr, "Loading GL: %s\r\n", (const char*)DLName);
 -- 
-1.7.0.1
+1.7.2.3
 

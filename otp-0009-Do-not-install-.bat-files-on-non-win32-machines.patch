@@ -1,7 +1,7 @@
-From 93181c4ef2ddac536849c1abb36ab4a2dd16efba Mon Sep 17 00:00:00 2001
+From 5d52142fcfa2b4a776f80592ae0033e17628adb7 Mon Sep 17 00:00:00 2001
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Sat, 19 Jun 2010 10:25:29 +0400
-Subject: [PATCH 09/11] Do not install *.bat files on non-win32 machines
+Subject: [PATCH 09/12] Do not install *.bat files on non-win32 machines
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 ---
@@ -51,5 +51,5 @@ index 56ab772..c29e912 100644
  # ----------------------------------------------------
  # FLAGS
 -- 
-1.7.0.1
+1.7.2.3
 
