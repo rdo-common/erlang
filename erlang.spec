@@ -8,7 +8,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel}.1%{?dist}
+Release:	%{upstream_rel}.1%{?dist}.1
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -2194,6 +2194,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Sep 29 2010 jkeating - R14B-0.1.1
+- Rebuilt for gcc bug 634757
+
 * Thu Sep 16 2010 Peter Lemenkov <lemenkov@gmail.com> - R14B-0.1
 - R14B release
 
