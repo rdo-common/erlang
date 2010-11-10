@@ -8,13 +8,17 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel}.1%{?dist}.1
+Release:	%{upstream_rel}.2%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
 License:	ERPL
 URL:		http://www.erlang.org
 Source0:	http://www.erlang.org/download/otp_src_%{upstream_ver}.tar.gz
+%if 0%{?el4}%{?el5}
+Source1:	http://erlang.org/download/otp_doc_html_R14B.tar.gz
+Source2:	http://erlang.org/download/otp_doc_man_R14B.tar.gz
+%endif
 Source3:	erlang-find-provides.escript
 Source4:	erlang-find-provides.sh
 Source5:	erlang-find-requires.escript
@@ -49,15 +53,21 @@ BuildRequires:	openssl-devel
 BuildRequires:	zlib-devel
 BuildRequires:	flex
 BuildRequires:	m4
+%if %{with doc}
+%if 0%{?el6}%{?fedora}
 BuildRequires:	fop
 BuildRequires:	libxslt
 # Required for building docs (escript)
 BuildRequires:	erlang
+%endif
+%endif
 
+%if 0%{?el6}%{?fedora}
 BuildRequires:	emacs
 BuildRequires:	xemacs
 BuildRequires:	emacs-el
 BuildRequires:	xemacs-packages-extra-el
+%endif
 
 Requires: erlang-appmon = %{version}-%{release}
 Requires: erlang-asn1 = %{version}-%{release}
@@ -100,7 +110,9 @@ Requires: erlang-percept = %{version}-%{release}
 Requires: erlang-pman = %{version}-%{release}
 Requires: erlang-public_key = %{version}-%{release}
 Requires: erlang-reltool = %{version}-%{release}
+%if 0%{?el6}%{?fedora}
 Requires: erlang-rpm-macros = %{version}-%{release}
+%endif
 Requires: erlang-runtime_tools = %{version}-%{release}
 Requires: erlang-sasl = %{version}-%{release}
 Requires: erlang-snmp = %{version}-%{release}
@@ -320,7 +332,9 @@ A DIscrepany AnaLYZer for ERlang programs.
 %package doc
 Summary:	Erlang documentation
 Group:		Development/Languages
+%if 0%{?el6}%{?fedora}
 BuildArch:	noarch
+%endif
 Requires:	%{name} = %{version}-%{release}
 Obsoletes:	%{name}-doc < R13B-04.4
 
@@ -486,7 +500,13 @@ Summary:	A library for accessing Java from Erlang
 Group:		Development/Languages
 Requires:	%{name}-erts = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
+%if 0%{?el4}%{?el5}
+#%if 0%{?el5}
+BuildRequires:	java-1.4.2-gcj-compat-devel
+#BuildRequires:	java-1.5.0-gcj-devel
+%else
 BuildRequires:	java-1.6.0-openjdk-devel
+%endif
 
 %description jinterface
 Low level interface to Java.
@@ -668,6 +688,7 @@ dependencies and enables interactive customization of a
 target system. The backend provides a batch interface
 for generation of customized target systems.
 
+%if 0%{?el6}%{?fedora}
 %package rpm-macros
 Summary:	Necessary macros for building Erlang
 Group:		Development/Languages
@@ -675,6 +696,7 @@ Obsoletes:	%{name} < R13B-04.5
 
 %description rpm-macros
 Necessary macros for building Erlang.
+%endif
 
 %package runtime_tools
 Summary:	A set of tools to include in a production system
@@ -874,6 +896,7 @@ Obsoletes:	%{name} < R13B-04.5
 %description xmerl
 Provides support for XML 1.0.
 
+%if 0%{?el6}%{?fedora}
 %package -n emacs-erlang
 Summary:	Compiled elisp files for erlang-mode under GNU Emacs
 Requires:	emacs-common-erlang = %{version}-%{release}
@@ -911,6 +934,7 @@ BuildArch:	noarch
 
 %description -n xemacs-erlang-el
 Erlang mode for XEmacs (source lisp files).
+%endif
 
 %prep
 %setup -q -n otp_src_%{upstream_ver}
@@ -949,6 +973,7 @@ CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing" %configure --enable-shared-zlib
 # GNU Emacs/XEmacs related stuff
 erlang_tools_vsn="$(sed -n 's/TOOLS_VSN = //p' lib/tools/vsn.mk)"
 
+%if 0%{?el6}%{?fedora}
 # GNU Emacs related stuff
 cat > emacs-erlang-init.el << EOF
 (setq load-path (cons "%{_emacs_sitelispdir}/erlang" load-path))
@@ -975,16 +1000,20 @@ rm -f xemacs-erlang/erlang-flymake.el
 pushd xemacs-erlang
 %{_xemacs_bytecompile} *.el
 popd
+%endif
 
 make
 %if %{with doc}
+%if 0%{?el6}%{?fedora}
 make docs
+%endif
 %endif
 
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
+%if 0%{?el6}%{?fedora}
 # GNU Emacs/XEmacs related stuff
 erlang_tools_vsn="$(sed -n 's/TOOLS_VSN = //p' lib/tools/vsn.mk)"
 
@@ -1010,10 +1039,24 @@ for f in lib/tools/emacs/{README,*.el}; do
 done
 rm -f "$RPM_BUILD_ROOT%{_xemacs_sitelispdir}/erlang/erlang-flymake.el"
 install -m 0644 xemacs-erlang/*.elc "$RPM_BUILD_ROOT%{_xemacs_sitelispdir}/erlang/"
+%endif
 
 make DESTDIR=$RPM_BUILD_ROOT install
 %if %{with doc}
+%if 0%{?el5}
+# extract prebuilt docs and man-pages
+tar xf %{SOURCE1} -C $RPM_BUILD_ROOT%{_libdir}/erlang
+tar xf %{SOURCE2} -C $RPM_BUILD_ROOT%{_libdir}/erlang
+# rm Win32-specific functionality
+rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/man/man3/nteventlog.*
+# rm VxWorks specific
+rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/man/man3/erl_set_memory_block.*
+# rm unneeded files
+rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/erts-*/info
+rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/*-*/info
+%else
 make DESTDIR=$RPM_BUILD_ROOT install-docs
+%endif
 %endif
 
 # fix 0775 permission on some directories
@@ -1045,12 +1088,14 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/man/man3/win32reg.*
 # remove empty directory
 rm -r $RPM_BUILD_ROOT%{_libdir}/erlang/erts-*/man
 
+%if 0%{?el6}%{?fedora}
 # Install RPM related files
 install -D -p -m 0755 %{SOURCE3} $RPM_BUILD_ROOT%{_rpmconfigdir}/erlang-find-provides.escript
 install -D -p -m 0755 %{SOURCE4} $RPM_BUILD_ROOT%{_rpmconfigdir}/erlang-find-provides.sh
 install -D -p -m 0755 %{SOURCE5} $RPM_BUILD_ROOT%{_rpmconfigdir}/erlang-find-requires.escript
 install -D -p -m 0755 %{SOURCE6} $RPM_BUILD_ROOT%{_rpmconfigdir}/erlang-find-requires.sh
 install -D -p -m 0644 %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/rpm/macros.erlang
+%endif
 
 # remove outdated script
 rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/Install
@@ -1673,6 +1718,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/reltool.*
 %endif
 
+%if 0%{?el6}%{?fedora}
 %files rpm-macros
 %defattr(-,root,root)
 %{_sysconfdir}/rpm/macros.erlang
@@ -1680,6 +1726,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_rpmconfigdir}/erlang-find-provides.sh
 %{_rpmconfigdir}/erlang-find-requires.escript
 %{_rpmconfigdir}/erlang-find-requires.sh
+%endif
 
 %files runtime_tools
 %defattr(-,root,root)
@@ -2170,6 +2217,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/xmerl_xsd.*
 %endif
 
+%if 0%{?el6}%{?fedora}
 %files -n emacs-erlang
 %defattr(-,root,root,-)
 %dir %{_emacs_sitelispdir}/erlang
@@ -2191,9 +2239,15 @@ rm -rf $RPM_BUILD_ROOT
 %files -n xemacs-erlang-el
 %defattr(-,root,root,-)
 %{_xemacs_sitelispdir}/erlang/*.el
+%endif
 
 
 %changelog
+* Fri Nov  5 2010 Peter Lemenkov <lemenkov@gmail.com> - R14B-0.2
+- Fixed doc-files and man-pages instalation for EL-5
+- Temporarily (I hope) disabled emacs-related stuff in EL-5
+- Disable erlang-rpm-macros subpackage for EL-5
+
 * Wed Sep 29 2010 jkeating - R14B-0.1.1
 - Rebuilt for gcc bug 634757
 
