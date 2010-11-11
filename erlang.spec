@@ -8,7 +8,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel}.2%{?dist}
+Release:	%{upstream_rel}.3%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -969,6 +969,9 @@ CFLAGS="$RPM_OPT_FLAGS -mcpu=ultrasparc -fno-strict-aliasing" %configure --enabl
 %else
 CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing" %configure --enable-shared-zlib
 %endif
+
+# remove pre-built stuff
+make clean
 
 # GNU Emacs/XEmacs related stuff
 erlang_tools_vsn="$(sed -n 's/TOOLS_VSN = //p' lib/tools/vsn.mk)"
@@ -2243,6 +2246,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Nov 11 2010 Peter Lemenkov <lemenkov@gmail.com> - R14B-0.3
+- Remove pre-built stuff
+
 * Fri Nov  5 2010 Peter Lemenkov <lemenkov@gmail.com> - R14B-0.2
 - Fixed doc-files and man-pages instalation for EL-5
 - Temporarily (I hope) disabled emacs-related stuff in EL-5
