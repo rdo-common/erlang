@@ -8,7 +8,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel}.3%{?dist}
+Release:	%{upstream_rel}.4%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -19,11 +19,6 @@ Source0:	http://www.erlang.org/download/otp_src_%{upstream_ver}.tar.gz
 Source1:	http://erlang.org/download/otp_doc_html_R14B.tar.gz
 Source2:	http://erlang.org/download/otp_doc_man_R14B.tar.gz
 %endif
-Source3:	erlang-find-provides.escript
-Source4:	erlang-find-provides.sh
-Source5:	erlang-find-requires.escript
-Source6:	erlang-find-requires.sh
-Source7:	macros.erlang
 # Fedora-specific
 Patch1:		otp-0001-Do-not-format-man-pages-and-do-not-install-miscellan.patch
 # Fedora-specific
@@ -110,9 +105,6 @@ Requires: erlang-percept = %{version}-%{release}
 Requires: erlang-pman = %{version}-%{release}
 Requires: erlang-public_key = %{version}-%{release}
 Requires: erlang-reltool = %{version}-%{release}
-%if 0%{?el6}%{?fedora}
-Requires: erlang-rpm-macros = %{version}-%{release}
-%endif
 Requires: erlang-runtime_tools = %{version}-%{release}
 Requires: erlang-sasl = %{version}-%{release}
 Requires: erlang-snmp = %{version}-%{release}
@@ -501,9 +493,15 @@ Group:		Development/Languages
 Requires:	%{name}-erts = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 %if 0%{?el4}%{?el5}
-#%if 0%{?el5}
+%if 0%{?el5}
+%ifarch %{ix86} x86_64
+BuildRequires:	java-1.6.0-openjdk-devel
+%else
 BuildRequires:	java-1.4.2-gcj-compat-devel
-#BuildRequires:	java-1.5.0-gcj-devel
+%endif
+%else
+BuildRequires:	java-1.4.2-gcj-compat-devel
+%endif
 %else
 BuildRequires:	java-1.6.0-openjdk-devel
 %endif
@@ -687,16 +685,6 @@ between applications. The graphical frontend depicts the
 dependencies and enables interactive customization of a
 target system. The backend provides a batch interface
 for generation of customized target systems.
-
-%if 0%{?el6}%{?fedora}
-%package rpm-macros
-Summary:	Necessary macros for building Erlang
-Group:		Development/Languages
-Obsoletes:	%{name} < R13B-04.5
-
-%description rpm-macros
-Necessary macros for building Erlang.
-%endif
 
 %package runtime_tools
 Summary:	A set of tools to include in a production system
@@ -1090,15 +1078,6 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/man/man3/win32reg.*
 
 # remove empty directory
 rm -r $RPM_BUILD_ROOT%{_libdir}/erlang/erts-*/man
-
-%if 0%{?el6}%{?fedora}
-# Install RPM related files
-install -D -p -m 0755 %{SOURCE3} $RPM_BUILD_ROOT%{_rpmconfigdir}/erlang-find-provides.escript
-install -D -p -m 0755 %{SOURCE4} $RPM_BUILD_ROOT%{_rpmconfigdir}/erlang-find-provides.sh
-install -D -p -m 0755 %{SOURCE5} $RPM_BUILD_ROOT%{_rpmconfigdir}/erlang-find-requires.escript
-install -D -p -m 0755 %{SOURCE6} $RPM_BUILD_ROOT%{_rpmconfigdir}/erlang-find-requires.sh
-install -D -p -m 0644 %{SOURCE7} $RPM_BUILD_ROOT%{_sysconfdir}/rpm/macros.erlang
-%endif
 
 # remove outdated script
 rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/Install
@@ -1721,16 +1700,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/reltool.*
 %endif
 
-%if 0%{?el6}%{?fedora}
-%files rpm-macros
-%defattr(-,root,root)
-%{_sysconfdir}/rpm/macros.erlang
-%{_rpmconfigdir}/erlang-find-provides.escript
-%{_rpmconfigdir}/erlang-find-provides.sh
-%{_rpmconfigdir}/erlang-find-requires.escript
-%{_rpmconfigdir}/erlang-find-requires.sh
-%endif
-
 %files runtime_tools
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/runtime_tools-*/
@@ -2246,6 +2215,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Nov 15 2010 Peter Lemenkov <lemenkov@gmail.com> - R14B-0.4
+- No more dependent on erlang-rpm-macros sub-package
+
 * Thu Nov 11 2010 Peter Lemenkov <lemenkov@gmail.com> - R14B-0.3
 - Remove pre-built stuff
 
