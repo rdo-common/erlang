@@ -8,16 +8,16 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel}.4%{?dist}
+Release:	%{upstream_rel}.5%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
 License:	ERPL
 URL:		http://www.erlang.org
 Source0:	http://www.erlang.org/download/otp_src_%{upstream_ver}.tar.gz
-%if 0%{?el4}%{?el5}
-Source1:	http://erlang.org/download/otp_doc_html_R14B.tar.gz
-Source2:	http://erlang.org/download/otp_doc_man_R14B.tar.gz
+%if 0%{?el4}%{?el5}%{?el6}
+Source1:	http://erlang.org/download/otp_doc_html_%{upstream_ver}.tar.gz
+Source2:	http://erlang.org/download/otp_doc_man_%{upstream_ver}.tar.gz
 %endif
 # Fedora-specific
 Patch1:		otp-0001-Do-not-format-man-pages-and-do-not-install-miscellan.patch
@@ -39,8 +39,10 @@ Patch9:		otp-0009-Do-not-install-.bat-files-on-non-win32-machines.patch
 Patch10:	otp-0010-Do-not-install-VxWorks-specific-docs.patch
 # Fedora-specific
 Patch11:	otp-0011-Do-not-install-erlang-sources.patch
-# Will be proposed for inclusion into upstream
+# Backported from upstream
 Patch12:	otp-0012-Fix-installation-of-example-file.patch
+# Required for RHEL 5,6 for PowerPC only
+Patch13:	otp-0013-Ugly-workaround-for-java-1.5.0-gcj-which-doesn-t-sup.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	ncurses-devel
@@ -49,7 +51,7 @@ BuildRequires:	zlib-devel
 BuildRequires:	flex
 BuildRequires:	m4
 %if %{with doc}
-%if 0%{?el6}%{?fedora}
+%if 0%{?fedora}
 BuildRequires:	fop
 BuildRequires:	libxslt
 # Required for building docs (escript)
@@ -492,18 +494,14 @@ Summary:	A library for accessing Java from Erlang
 Group:		Development/Languages
 Requires:	%{name}-erts = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
-%if 0%{?el4}%{?el5}
-%if 0%{?el5}
+%if 0%{?fedora}
+BuildRequires:	java-1.6.0-openjdk-devel
+%else
 %ifarch %{ix86} x86_64
 BuildRequires:	java-1.6.0-openjdk-devel
 %else
-BuildRequires:	java-1.4.2-gcj-compat-devel
+BuildRequires:	java-1.5.0-gcj-devel
 %endif
-%else
-BuildRequires:	java-1.4.2-gcj-compat-devel
-%endif
-%else
-BuildRequires:	java-1.6.0-openjdk-devel
 %endif
 
 %description jinterface
@@ -937,6 +935,11 @@ Erlang mode for XEmacs (source lisp files).
 %patch10 -p1 -b .no_vxworks_specific
 %patch11 -p1 -b .no_erlang_sources
 %patch12 -p1 -b .install_example_file_properly
+%if 0%{?el4}%{?el5}%{?el6}
+%ifnarch %{ix86} x86_64
+%patch13 -p1 -b .no_unicode_in_java-150-gcj_for_ppc
+%endif
+%endif
 # remove shipped zlib sources
 rm -f erts/emulator/zlib/*.[ch]
 
@@ -995,7 +998,7 @@ popd
 
 make
 %if %{with doc}
-%if 0%{?el6}%{?fedora}
+%if 0%{?fedora}
 make docs
 %endif
 %endif
@@ -1034,7 +1037,7 @@ install -m 0644 xemacs-erlang/*.elc "$RPM_BUILD_ROOT%{_xemacs_sitelispdir}/erlan
 
 make DESTDIR=$RPM_BUILD_ROOT install
 %if %{with doc}
-%if 0%{?el5}
+%if 0%{?el4}%{?el5}%{?el6}
 # extract prebuilt docs and man-pages
 tar xf %{SOURCE1} -C $RPM_BUILD_ROOT%{_libdir}/erlang
 tar xf %{SOURCE2} -C $RPM_BUILD_ROOT%{_libdir}/erlang
@@ -2215,6 +2218,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Nov 18 2010 Peter Lemenkov <lemenkov@gmail.com> - R14B-0.5
+- Fixed building on EL-6
+
 * Mon Nov 15 2010 Peter Lemenkov <lemenkov@gmail.com> - R14B-0.4
 - No more dependent on erlang-rpm-macros sub-package
 

@@ -1,0 +1,63 @@
+From d3ad001ea7a026eb07528fe8bf27f605297f5555 Mon Sep 17 00:00:00 2001
+From: Peter Lemenkov <lemenkov@gmail.com>
+Date: Sun, 21 Nov 2010 00:17:49 +0300
+Subject: [PATCH 13/13] Ugly workaround for java-1.5.0-gcj which doesn't support UNICODE fully
+
+Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
+---
+ .../com/ericsson/otp/erlang/OtpErlangList.java     |   14 +-------------
+ .../com/ericsson/otp/erlang/OtpInputStream.java    |   13 ++-----------
+ 2 files changed, 3 insertions(+), 24 deletions(-)
+
+diff --git a/lib/jinterface/java_src/com/ericsson/otp/erlang/OtpErlangList.java b/lib/jinterface/java_src/com/ericsson/otp/erlang/OtpErlangList.java
+index 3456fd7..86cd411 100644
+--- a/lib/jinterface/java_src/com/ericsson/otp/erlang/OtpErlangList.java
++++ b/lib/jinterface/java_src/com/ericsson/otp/erlang/OtpErlangList.java
+@@ -389,19 +389,7 @@ public class OtpErlangList extends OtpErlangObject implements
+      */
+ 
+     public String stringValue() throws OtpErlangException {
+-	if (! isProper()) {
+-	    throw new OtpErlangException("Non-proper list: " + this);
+-	}
+-	final int[] values = new int[arity()];
+-	for (int i = 0; i < values.length; ++i) {
+-	    final OtpErlangObject o = elementAt(i);
+-	    if (! (o instanceof OtpErlangLong)) {
+-		throw new OtpErlangException("Non-integer term: " + o);
+-	    }
+-	    final OtpErlangLong l = (OtpErlangLong) o;
+-	    values[i] = l.intValue();
+-	}
+-	return new String(values, 0, values.length);
++	throw new OtpErlangException("No UNICODE support in java-1.5.0-gcj");
+     }
+ 
+ 
+diff --git a/lib/jinterface/java_src/com/ericsson/otp/erlang/OtpInputStream.java b/lib/jinterface/java_src/com/ericsson/otp/erlang/OtpInputStream.java
+index b9b4348..c11702c 100644
+--- a/lib/jinterface/java_src/com/ericsson/otp/erlang/OtpInputStream.java
++++ b/lib/jinterface/java_src/com/ericsson/otp/erlang/OtpInputStream.java
+@@ -1074,17 +1074,8 @@ public class OtpInputStream extends ByteArrayInputStream {
+ 	case OtpExternal.nilTag:
+ 	    return "";
+ 	case OtpExternal.listTag: // List when unicode +
+-	    len = read4BE();
+-	    intbuf = new int[len];
+-	    for (int i = 0; i < len; i++) {
+-		intbuf[i] = read_int();
+-		if (! OtpErlangString.isValidCodePoint(intbuf[i])) {
+-		    throw new OtpErlangDecodeException
+-			("Invalid CodePoint: " + intbuf[i]);
+-		}
+-	    }
+-	    read_nil();
+-	    return new String(intbuf, 0, intbuf.length);
++	    throw new OtpErlangDecodeException(
++		    "No UNICODE support in java-1.5.0-gcj");
+ 	default:
+ 	    throw new OtpErlangDecodeException(
+ 		    "Wrong tag encountered, expected " + OtpExternal.stringTag
+-- 
+1.7.3.2
+
