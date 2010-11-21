@@ -1,7 +1,7 @@
 From 552623edb7fd3124d0a0e82304b744d77eddc69b Mon Sep 17 00:00:00 2001
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Sat, 19 Jun 2010 09:59:39 +0400
-Subject: [PATCH 08/12] Do not install nteventlog and related doc-files on non-win32 systems
+Subject: [PATCH 08/13] Do not install nteventlog and related doc-files on non-win32 systems
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 ---
@@ -64,5 +64,5 @@ index 9a75446..a492a63 100644
  $(APPUP_TARGET): $(APPUP_SRC) ../vsn.mk
  	sed -e 's;%VSN%;$(VSN);' $< > $@
 -- 
-1.7.2.3
+1.7.3.2
 

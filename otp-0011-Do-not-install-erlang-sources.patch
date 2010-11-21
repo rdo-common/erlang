@@ -1,7 +1,7 @@
 From dcf186ea937a12d3aa28adc2431774bc56b43335 Mon Sep 17 00:00:00 2001
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Sat, 19 Jun 2010 13:21:10 +0400
-Subject: [PATCH 11/12] Do not install erlang sources
+Subject: [PATCH 11/13] Do not install erlang sources
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 ---
@@ -1068,5 +1068,5 @@ index 7009b50..c9c7303 100644
  	$(INSTALL_DATA) $(HRL_FILES) $(RELSYSDIR)/include
  
 -- 
-1.7.2.3
+1.7.3.2
 

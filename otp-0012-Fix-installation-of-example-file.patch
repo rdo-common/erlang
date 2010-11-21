@@ -1,7 +1,7 @@
 From ef692abf68c739722e499f9a564eaa510306fdeb Mon Sep 17 00:00:00 2001
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Thu, 16 Sep 2010 14:43:19 +0400
-Subject: [PATCH 12/12] Fix installation of example file
+Subject: [PATCH 12/13] Fix installation of example file
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 ---
@@ -23,5 +23,5 @@ index fa5f2d0..c61d157 100644
  	$(INSTALL_DATA) $(HRL_FILES) $(RELSYSDIR)/include
  	$(INSTALL_DIR) $(RELSYSDIR)/ebin
 -- 
-1.7.2.3
+1.7.3.2
 

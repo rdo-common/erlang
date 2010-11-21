@@ -1,7 +1,7 @@
 From 71b4e3a73fff283fcf97bfd2f570a5b071a7ae40 Mon Sep 17 00:00:00 2001
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Sat, 19 Jun 2010 09:29:12 +0400
-Subject: [PATCH 07/12] Do not install info files - they are almost empty and useless
+Subject: [PATCH 07/13] Do not install info files - they are almost empty and useless
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 ---
@@ -1955,5 +1955,5 @@ index 81d16ab..0000000
 -group: comm
 -short: Provides support for XML 1.0
 -- 
-1.7.2.3
+1.7.3.2
 
