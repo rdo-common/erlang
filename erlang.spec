@@ -1,23 +1,32 @@
 %global upstream_ver R14B
 # Do NOT change %%{upstream_rel} unless UPSTREAM has actually changed it!
-%global upstream_rel 0
+%global upstream_rel 01
+#global upstream_rel %{nil}
+# Use %%{nil} for %%{upstream_rel} for tracking source like otp_src_R14B.tar.gz,
+# and 01 %%{upstream_rel} for tracking source like otp_src_R14B01.tar.gz.
+
+%if 0%{upstream_rel}
+%global upstream_rel_for_rpm %{upstream_rel}
+%else
+%global upstream_rel_for_rpm 0
+%endif
 
 %bcond_without doc
 
-%global n_uvr %{name}-%{upstream_ver}-%{upstream_rel}
+%global n_uvr %{name}-%{upstream_ver}-%{upstream_rel_for_rpm}
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel}.5%{?dist}
+Release:	%{upstream_rel_for_rpm}.1%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
 License:	ERPL
 URL:		http://www.erlang.org
-Source0:	http://www.erlang.org/download/otp_src_%{upstream_ver}.tar.gz
+Source0:	http://www.erlang.org/download/otp_src_%{upstream_ver}%{upstream_rel}.tar.gz
 %if 0%{?el4}%{?el5}%{?el6}
-Source1:	http://erlang.org/download/otp_doc_html_%{upstream_ver}.tar.gz
-Source2:	http://erlang.org/download/otp_doc_man_%{upstream_ver}.tar.gz
+Source1:	http://erlang.org/download/otp_doc_html_%{upstream_ver}%{upstream_rel}.tar.gz
+Source2:	http://erlang.org/download/otp_doc_man_%{upstream_ver}%{upstream_rel}.tar.gz
 %endif
 # For the source of the Fedora specific patches, see the respective
 # branch at https://github.com/lemenkov/otp
@@ -925,7 +934,7 @@ Erlang mode for XEmacs (source lisp files).
 %endif
 
 %prep
-%setup -q -n otp_src_%{upstream_ver}
+%setup -q -n otp_src_%{upstream_ver}%{upstream_rel}
 %patch1 -p1 -b .do_not_format_manpages
 %patch2 -p1 -b .rpath
 %patch4 -p1 -b .dlopen_opengl_libs
@@ -2220,6 +2229,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Dec 13 2010 Hans Ulrich Niedermann <hun@n-dimensional.de> - R14B-01.1
+- Update to upstream release R14B01 (the patches still need work)
+
 * Thu Nov 18 2010 Peter Lemenkov <lemenkov@gmail.com> - R14B-0.5
 - Fixed building on EL-6
 
