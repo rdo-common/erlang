@@ -19,6 +19,8 @@ Source0:	http://www.erlang.org/download/otp_src_%{upstream_ver}.tar.gz
 Source1:	http://erlang.org/download/otp_doc_html_%{upstream_ver}.tar.gz
 Source2:	http://erlang.org/download/otp_doc_man_%{upstream_ver}.tar.gz
 %endif
+# For the source of the Fedora specific patches, see the respective
+# branch at https://github.com/lemenkov/otp
 # Fedora-specific
 Patch1:		otp-0001-Do-not-format-man-pages-and-do-not-install-miscellan.patch
 # Fedora-specific
