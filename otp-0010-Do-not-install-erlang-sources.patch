@@ -1,7 +1,7 @@
-From dcf186ea937a12d3aa28adc2431774bc56b43335 Mon Sep 17 00:00:00 2001
+From 31648032919445e22066c83891dca60c1eb2fae6 Mon Sep 17 00:00:00 2001
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Sat, 19 Jun 2010 13:21:10 +0400
-Subject: [PATCH 11/13] Do not install erlang sources
+Subject: [PATCH 10/11] Do not install erlang sources
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 ---
@@ -82,10 +82,10 @@ Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
  74 files changed, 58 insertions(+), 99 deletions(-)
 
 diff --git a/erts/preloaded/src/Makefile b/erts/preloaded/src/Makefile
-index 785ad53..57a58ab 100644
+index 1456388..81db627 100644
 --- a/erts/preloaded/src/Makefile
 +++ b/erts/preloaded/src/Makefile
-@@ -86,8 +86,6 @@ cancel:
+@@ -68,8 +68,6 @@ copy:
  include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: 
@@ -474,10 +474,10 @@ index 19b9387..f3ff8bf 100644
  	$(INSTALL_DATA) $(TARGET_FILES) $(RELSYSDIR)/ebin
  
 diff --git a/lib/inets/src/http_client/Makefile b/lib/inets/src/http_client/Makefile
-index 575c6ef..9531676 100644
+index 0397b48..2692c7c 100644
 --- a/lib/inets/src/http_client/Makefile
 +++ b/lib/inets/src/http_client/Makefile
-@@ -93,7 +93,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
+@@ -92,7 +92,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
  release_spec: opt
  	$(INSTALL_DIR)  $(RELSYSDIR)/src
  	$(INSTALL_DIR)  $(RELSYSDIR)/src/http_client
@@ -487,10 +487,10 @@ index 575c6ef..9531676 100644
  	$(INSTALL_DATA) $(TARGET_FILES) $(RELSYSDIR)/ebin
  
 diff --git a/lib/inets/src/http_lib/Makefile b/lib/inets/src/http_lib/Makefile
-index 5dac3b0..9ca3a60 100644
+index aaf3cfb..0236a49 100644
 --- a/lib/inets/src/http_lib/Makefile
 +++ b/lib/inets/src/http_lib/Makefile
-@@ -88,7 +88,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
+@@ -89,7 +89,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
  release_spec: opt
  	$(INSTALL_DIR)  $(RELSYSDIR)/src
  	$(INSTALL_DIR)  $(RELSYSDIR)/src/http_lib
@@ -500,10 +500,10 @@ index 5dac3b0..9ca3a60 100644
  	$(INSTALL_DATA) $(TARGET_FILES) $(RELSYSDIR)/ebin
  
 diff --git a/lib/inets/src/http_server/Makefile b/lib/inets/src/http_server/Makefile
-index 879e605..89ed618 100644
+index bdd8c5e..64d971f 100644
 --- a/lib/inets/src/http_server/Makefile
 +++ b/lib/inets/src/http_server/Makefile
-@@ -124,7 +124,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
+@@ -126,7 +126,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
  release_spec: opt
  	$(INSTALL_DIR)  $(RELSYSDIR)/src
  	$(INSTALL_DIR)  $(RELSYSDIR)/src/http_server
@@ -667,7 +667,7 @@ index e032f56..e357187 100644
  	$(INSTALL_DATA) $(TARGET_FILES) $(RELSYSDIR)/ebin
  
 diff --git a/lib/observer/src/Makefile b/lib/observer/src/Makefile
-index fe5eba1..fa5f2d0 100644
+index 353daef..c61d157 100644
 --- a/lib/observer/src/Makefile
 +++ b/lib/observer/src/Makefile
 @@ -113,7 +113,6 @@ include $(ERL_TOP)/make/otp_release_targets.mk
@@ -676,8 +676,8 @@ index fe5eba1..fa5f2d0 100644
  	$(INSTALL_DIR) $(RELSYSDIR)/src
 -	$(INSTALL_DATA) $(ERL_FILES) $(RELSYSDIR)/src
  	$(INSTALL_DATA) $(INTERNAL_HRL_FILES) $(RELSYSDIR)/src
- 	$(INSTALL_DATA) $(EXAMPLE_FILES) $(RELSYSDIR)/src
- 	$(INSTALL_DIR) $(RELSYSDIR)/include
+ 	$(INSTALL_DIR) $(RELSYSDIR)/examples
+ 	$(INSTALL_DATA) $(EXAMPLE_FILES) $(RELSYSDIR)/examples
 diff --git a/lib/odbc/src/Makefile b/lib/odbc/src/Makefile
 index b48dd76..deb9947 100644
 --- a/lib/odbc/src/Makefile
@@ -1037,10 +1037,10 @@ index 62845cd..841cf11 100644
  	$(INSTALL_DATA) $(TARGET_FILES) $(APP_TARGET) $(APPUP_TARGET) \
  		$(RELSYSDIR)/ebin
 diff --git a/lib/wx/src/Makefile b/lib/wx/src/Makefile
-index a9fd468..9b7f844 100644
+index 3cc6683..83c5168 100644
 --- a/lib/wx/src/Makefile
 +++ b/lib/wx/src/Makefile
-@@ -113,9 +113,9 @@ ifeq ($(INSIDE_ERLSRC), true)
+@@ -112,9 +112,9 @@ ifeq ($(INSIDE_ERLSRC), true)
  include $(ERL_TOP)/make/otp_release_targets.mk
  release_spec: opt 
  	$(INSTALL_DIR) $(RELSYSDIR)/src
@@ -1068,5 +1068,5 @@ index 7009b50..c9c7303 100644
  	$(INSTALL_DATA) $(HRL_FILES) $(RELSYSDIR)/include
  
 -- 
-1.7.3.2
+1.7.3.3
 

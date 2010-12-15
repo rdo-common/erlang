@@ -17,7 +17,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel_for_rpm}.1%{?dist}
+Release:	%{upstream_rel_for_rpm}.2%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -28,6 +28,7 @@ Source0:	http://www.erlang.org/download/otp_src_%{upstream_ver}%{upstream_rel}.t
 Source1:	http://erlang.org/download/otp_doc_html_%{upstream_ver}%{upstream_rel}.tar.gz
 Source2:	http://erlang.org/download/otp_doc_man_%{upstream_ver}%{upstream_rel}.tar.gz
 %endif
+
 # For the source of the Fedora specific patches, see the respective
 # branch at https://github.com/lemenkov/otp
 #
@@ -41,30 +42,29 @@ Source2:	http://erlang.org/download/otp_doc_man_%{upstream_ver}%{upstream_rel}.t
 #    $ ./otp-get-patches.sh /path/to/otp OTP_R14B01 lemenkov/fedora-R14B01
 # for some semi-automatic patch update assistance.
 #
-# Fedora-specific
-Patch1:		otp-0001-Do-not-format-man-pages-and-do-not-install-miscellan.patch
-# Fedora-specific
-Patch2:		otp-0002-Remove-rpath.patch
-# Fedora-specific
-Patch4:		otp-0004-Fix-for-dlopening-libGL-and-libGLU.patch
-# Fedora-specific
-Patch5:		otp-0005-Do-not-install-C-sources.patch
-# Fedora-specific
-Patch6:		otp-0006-Do-not-install-Java-sources.patch
-# Fedora-specific
-Patch7:		otp-0007-Do-not-install-info-files-they-are-almost-empty-and-.patch
-# Fedora-specific
-Patch8:		otp-0008-Do-not-install-nteventlog-and-related-doc-files-on-n.patch
-# Fedora-specific
-Patch9:		otp-0009-Do-not-install-.bat-files-on-non-win32-machines.patch
-# Fedora-specific
-Patch10:	otp-0010-Do-not-install-VxWorks-specific-docs.patch
-# Fedora-specific
-Patch11:	otp-0011-Do-not-install-erlang-sources.patch
-# Backported from upstream
-Patch12:	otp-0012-Fix-installation-of-example-file.patch
-# Required for RHEL 5,6 for PowerPC only
-Patch13:	otp-0013-Ugly-workaround-for-java-1.5.0-gcj-which-doesn-t-sup.patch
+# Fedora specific patch
+Patch1: otp-0001-Do-not-format-man-pages-and-do-not-install-miscellan.patch
+# Fedora specific patch
+Patch2: otp-0002-Remove-rpath.patch
+# Fedora specific patch
+Patch3: otp-0003-Fix-for-dlopening-libGL-and-libGLU.patch
+# Fedora specific patch
+Patch4: otp-0004-Do-not-install-C-sources.patch
+# Fedora specific patch
+Patch5: otp-0005-Do-not-install-Java-sources.patch
+# Fedora specific patch
+Patch6: otp-0006-Do-not-install-info-files-they-are-almost-empty-and-.patch
+# Fedora specific patch
+Patch7: otp-0007-Do-not-install-nteventlog-and-related-doc-files-on-n.patch
+# Fedora specific patch
+Patch8: otp-0008-Do-not-install-.bat-files-on-non-win32-machines.patch
+# Fedora specific patch
+Patch9: otp-0009-Do-not-install-VxWorks-specific-docs.patch
+# Fedora specific patch
+Patch10: otp-0010-Do-not-install-erlang-sources.patch
+# Required only for el5, el6 on PowerPC
+Patch11: otp-0011-Ugly-workaround-for-java-1.5.0-gcj-which-doesn-t-sup.patch
+
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	ncurses-devel
@@ -946,20 +946,19 @@ Erlang mode for XEmacs (source lisp files).
 
 %prep
 %setup -q -n otp_src_%{upstream_ver}%{upstream_rel}
-%patch1 -p1 -b .do_not_format_manpages
-%patch2 -p1 -b .rpath
-%patch4 -p1 -b .dlopen_opengl_libs
-%patch5 -p1 -b .no_c_sources
-%patch6 -p1 -b .no_java_sources
-%patch7 -p1 -b .no_info_files
-%patch8 -p1 -b .no_win32_nteventlog
-%patch9 -p1 -b .no_win32_bat_files
-%patch10 -p1 -b .no_vxworks_specific
-%patch11 -p1 -b .no_erlang_sources
-%patch12 -p1 -b .install_example_file_properly
+%patch1 -p1 -b .Do_not_format_man_pages_and_do_not_install_miscellan
+%patch2 -p1 -b .Remove_rpath
+%patch3 -p1 -b .Fix_for_dlopening_libGL_and_libGLU
+%patch4 -p1 -b .Do_not_install_C_sources
+%patch5 -p1 -b .Do_not_install_Java_sources
+%patch6 -p1 -b .Do_not_install_info_files_they_are_almost_empty_and_
+%patch7 -p1 -b .Do_not_install_nteventlog_and_related_doc_files_on_n
+%patch8 -p1 -b .Do_not_install_bat_files_on_non_win32_machines
+%patch9 -p1 -b .Do_not_install_VxWorks_specific_docs
+%patch10 -p1 -b .Do_not_install_erlang_sources
 %if 0%{?el4}%{?el5}%{?el6}
 %ifnarch %{ix86} x86_64
-%patch13 -p1 -b .no_unicode_in_java-150-gcj_for_ppc
+%patch11 -p1 -b .Ugly_workaround_for_java_1_5_0_gcj_which_doesn_t_sup
 %endif
 %endif
 # remove shipped zlib sources
@@ -2240,6 +2239,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Dec 15 2010 Hans Ulrich Niedermann <hun@n-dimensional.de> - R14B-01.2
+- Update to rebased patches
+
 * Mon Dec 13 2010 Hans Ulrich Niedermann <hun@n-dimensional.de> - R14B-01.1
 - Update to upstream release R14B01 (the patches still need work)
 

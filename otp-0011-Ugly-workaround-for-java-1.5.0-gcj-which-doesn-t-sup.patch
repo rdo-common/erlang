@@ -1,7 +1,7 @@
-From d3ad001ea7a026eb07528fe8bf27f605297f5555 Mon Sep 17 00:00:00 2001
+From 611a24a8d1f497582cd2deb3a57b9e16cc0f66db Mon Sep 17 00:00:00 2001
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Sun, 21 Nov 2010 00:17:49 +0300
-Subject: [PATCH 13/13] Ugly workaround for java-1.5.0-gcj which doesn't support UNICODE fully
+Subject: [PATCH 11/11] Ugly workaround for java-1.5.0-gcj which doesn't support UNICODE fully
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 ---
@@ -59,5 +59,5 @@ index b9b4348..c11702c 100644
  	    throw new OtpErlangDecodeException(
  		    "Wrong tag encountered, expected " + OtpExternal.stringTag
 -- 
-1.7.3.2
+1.7.3.3
 

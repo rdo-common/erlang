@@ -1,7 +1,7 @@
-From 5d52142fcfa2b4a776f80592ae0033e17628adb7 Mon Sep 17 00:00:00 2001
+From 811adac1504284c12bdacc42d11975968cfa05dc Mon Sep 17 00:00:00 2001
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Sat, 19 Jun 2010 10:25:29 +0400
-Subject: [PATCH 09/13] Do not install *.bat files on non-win32 machines
+Subject: [PATCH 08/11] Do not install *.bat files on non-win32 machines
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 ---
@@ -10,7 +10,7 @@ Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
  2 files changed, 12 insertions(+), 4 deletions(-)
 
 diff --git a/lib/observer/src/Makefile b/lib/observer/src/Makefile
-index dde1ea1..fe5eba1 100644
+index b4eb518..353daef 100644
 --- a/lib/observer/src/Makefile
 +++ b/lib/observer/src/Makefile
 @@ -56,11 +56,15 @@ TARGET_FILES= $(MODULES:%=$(EBIN)/%.$(EMULATOR)) $(APP_TARGET) $(APPUP_TARGET)
@@ -51,5 +51,5 @@ index 56ab772..c29e912 100644
  # ----------------------------------------------------
  # FLAGS
 -- 
-1.7.3.2
+1.7.3.3
 

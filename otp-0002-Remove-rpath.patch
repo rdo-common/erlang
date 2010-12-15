@@ -1,7 +1,7 @@
-From a2e70caa1cf05c1dd8038cda557de60f935d4d6b Mon Sep 17 00:00:00 2001
+From f2cadfdf12de274fac64649726745333ae4ad3ac Mon Sep 17 00:00:00 2001
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Thu, 25 Feb 2010 16:57:43 +0300
-Subject: [PATCH 02/13] Remove rpath
+Subject: [PATCH 02/11] Remove rpath
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 ---
@@ -68,5 +68,5 @@ index 49a209f..5e6c74e 100644
  
  SSL_CC_RUNTIME_LIBRARY_PATH=@SSL_CC_RUNTIME_LIBRARY_PATH@
 -- 
-1.7.3.2
+1.7.3.3
 

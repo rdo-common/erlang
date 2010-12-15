@@ -1,7 +1,7 @@
-From 71b4e3a73fff283fcf97bfd2f570a5b071a7ae40 Mon Sep 17 00:00:00 2001
+From 9652244614a04e252555a36b1b7dbb669a56df10 Mon Sep 17 00:00:00 2001
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Sat, 19 Jun 2010 09:29:12 +0400
-Subject: [PATCH 07/13] Do not install info files - they are almost empty and useless
+Subject: [PATCH 06/11] Do not install info files - they are almost empty and useless
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 ---
@@ -289,7 +289,7 @@ index e20b398..0000000
 -group: comm
 -short: Provides support for Abstract Syntax Notation One
 diff --git a/lib/common_test/doc/src/Makefile b/lib/common_test/doc/src/Makefile
-index 6322860..3f402fc 100644
+index 1a767a8..0d9caa2 100644
 --- a/lib/common_test/doc/src/Makefile
 +++ b/lib/common_test/doc/src/Makefile
 @@ -91,8 +91,6 @@ XML_FILES=$(XML_APPLICATION_FILES) $(XML_REF1_FILES)  $(XML_REF3_FILES) $(XML_RE
@@ -864,7 +864,7 @@ index 984e427..0000000
 -short: Erlang and provides tools for collection and graphical
 -short: viewing of trace data.
 diff --git a/lib/eunit/doc/src/Makefile b/lib/eunit/doc/src/Makefile
-index 19be96d..59b39a3 100644
+index 2cdc579..4a952eb 100644
 --- a/lib/eunit/doc/src/Makefile
 +++ b/lib/eunit/doc/src/Makefile
 @@ -75,8 +75,6 @@ XML_FILES = \
@@ -1955,5 +1955,5 @@ index 81d16ab..0000000
 -group: comm
 -short: Provides support for XML 1.0
 -- 
-1.7.3.2
+1.7.3.3
 
