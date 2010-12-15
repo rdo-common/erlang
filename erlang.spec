@@ -30,6 +30,17 @@ Source2:	http://erlang.org/download/otp_doc_man_%{upstream_ver}%{upstream_rel}.t
 %endif
 # For the source of the Fedora specific patches, see the respective
 # branch at https://github.com/lemenkov/otp
+#
+# Run something like
+#    $ git clone git://github.com/erlang/otp.git
+#    $ cd otp
+#    $ git remote add lemenkov git://github.com/lemenkov/otp.git
+#    $ git fetch -v --all
+# to get yourself a copy of the Erlang/OTP source code with the
+# Fedora specific patches from Peter Lemenkov. Then run
+#    $ ./otp-get-patches.sh /path/to/otp OTP_R14B01 lemenkov/fedora-R14B01
+# for some semi-automatic patch update assistance.
+#
 # Fedora-specific
 Patch1:		otp-0001-Do-not-format-man-pages-and-do-not-install-miscellan.patch
 # Fedora-specific
