@@ -1,9 +1,14 @@
-From 611a24a8d1f497582cd2deb3a57b9e16cc0f66db Mon Sep 17 00:00:00 2001
+From 4c2e07124ebe2f7a47beed5a54c4cb044b7ec1fb Mon Sep 17 00:00:00 2001
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Sun, 21 Nov 2010 00:17:49 +0300
 Subject: [PATCH 11/11] Ugly workaround for java-1.5.0-gcj which doesn't support UNICODE fully
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
+Fedora-Spec-Comment: Required only for el5, el6 on PowerPC
+Fedora-Spec-Before: %if 0%{?el4}%{?el5}%{?el6}
+Fedora-Spec-Before: %ifnarch %{ix86} x86_64
+Fedora-Spec-After: %endif
+Fedora-Spec-After: %endif
 ---
  .../com/ericsson/otp/erlang/OtpErlangList.java     |   14 +-------------
  .../com/ericsson/otp/erlang/OtpInputStream.java    |   13 ++-----------
