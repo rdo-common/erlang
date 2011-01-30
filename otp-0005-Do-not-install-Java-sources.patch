@@ -1,7 +1,7 @@
 From 0c0230527a3e3ec32c0739c5aa6ae365593ec9a9 Mon Sep 17 00:00:00 2001
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Sat, 19 Jun 2010 09:25:18 +0400
-Subject: [PATCH 05/11] Do not install Java sources
+Subject: [PATCH 05/12] Do not install Java sources
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 ---
@@ -36,5 +36,5 @@ index d0ff9cd..9990d2b 100644
  	$(INSTALL_DATA) $(JAVA_DEST_ROOT)$(JARFILE) $(RELSYSDIR)/priv
  
 -- 
-1.7.3.3
+1.7.3.5
 
