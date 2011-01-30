@@ -17,7 +17,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel_for_rpm}.2%{?dist}
+Release:	%{upstream_rel_for_rpm}.3%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -2262,6 +2262,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Jan 30 2011 Hans Ulrich Niedermann <hun@n-dimensional.de> - R14B-01.3
+- Add "buffer overflow during build" fix (#663260)
+
 * Wed Dec 15 2010 Hans Ulrich Niedermann <hun@n-dimensional.de> - R14B-01.2
 - Update to rebased patches
 
