@@ -1093,7 +1093,7 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/man/man3/erl_set_memory_block.*
 rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/erts-*/info
 rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/lib/*-*/info
 %else
-make DESTDIR=$RPM_BUILD_ROOT install-docs
+env ERL_LIBS="$RPM_BUILD_ROOT%{_libdir}/erlang/lib" make DESTDIR=$RPM_BUILD_ROOT install-docs
 %endif
 %endif
 
