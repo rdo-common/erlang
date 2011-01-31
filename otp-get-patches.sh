@@ -41,7 +41,7 @@ tmpdir="$(mktemp -d --tmpdir="$PWD")"
 
 # Generate patch files
 pushd "$otp_dir"
-git format-patch -o "$tmpdir" "${otp_upstream}..${otp_fedora}" > "$tmpdir/patch-list.txt"
+git format-patch -N -o "$tmpdir" "${otp_upstream}..${otp_fedora}" > "$tmpdir/patch-list.txt"
 popd
 
 test -s "$tmpdir/patch-list.txt"
@@ -57,7 +57,7 @@ do
 	comment="$(sed -n 's/^Fedora-Spec-Comment:\s*//p' "$otppatch")"
 	if test "x$comment" = "x"; then comment="Fedora specific patch"; fi
 	echo "# ${comment}" >> "$tmpdir/patch-list-tags.txt"
-	echo "#   $(sed -n 's/^Subject: \[PATCH /\[/p' "$otppatch")" >> "$tmpdir/patch-list-tags.txt"
+	echo "#   $(sed -n 's/^Subject: \[PATCH\] //p' "$otppatch")" >> "$tmpdir/patch-list-tags.txt"
 	echo "Patch$n: $(basename "$otppatch")" >> "$tmpdir/patch-list-tags.txt"
 	base="$(basename "$patch" ".patch" | sed 's/^00[0-9][0-9]-//')"
 	backupext=".$(echo -n "$base" | tr -c -s '[:alnum:]' '_')"
