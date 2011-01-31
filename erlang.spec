@@ -17,7 +17,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel_for_rpm}.3%{?dist}
+Release:	%{upstream_rel_for_rpm}.4%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -2268,6 +2268,13 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jan 31 2011 Hans Ulrich Niedermann <hun@n-dimensional.de> - R14B-01.4
+- Adapt %%files: Add wxSystemSettings.3 man page
+- Adapt %%files for change from run_test to ct_run
+- Remove rpaths from lib/ssl-*/bin/esock_ssl
+- Update erlang.spec and otp-00*.patch without numbers
+- otp-get-patches.sh: Remove patch numbering
+
 * Sun Jan 30 2011 Hans Ulrich Niedermann <hun@n-dimensional.de> - R14B-01.3
 - Add "buffer overflow during build" fix (#663260)
 
