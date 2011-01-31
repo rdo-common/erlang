@@ -2208,6 +2208,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/wxStyledTextCtrl.*
 %{_libdir}/erlang/man/man3/wxStyledTextEvent.*
 %{_libdir}/erlang/man/man3/wxSysColourChangedEvent.*
+%{_libdir}/erlang/man/man3/wxSystemSettings.*
 %{_libdir}/erlang/man/man3/wxTextAttr.*
 %{_libdir}/erlang/man/man3/wxTextCtrl.*
 %{_libdir}/erlang/man/man3/wxTextDataObject.*
