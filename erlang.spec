@@ -1171,7 +1171,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/common_test-*/
 %if %{with doc}
-%{_libdir}/erlang/man/man1/run_test.*
 %{_libdir}/erlang/man/man3/ct.*
 %{_libdir}/erlang/man/man3/ct_cover.*
 %{_libdir}/erlang/man/man3/ct_ftp.*
@@ -1405,6 +1404,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/run_erl
 %{_bindir}/run_test
 %{_bindir}/to_erl
+%{_libdir}/erlang/bin/ct_run
 %{_libdir}/erlang/bin/epmd
 %{_libdir}/erlang/bin/erl
 %{_libdir}/erlang/bin/erlc
@@ -1422,6 +1422,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/erts-*/bin/beam
 %{_libdir}/erlang/erts-*/bin/beam.smp
 %{_libdir}/erlang/erts-*/bin/child_setup
+%{_libdir}/erlang/erts-*/bin/ct_run
 %{_libdir}/erlang/erts-*/bin/dyn_erl
 %{_libdir}/erlang/erts-*/bin/epmd
 %{_libdir}/erlang/erts-*/bin/erl
@@ -1432,7 +1433,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/erts-*/bin/heart
 %{_libdir}/erlang/erts-*/bin/inet_gethost
 %{_libdir}/erlang/erts-*/bin/run_erl
-%{_libdir}/erlang/erts-*/bin/run_test
 %{_libdir}/erlang/erts-*/bin/start
 %{_libdir}/erlang/erts-*/bin/start.src
 %{_libdir}/erlang/erts-*/bin/start_erl.src
@@ -1442,6 +1442,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/erts-*/src
 %{_libdir}/erlang/lib/erts-*/
 %if %{with doc}
+%{_libdir}/erlang/man/man1/ct_run.*
 %{_libdir}/erlang/man/man1/epmd.*
 %{_libdir}/erlang/man/man1/erl.*
 %{_libdir}/erlang/man/man1/erlc.*
