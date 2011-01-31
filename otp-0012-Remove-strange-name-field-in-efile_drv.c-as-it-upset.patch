@@ -1,7 +1,7 @@
 From 082aa3f9452ec91bef336d229d0e6617b3f249cd Mon Sep 17 00:00:00 2001
 From: Patrik Nyblom <pan@erlang.org>
 Date: Wed, 12 Jan 2011 15:41:46 +0100
-Subject: [PATCH 12/12] Remove strange name field in efile_drv.c as it upsets -D_FORTIFY_SOURCE
+Subject: [PATCH] Remove strange name field in efile_drv.c as it upsets -D_FORTIFY_SOURCE
 
 ---
  erts/emulator/drivers/common/efile_drv.c |    5 ++---

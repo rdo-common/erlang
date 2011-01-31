@@ -1,7 +1,7 @@
 From 1546111ae258101825045a7ca656078349b73e7c Mon Sep 17 00:00:00 2001
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Fri, 18 Jun 2010 23:41:33 +0400
-Subject: [PATCH 04/12] Do not install C sources
+Subject: [PATCH] Do not install C sources
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 ---

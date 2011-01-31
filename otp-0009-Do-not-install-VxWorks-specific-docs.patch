@@ -1,7 +1,7 @@
 From 47622f8eb33a9327d1e625e6e89da8a47e1bd9ba Mon Sep 17 00:00:00 2001
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Sat, 19 Jun 2010 11:26:04 +0400
-Subject: [PATCH 09/12] Do not install VxWorks-specific docs
+Subject: [PATCH] Do not install VxWorks-specific docs
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 ---

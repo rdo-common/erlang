@@ -1,7 +1,7 @@
 From d3aef1b288b667d07a560d90041598eae4c4f20e Mon Sep 17 00:00:00 2001
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Thu, 25 Feb 2010 16:45:28 +0300
-Subject: [PATCH 01/12] Do not format man-pages and do not install miscellaneous
+Subject: [PATCH] Do not format man-pages and do not install miscellaneous
  utilities for dealing with man-pages.
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
