@@ -1134,6 +1134,27 @@ rm -r $RPM_BUILD_ROOT%{_libdir}/erlang/erts-*/man
 # remove outdated script
 rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/Install
 
+# Replace identical executables with symlinks
+for exe in $RPM_BUILD_ROOT%{_libdir}/erlang/erts-*/bin/*
+do
+	base="$(basename "$exe")"
+	next="$RPM_BUILD_ROOT%{_libdir}/erlang/bin/${base}"
+	rel="$(echo "$exe" | sed "s,^$RPM_BUILD_ROOT%{_libdir}/erlang/,../,")"
+	if cmp "$exe" "$next"; then
+		ln -sf "$rel" "$next"
+	fi
+done
+for exe in $RPM_BUILD_ROOT%{_libdir}/erlang/bin/*
+do
+	base="$(basename "$exe")"
+	next="$RPM_BUILD_ROOT%{_bindir}/${base}"
+	rel="$(echo "$exe" | sed "s,^$RPM_BUILD_ROOT,,")"
+	if cmp "$exe" "$next"; then
+		ln -sf "$rel" "$next"
+	fi
+done
+
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
