@@ -17,7 +17,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel_for_rpm}.4%{?dist}
+Release:	%{upstream_rel_for_rpm}.4%{?dist}.1
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -2290,6 +2290,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - R14B-01.4.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
 * Mon Jan 31 2011 Hans Ulrich Niedermann <hun@n-dimensional.de> - R14B-01.4
 - Adapt %%files: Add wxSystemSettings.3 man page
 - Adapt %%files for change from run_test to ct_run
