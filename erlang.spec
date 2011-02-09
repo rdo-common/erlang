@@ -110,62 +110,62 @@ BuildRequires:	emacs-el
 BuildRequires:	xemacs-packages-extra-el
 %endif
 
-Requires: erlang-appmon = %{version}-%{release}
-Requires: erlang-asn1 = %{version}-%{release}
-Requires: erlang-common_test = %{version}-%{release}
-Requires: erlang-compiler = %{version}-%{release}
-Requires: erlang-cosEvent = %{version}-%{release}
-Requires: erlang-cosEventDomain = %{version}-%{release}
-Requires: erlang-cosFileTransfer = %{version}-%{release}
-Requires: erlang-cosNotification = %{version}-%{release}
-Requires: erlang-cosProperty = %{version}-%{release}
-Requires: erlang-cosTime = %{version}-%{release}
-Requires: erlang-cosTransactions = %{version}-%{release}
-Requires: erlang-crypto = %{version}-%{release}
-Requires: erlang-debugger = %{version}-%{release}
-Requires: erlang-dialyzer = %{version}-%{release}
-Requires: erlang-docbuilder = %{version}-%{release}
-Requires: erlang-edoc = %{version}-%{release}
-Requires: erlang-erl_docgen = %{version}-%{release}
-Requires: erlang-erl_interface = %{version}-%{release}
-Requires: erlang-erts = %{version}-%{release}
-Requires: erlang-et = %{version}-%{release}
-Requires: erlang-eunit = %{version}-%{release}
-Requires: erlang-examples = %{version}-%{release}
-Requires: erlang-gs = %{version}-%{release}
-Requires: erlang-hipe = %{version}-%{release}
-Requires: erlang-ic = %{version}-%{release}
-Requires: erlang-inets = %{version}-%{release}
-Requires: erlang-inviso = %{version}-%{release}
-Requires: erlang-jinterface = %{version}-%{release}
-Requires: erlang-kernel = %{version}-%{release}
-Requires: erlang-megaco = %{version}-%{release}
-Requires: erlang-mnesia = %{version}-%{release}
-Requires: erlang-observer = %{version}-%{release}
-Requires: erlang-odbc = %{version}-%{release}
-Requires: erlang-orber = %{version}-%{release}
-Requires: erlang-os_mon = %{version}-%{release}
-Requires: erlang-otp_mibs = %{version}-%{release}
-Requires: erlang-parsetools = %{version}-%{release}
-Requires: erlang-percept = %{version}-%{release}
-Requires: erlang-pman = %{version}-%{release}
-Requires: erlang-public_key = %{version}-%{release}
-Requires: erlang-reltool = %{version}-%{release}
-Requires: erlang-runtime_tools = %{version}-%{release}
-Requires: erlang-sasl = %{version}-%{release}
-Requires: erlang-snmp = %{version}-%{release}
-Requires: erlang-ssh = %{version}-%{release}
-Requires: erlang-ssl = %{version}-%{release}
-Requires: erlang-stdlib = %{version}-%{release}
-Requires: erlang-syntax_tools = %{version}-%{release}
-Requires: erlang-test_server = %{version}-%{release}
-Requires: erlang-toolbar = %{version}-%{release}
-Requires: erlang-tools = %{version}-%{release}
-Requires: erlang-tv = %{version}-%{release}
-Requires: erlang-typer = %{version}-%{release}
-Requires: erlang-webtool = %{version}-%{release}
-Requires: erlang-wx = %{version}-%{release}
-Requires: erlang-xmerl = %{version}-%{release}
+Requires: erlang-appmon%{?_isa} = %{version}-%{release}
+Requires: erlang-asn1%{?_isa} = %{version}-%{release}
+Requires: erlang-common_test%{?_isa} = %{version}-%{release}
+Requires: erlang-compiler%{?_isa} = %{version}-%{release}
+Requires: erlang-cosEvent%{?_isa} = %{version}-%{release}
+Requires: erlang-cosEventDomain%{?_isa} = %{version}-%{release}
+Requires: erlang-cosFileTransfer%{?_isa} = %{version}-%{release}
+Requires: erlang-cosNotification%{?_isa} = %{version}-%{release}
+Requires: erlang-cosProperty%{?_isa} = %{version}-%{release}
+Requires: erlang-cosTime%{?_isa} = %{version}-%{release}
+Requires: erlang-cosTransactions%{?_isa} = %{version}-%{release}
+Requires: erlang-crypto%{?_isa} = %{version}-%{release}
+Requires: erlang-debugger%{?_isa} = %{version}-%{release}
+Requires: erlang-dialyzer%{?_isa} = %{version}-%{release}
+Requires: erlang-docbuilder%{?_isa} = %{version}-%{release}
+Requires: erlang-edoc%{?_isa} = %{version}-%{release}
+Requires: erlang-erl_docgen%{?_isa} = %{version}-%{release}
+Requires: erlang-erl_interface%{?_isa} = %{version}-%{release}
+Requires: erlang-erts%{?_isa} = %{version}-%{release}
+Requires: erlang-et%{?_isa} = %{version}-%{release}
+Requires: erlang-eunit%{?_isa} = %{version}-%{release}
+Requires: erlang-examples%{?_isa} = %{version}-%{release}
+Requires: erlang-gs%{?_isa} = %{version}-%{release}
+Requires: erlang-hipe%{?_isa} = %{version}-%{release}
+Requires: erlang-ic%{?_isa} = %{version}-%{release}
+Requires: erlang-inets%{?_isa} = %{version}-%{release}
+Requires: erlang-inviso%{?_isa} = %{version}-%{release}
+Requires: erlang-jinterface%{?_isa} = %{version}-%{release}
+Requires: erlang-kernel%{?_isa} = %{version}-%{release}
+Requires: erlang-megaco%{?_isa} = %{version}-%{release}
+Requires: erlang-mnesia%{?_isa} = %{version}-%{release}
+Requires: erlang-observer%{?_isa} = %{version}-%{release}
+Requires: erlang-odbc%{?_isa} = %{version}-%{release}
+Requires: erlang-orber%{?_isa} = %{version}-%{release}
+Requires: erlang-os_mon%{?_isa} = %{version}-%{release}
+Requires: erlang-otp_mibs%{?_isa} = %{version}-%{release}
+Requires: erlang-parsetools%{?_isa} = %{version}-%{release}
+Requires: erlang-percept%{?_isa} = %{version}-%{release}
+Requires: erlang-pman%{?_isa} = %{version}-%{release}
+Requires: erlang-public_key%{?_isa} = %{version}-%{release}
+Requires: erlang-reltool%{?_isa} = %{version}-%{release}
+Requires: erlang-runtime_tools%{?_isa} = %{version}-%{release}
+Requires: erlang-sasl%{?_isa} = %{version}-%{release}
+Requires: erlang-snmp%{?_isa} = %{version}-%{release}
+Requires: erlang-ssh%{?_isa} = %{version}-%{release}
+Requires: erlang-ssl%{?_isa} = %{version}-%{release}
+Requires: erlang-stdlib%{?_isa} = %{version}-%{release}
+Requires: erlang-syntax_tools%{?_isa} = %{version}-%{release}
+Requires: erlang-test_server%{?_isa} = %{version}-%{release}
+Requires: erlang-toolbar%{?_isa} = %{version}-%{release}
+Requires: erlang-tools%{?_isa} = %{version}-%{release}
+Requires: erlang-tv%{?_isa} = %{version}-%{release}
+Requires: erlang-typer%{?_isa} = %{version}-%{release}
+Requires: erlang-webtool%{?_isa} = %{version}-%{release}
+Requires: erlang-wx%{?_isa} = %{version}-%{release}
+Requires: erlang-xmerl%{?_isa} = %{version}-%{release}
 
 %description
 Erlang is a general-purpose programming language and runtime
@@ -176,11 +176,11 @@ systems from Ericsson.
 %package appmon
 Summary:	A utility used to supervise Applications executing on several Erlang nodes
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-gs = %{version}-%{release}
-Requires: %{name}-inets = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-gs%{?_isa} = %{version}-%{release}
+Requires: %{name}-inets%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description appmon
@@ -189,10 +189,10 @@ A utility used to supervise Applications executing on several Erlang nodes.
 %package asn1
 Summary:	Provides support for Abstract Syntax Notation One
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
-Requires: %{name}-syntax_tools = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
+Requires: %{name}-syntax_tools%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description asn1
@@ -201,20 +201,20 @@ Provides support for Abstract Syntax Notation One.
 %package common_test
 Summary:	A portable framework for automatic testing
 Group:		Development/Languages
-Requires: %{name}-compiler = %{version}-%{release}
-Requires: %{name}-crypto = %{version}-%{release}
-Requires: %{name}-debugger = %{version}-%{release}
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-inets = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-runtime_tools = %{version}-%{release}
-Requires: %{name}-snmp = %{version}-%{release}
-Requires: %{name}-ssh = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
-Requires: %{name}-test_server = %{version}-%{release}
-Requires: %{name}-tools = %{version}-%{release}
-Requires: %{name}-webtool = %{version}-%{release}
-Requires: %{name}-xmerl = %{version}-%{release}
+Requires: %{name}-compiler%{?_isa} = %{version}-%{release}
+Requires: %{name}-crypto%{?_isa} = %{version}-%{release}
+Requires: %{name}-debugger%{?_isa} = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-inets%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-runtime_tools%{?_isa} = %{version}-%{release}
+Requires: %{name}-snmp%{?_isa} = %{version}-%{release}
+Requires: %{name}-ssh%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
+Requires: %{name}-test_server%{?_isa} = %{version}-%{release}
+Requires: %{name}-tools%{?_isa} = %{version}-%{release}
+Requires: %{name}-webtool%{?_isa} = %{version}-%{release}
+Requires: %{name}-xmerl%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description common_test
@@ -223,11 +223,11 @@ A portable framework for automatic testing.
 %package compiler
 Summary:	A byte code compiler for Erlang which produces highly compact code
 Group:		Development/Languages
-Requires: %{name}-crypto = %{version}-%{release}
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-hipe = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-crypto%{?_isa} = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-hipe%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description compiler
@@ -236,10 +236,10 @@ A byte code compiler for Erlang which produces highly compact code.
 %package cosEvent
 Summary:	Orber OMG Event Service
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-orber = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-orber%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description cosEvent
@@ -248,11 +248,11 @@ Orber OMG Event Service.
 %package cosEventDomain
 Summary:	Orber OMG Event Domain Service
 Group:		Development/Languages
-Requires: %{name}-cosNotification = %{version}-%{release}
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-orber = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-cosNotification%{?_isa} = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-orber%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description cosEventDomain
@@ -261,13 +261,13 @@ Orber OMG Event Domain Service.
 %package cosFileTransfer
 Summary:	Orber OMG File Transfer Service
 Group:		Development/Languages
-Requires: %{name}-cosProperty = %{version}-%{release}
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-inets = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-orber = %{version}-%{release}
-Requires: %{name}-ssl = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-cosProperty%{?_isa} = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-inets%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-orber%{?_isa} = %{version}-%{release}
+Requires: %{name}-ssl%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description cosFileTransfer
@@ -276,12 +276,12 @@ Orber OMG File Transfer Service.
 %package cosNotification
 Summary:	Orber OMG Notification Service
 Group:		Development/Languages
-Requires: %{name}-cosEvent = %{version}-%{release}
-Requires: %{name}-cosTime = %{version}-%{release}
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-orber = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-cosEvent%{?_isa} = %{version}-%{release}
+Requires: %{name}-cosTime%{?_isa} = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-orber%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description cosNotification
@@ -290,11 +290,11 @@ Orber OMG Notification Service.
 %package cosProperty
 Summary:	Orber OMG Property Service
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-mnesia = %{version}-%{release}
-Requires: %{name}-orber = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-mnesia%{?_isa} = %{version}-%{release}
+Requires: %{name}-orber%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description cosProperty
@@ -303,11 +303,11 @@ Orber OMG Property Service.
 %package cosTime
 Summary:	Orber OMG Timer and TimerEvent Service
 Group:		Development/Languages
-Requires: %{name}-cosEvent = %{version}-%{release}
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-orber = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-cosEvent%{?_isa} = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-orber%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description cosTime
@@ -316,10 +316,10 @@ Orber OMG Timer and TimerEvent Service.
 %package cosTransactions
 Summary:	Orber OMG Transaction Service
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-orber = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-orber%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 Obsoletes:	%{name}-cosTransaction < R13B-04.7
 
@@ -329,9 +329,9 @@ Orber OMG Transaction Service.
 %package crypto
 Summary:	Cryptographical support
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description crypto
@@ -340,12 +340,12 @@ Cryptographical support.
 %package debugger
 Summary:	A debugger for debugging and testing of Erlang programs
 Group:		Development/Languages
-Requires: %{name}-compiler = %{version}-%{release}
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-gs = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
-Requires: %{name}-wx = %{version}-%{release}
+Requires: %{name}-compiler%{?_isa} = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-gs%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
+Requires: %{name}-wx%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description debugger
@@ -354,14 +354,14 @@ A debugger for debugging and testing of Erlang programs.
 %package dialyzer
 Summary:	A DIscrepany AnaLYZer for ERlang programs
 Group:		Development/Languages
-Requires: %{name}-compiler = %{version}-%{release}
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-gs = %{version}-%{release}
-Requires: %{name}-hipe = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
-Requires: %{name}-syntax_tools = %{version}-%{release}
-Requires: %{name}-wx = %{version}-%{release}
+Requires: %{name}-compiler%{?_isa} = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-gs%{?_isa} = %{version}-%{release}
+Requires: %{name}-hipe%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
+Requires: %{name}-syntax_tools%{?_isa} = %{version}-%{release}
+Requires: %{name}-wx%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description dialyzer
@@ -373,7 +373,7 @@ Group:		Development/Languages
 %if 0%{?el6}%{?fedora}
 BuildArch:	noarch
 %endif
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name}-doc < R13B-04.4
 
 %description doc
@@ -382,11 +382,11 @@ Documentation for Erlang.
 %package docbuilder
 Summary:	Tool for generating HTML documentation for applications
 Group:		Development/Languages
-Requires: %{name}-edoc = %{version}-%{release}
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
-Requires: %{name}-xmerl = %{version}-%{release}
+Requires: %{name}-edoc%{?_isa} = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
+Requires: %{name}-xmerl%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description docbuilder
@@ -395,13 +395,13 @@ Tool for generating HTML documentation for applications.
 %package edoc
 Summary:	A utility used to generate documentation out of tags in source files
 Group:		Development/Languages
-Requires: %{name}-compiler = %{version}-%{release}
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-inets = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
-Requires: %{name}-syntax_tools = %{version}-%{release}
-Requires: %{name}-xmerl = %{version}-%{release}
+Requires: %{name}-compiler%{?_isa} = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-inets%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
+Requires: %{name}-syntax_tools%{?_isa} = %{version}-%{release}
+Requires: %{name}-xmerl%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description edoc
@@ -410,7 +410,7 @@ A utility used to generate documentation out of tags in source files.
 %package erl_docgen
 Summary:	A utility used to generate erlang HTML documentation
 Group:		Development/Languages
-Requires:	%{name}-erts = %{version}-%{release}
+Requires:	%{name}-erts%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description erl_docgen
@@ -419,7 +419,7 @@ A utility used to generate erlang HTML documentation.
 %package erl_interface
 Summary:	Low level interface to C
 Group:		Development/Languages
-Requires:	%{name}-erts = %{version}-%{release}
+Requires:	%{name}-erts%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description erl_interface
@@ -428,8 +428,8 @@ Low level interface to C.
 %package erts
 Summary:	Functionality necessary to run the Erlang System itself
 Group:		Development/Languages
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description erts
@@ -438,12 +438,12 @@ Functionality necessary to run the Erlang System itself.
 %package et
 Summary:	An event tracer for Erlang programs
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-gs = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-runtime_tools = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
-Requires: %{name}-wx = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-gs%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-runtime_tools%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
+Requires: %{name}-wx%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description et
@@ -452,9 +452,9 @@ An event tracer for Erlang programs.
 %package eunit
 Summary:	Support for unit testing
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description eunit
@@ -463,7 +463,7 @@ Support for unit testing.
 %package examples
 Summary:	Examples for some Erlang modules
 Group:		Development/Languages
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description examples
@@ -472,9 +472,9 @@ Examples for some Erlang modules.
 %package gs
 Summary:	A library for Tcl/Tk support in Erlang
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 BuildRequires:	tcl-devel
 BuildRequires:	tk-devel
 Requires:	tk
@@ -486,11 +486,11 @@ A Graphics System used to write platform independent user interfaces.
 %package hipe
 Summary:	High Performance Erlang
 Group:		Development/Languages
-Requires: %{name}-compiler = %{version}-%{release}
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
-Requires: %{name}-syntax_tools = %{version}-%{release}
+Requires: %{name}-compiler%{?_isa} = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
+Requires: %{name}-syntax_tools%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description hipe
@@ -499,9 +499,9 @@ High Performance Erlang.
 %package ic
 Summary:	IDL compiler
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description ic
@@ -510,12 +510,12 @@ IDL compiler.
 %package inets
 Summary:	A set of services such as a Web server and a ftp client etc
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-mnesia = %{version}-%{release}
-Requires: %{name}-runtime_tools = %{version}-%{release}
-Requires: %{name}-ssl = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-mnesia%{?_isa} = %{version}-%{release}
+Requires: %{name}-runtime_tools%{?_isa} = %{version}-%{release}
+Requires: %{name}-ssl%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description inets
@@ -524,10 +524,10 @@ A set of services such as a Web server and a ftp client etc.
 %package inviso
 Summary:	A trace tool for both development and delivered systems
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-runtime_tools = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-runtime_tools%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description inviso
@@ -536,7 +536,7 @@ A trace tool for both development and delivered systems.
 %package jinterface
 Summary:	A library for accessing Java from Erlang
 Group:		Development/Languages
-Requires:	%{name}-erts = %{version}-%{release}
+Requires:	%{name}-erts%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 %if 0%{?fedora}
 BuildRequires:	java-1.6.0-openjdk-devel
@@ -554,8 +554,8 @@ Low level interface to Java.
 %package kernel
 Summary:	Main erlang library
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description kernel
@@ -564,13 +564,13 @@ Main erlang library.
 %package megaco
 Summary:	Megaco/H.248 support library
 Group:		Development/Languages
-Requires: %{name}-asn1 = %{version}-%{release}
-Requires: %{name}-debugger = %{version}-%{release}
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-et = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-runtime_tools = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-asn1%{?_isa} = %{version}-%{release}
+Requires: %{name}-debugger%{?_isa} = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-et%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-runtime_tools%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description megaco
@@ -581,9 +581,9 @@ from media conversion.
 %package mnesia
 Summary:	A heavy duty real-time distributed database
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description mnesia
@@ -592,14 +592,14 @@ A heavy duty real-time distributed database.
 %package observer
 Summary:	A set of tools for tracing and investigation of distributed systems
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-et = %{version}-%{release}
-Requires: %{name}-gs = %{version}-%{release}
-Requires: %{name}-inets = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-runtime_tools = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
-Requires: %{name}-webtool = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-et%{?_isa} = %{version}-%{release}
+Requires: %{name}-gs%{?_isa} = %{version}-%{release}
+Requires: %{name}-inets%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-runtime_tools%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
+Requires: %{name}-webtool%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description observer
@@ -608,9 +608,9 @@ A set of tools for tracing and investigation of distributed systems.
 %package odbc
 Summary:	A library for unixODBC support in Erlang
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 BuildRequires:	unixODBC-devel
 
@@ -621,12 +621,12 @@ Connectivity).
 %package orber
 Summary:	A CORBA Object Request Broker
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-inets = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-mnesia = %{version}-%{release}
-Requires: %{name}-ssl = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-inets%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-mnesia%{?_isa} = %{version}-%{release}
+Requires: %{name}-ssl%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description orber
@@ -635,13 +635,13 @@ A CORBA Object Request Broker.
 %package os_mon
 Summary:	A monitor which allows inspection of the underlying operating system
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-mnesia = %{version}-%{release}
-Requires: %{name}-otp_mibs = %{version}-%{release}
-Requires: %{name}-sasl = %{version}-%{release}
-Requires: %{name}-snmp = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-mnesia%{?_isa} = %{version}-%{release}
+Requires: %{name}-otp_mibs%{?_isa} = %{version}-%{release}
+Requires: %{name}-sasl%{?_isa} = %{version}-%{release}
+Requires: %{name}-snmp%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description os_mon
@@ -650,11 +650,11 @@ A monitor which allows inspection of the underlying operating system.
 %package otp_mibs
 Summary:	SNMP management information base for Erlang/OTP nodes
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-mnesia = %{version}-%{release}
-Requires: %{name}-snmp = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-mnesia%{?_isa} = %{version}-%{release}
+Requires: %{name}-snmp%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description otp_mibs
@@ -663,9 +663,9 @@ SNMP management information base for Erlang/OTP nodes.
 %package parsetools
 Summary:	A set of parsing and lexical analysis tools
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description parsetools
@@ -674,11 +674,11 @@ A set of parsing and lexical analysis tools.
 %package percept
 Summary:	A concurrency profiler tool
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-inets = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-runtime_tools = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-inets%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-runtime_tools%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description percept
@@ -687,10 +687,10 @@ A concurrency profiler tool.
 %package pman
 Summary:	A graphical process manager used to inspect Erlang processes
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-gs = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-gs%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description pman
@@ -699,10 +699,10 @@ A graphical process manager used to inspect Erlang processes.
 %package public_key
 Summary:	API to public key infrastructure
 Group:		Development/Languages
-Requires: %{name}-crypto = %{version}-%{release}
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-crypto%{?_isa} = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description public_key
@@ -711,13 +711,13 @@ API to public key infrastructure.
 %package reltool
 Summary:	A release management tool
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-sasl = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
-Requires: %{name}-syntax_tools = %{version}-%{release}
-Requires: %{name}-tools = %{version}-%{release}
-Requires: %{name}-wx = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-sasl%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
+Requires: %{name}-syntax_tools%{?_isa} = %{version}-%{release}
+Requires: %{name}-tools%{?_isa} = %{version}-%{release}
+Requires: %{name}-wx%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description reltool
@@ -731,9 +731,9 @@ for generation of customized target systems.
 %package runtime_tools
 Summary:	A set of tools to include in a production system
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description runtime_tools
@@ -742,10 +742,10 @@ A set of tools to include in a production system.
 %package sasl
 Summary:	The System Architecture Support Libraries
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
-Requires: %{name}-tools = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
+Requires: %{name}-tools%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description sasl
@@ -755,12 +755,12 @@ release upgrades and alarm handling etc.
 %package snmp
 Summary:	Simple Network Management Protocol (SNMP) support
 Group:		Development/Languages
-Requires: %{name}-crypto = %{version}-%{release}
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-mnesia = %{version}-%{release}
-Requires: %{name}-runtime_tools = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-crypto%{?_isa} = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-mnesia%{?_isa} = %{version}-%{release}
+Requires: %{name}-runtime_tools%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description snmp
@@ -770,11 +770,11 @@ MIB compiler and tools for creating SNMP agents.
 %package ssh
 Summary:	Secure Shell application with sftp and ssh support
 Group:		Development/Languages
-Requires: %{name}-crypto = %{version}-%{release}
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-public_key = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-crypto%{?_isa} = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-public_key%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description ssh
@@ -783,11 +783,11 @@ Secure Shell application with sftp and ssh support.
 %package ssl
 Summary:	Secure Socket Layer support
 Group:		Development/Languages
-Requires: %{name}-crypto = %{version}-%{release}
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-public_key = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-crypto%{?_isa} = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-public_key%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description ssl
@@ -796,10 +796,10 @@ Secure Socket Layer support.
 %package stdlib
 Summary:	The Erlang standard libraries
 Group:		Development/Languages
-Requires: %{name}-compiler = %{version}-%{release}
-Requires: %{name}-crypto = %{version}-%{release}
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
+Requires: %{name}-compiler%{?_isa} = %{version}-%{release}
+Requires: %{name}-crypto%{?_isa} = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description stdlib
@@ -808,9 +808,9 @@ The Erlang standard libraries.
 %package syntax_tools
 Summary:	A set of tools for dealing with erlang sources
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description syntax_tools
@@ -820,13 +820,13 @@ reading source files differently, pretty-printing syntax trees.
 %package test_server
 Summary:	The OTP Test Server
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-observer = %{version}-%{release}
-Requires: %{name}-runtime_tools = %{version}-%{release}
-Requires: %{name}-sasl = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
-Requires: %{name}-tools = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-observer%{?_isa} = %{version}-%{release}
+Requires: %{name}-runtime_tools%{?_isa} = %{version}-%{release}
+Requires: %{name}-sasl%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
+Requires: %{name}-tools%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description test_server
@@ -835,10 +835,10 @@ The OTP Test Server.
 %package toolbar
 Summary:	A tool bar simplifying access to the Erlang tools
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-gs = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-gs%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description toolbar
@@ -847,13 +847,13 @@ A tool bar simplifying access to the Erlang tools.
 %package tools
 Summary:	A set of programming tools including a coverage analyzer etc
 Group:		Development/Languages
-Requires: %{name}-compiler = %{version}-%{release}
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-inets = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-runtime_tools = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
-Requires: %{name}-webtool = %{version}-%{release}
+Requires: %{name}-compiler%{?_isa} = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-inets%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-runtime_tools%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
+Requires: %{name}-webtool%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 Provides:	emacs-common-erlang = %{version}-%{release}
 
@@ -863,12 +863,12 @@ A set of programming tools including a coverage analyzer etc.
 %package tv
 Summary:	An ETS and MNESIA graphical table visualizer
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-gs = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-mnesia = %{version}-%{release}
-Requires: %{name}-pman = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-gs%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-mnesia%{?_isa} = %{version}-%{release}
+Requires: %{name}-pman%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description tv
@@ -877,12 +877,12 @@ An ETS and MNESIA graphical table visualizer.
 %package typer
 Summary:	TYPe annotator for ERlang programs
 Group:		Development/Languages
-Requires: %{name}-compiler = %{version}-%{release}
-Requires: %{name}-dialyzer = %{version}-%{release}
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-hipe = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-compiler%{?_isa} = %{version}-%{release}
+Requires: %{name}-dialyzer%{?_isa} = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-hipe%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description typer
@@ -891,11 +891,11 @@ TYPe annotator for ERlang programs.
 %package webtool
 Summary:	A tool that simplifying the use of web based Erlang tools
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-inets = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-observer = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-inets%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-observer%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description webtool
@@ -904,9 +904,9 @@ A tool that simplifying the use of web based Erlang tools.
 %package wx
 Summary:	A library for wxWidgets support in Erlang
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Requires:	mesa-libGL
 Requires:	mesa-libGLU
 Obsoletes:	%{name} < R13B-04.5
@@ -918,9 +918,9 @@ A Graphics System used to write platform independent user interfaces.
 %package xmerl
 Summary:	Provides support for XML 1.0
 Group:		Development/Languages
-Requires: %{name}-erts = %{version}-%{release}
-Requires: %{name}-kernel = %{version}-%{release}
-Requires: %{name}-stdlib = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description xmerl
