@@ -17,7 +17,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel_for_rpm}.4%{?dist}.1
+Release:	%{upstream_rel_for_rpm}.5%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -2290,6 +2290,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Feb 12 2011 Hans Ulrich Niedermann <hun@n-dimensional.de> - R14B-01.5
+- erlang-doc does not really require erlang base package (#629723)
+- Add %%{?_isa} for all explicit "Requires:"
+
 * Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - R14B-01.4.1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 
