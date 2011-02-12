@@ -373,7 +373,7 @@ Group:		Development/Languages
 %if 0%{?el6}%{?fedora}
 BuildArch:	noarch
 %endif
-Requires:	%{name}%{?_isa} = %{version}-%{release}
+# erlang-doc does not require the base package at all
 Obsoletes:	%{name}-doc < R13B-04.4
 
 %description doc
