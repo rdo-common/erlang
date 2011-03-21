@@ -1,0 +1,22 @@
+From: Hans Ulrich Niedermann <hun@n-dimensional.de>
+Date: Mon, 21 Mar 2011 15:53:14 +0100
+Subject: [PATCH] Fix install dir typo for snmp man3
+
+This is an obvious thing that should be fixed upstream.
+---
+ lib/snmp/doc/src/Makefile |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/snmp/doc/src/Makefile b/lib/snmp/doc/src/Makefile
+index 35ed63e..30fabc1 100644
+--- a/lib/snmp/doc/src/Makefile
++++ b/lib/snmp/doc/src/Makefile
+@@ -286,7 +286,7 @@ release_docs_spec: docs
+ 	$(INSTALL_DATA) $(INFO_FILE) $(RELSYSDIR)
+ 	$(INSTALL_DIR) $(RELEASE_PATH)/man/man1
+ 	$(INSTALL_DATA) $(MAN1_FILES) $(RELEASE_PATH)/man/man1
+-	$(INSTALL_DIR) $(RELEASE_PATH)/man/man
++	$(INSTALL_DIR) $(RELEASE_PATH)/man/man3
+ 	$(INSTALL_DATA) $(MAN3_FILES) $(RELEASE_PATH)/man/man3
+ 	$(INSTALL_DIR) $(RELEASE_PATH)/man/man6
+ 	$(INSTALL_DATA) $(MAN6_FILES) $(RELEASE_PATH)/man/man6
