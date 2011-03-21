@@ -1,4 +1,3 @@
-From 576c399f2226f8bdf6ae6f94038d204d5f8693c9 Mon Sep 17 00:00:00 2001
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Fri, 16 Apr 2010 21:13:47 +0400
 Subject: [PATCH] Fix for dlopening libGL and libGLU
@@ -23,6 +22,3 @@ index e2dbbb7..56e560f 100644
  # endif
  #endif 
  extern "C" {
--- 
-1.7.3.5
-

@@ -1,4 +1,3 @@
-From 811adac1504284c12bdacc42d11975968cfa05dc Mon Sep 17 00:00:00 2001
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Sat, 19 Jun 2010 10:25:29 +0400
 Subject: [PATCH] Do not install *.bat files on non-win32 machines
@@ -50,6 +49,3 @@ index 56ab772..c29e912 100644
  
  # ----------------------------------------------------
  # FLAGS
--- 
-1.7.3.5
-

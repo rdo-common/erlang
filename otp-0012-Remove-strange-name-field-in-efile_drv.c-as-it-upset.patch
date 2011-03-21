@@ -1,4 +1,3 @@
-From 082aa3f9452ec91bef336d229d0e6617b3f249cd Mon Sep 17 00:00:00 2001
 From: Patrik Nyblom <pan@erlang.org>
 Date: Wed, 12 Jan 2011 15:41:46 +0100
 Subject: [PATCH] Remove strange name field in efile_drv.c as it upsets -D_FORTIFY_SOURCE
@@ -37,6 +36,3 @@ index 786fa7d..6449c6f 100644
  	d->c.read_file.binp = NULL;
  	d->invoke = invoke_read_file;
  	d->free = free_read_file;
--- 
-1.7.3.5
-
