@@ -1210,6 +1210,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/ct.*
 %{_libdir}/erlang/man/man3/ct_cover.*
 %{_libdir}/erlang/man/man3/ct_ftp.*
+%{_libdir}/erlang/man/man3/ct_hooks.*
 %{_libdir}/erlang/man/man3/ct_master.*
 %{_libdir}/erlang/man/man3/ct_rpc.*
 %{_libdir}/erlang/man/man3/ct_slave.*
@@ -1826,6 +1827,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/snmp-*/priv
 %{_libdir}/erlang/lib/snmp-*/src
 %if %{with doc}
+%{_libdir}/erlang/man/man1/snmpc.*
 %{_libdir}/erlang/man/man3/snmp.*
 %{_libdir}/erlang/man/man3/snmpa.*
 %{_libdir}/erlang/man/man3/snmpa_conf.*
