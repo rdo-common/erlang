@@ -1154,6 +1154,20 @@ do
 	fi
 done
 
+# symlink *.jar files to appropriate places for subpackages
+install -m 0755 -d "$RPM_BUILD_ROOT%{_javadir}/%{name}"
+
+# erlang-ic
+ic_lib_dir="$(ls -d1 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ic-*/ | sed "s,^$RPM_BUILD_ROOT,,")"
+test -d "$RPM_BUILD_ROOT$ic_lib_dir"
+ln -s "${ic_lib_dir}/priv/ic.jar" "$RPM_BUILD_ROOT%{_javadir}/%{name}/"
+
+# erlang-jinterface
+jinterface_lib_dir="$(ls -d1 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/jinterface-*/ | sed "s,^$RPM_BUILD_ROOT,,")"
+test -d "$RPM_BUILD_ROOT$jinterface_lib_dir"
+install -m 0755 -d "$RPM_BUILD_ROOT%{_javadir}"
+ln -s "${jinterface_lib_dir}/priv/OtpErlang.jar" "$RPM_BUILD_ROOT%{_javadir}/%{name}/"
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -1550,6 +1564,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/ic-*/include
 %{_libdir}/erlang/lib/ic-*/priv
 %{_libdir}/erlang/lib/ic-*/src
+%{_javadir}/%{name}/ic.jar
 %if %{with doc}
 %{_libdir}/erlang/man/man3/ic.*
 %{_libdir}/erlang/man/man3/ic_clib.*
@@ -1592,6 +1607,7 @@ rm -rf $RPM_BUILD_ROOT
 %files jinterface
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/jinterface-*/
+%{_javadir}/%{name}/OtpErlang.jar
 
 %files kernel
 %defattr(-,root,root)
