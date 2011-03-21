@@ -1,6 +1,6 @@
 #!/bin/bash
 # Usage:
-#    ./otp-get-patches.sh /path/to/otp OTP_R14B01 fedora-R14B01
+#    ./otp-get-patches.sh /path/to/otp OTP_R14B02 fedora-R14B02
 #
 # otp-get-patches.sh - update erlang.spec and otp-00*.patch files
 #

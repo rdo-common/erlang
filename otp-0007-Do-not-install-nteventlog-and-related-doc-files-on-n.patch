@@ -9,7 +9,7 @@ Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
  2 files changed, 16 insertions(+), 2 deletions(-)
 
 diff --git a/lib/os_mon/doc/src/Makefile b/lib/os_mon/doc/src/Makefile
-index 8d75df9..95f0101 100644
+index c976574..6267378 100644
 --- a/lib/os_mon/doc/src/Makefile
 +++ b/lib/os_mon/doc/src/Makefile
 @@ -35,12 +35,17 @@ RELSYSDIR = $(RELEASE_PATH)/lib/$(APPLICATION)-$(VSN)

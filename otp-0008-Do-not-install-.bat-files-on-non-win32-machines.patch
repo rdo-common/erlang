@@ -1,37 +1,40 @@
-From: Peter Lemenkov <lemenkov@gmail.com>
-Date: Sat, 19 Jun 2010 10:25:29 +0400
+From: Hans Ulrich Niedermann <hun@n-dimensional.de>
+Date: Mon, 21 Mar 2011 14:27:45 +0100
 Subject: [PATCH] Do not install *.bat files on non-win32 machines
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
+Signed-off-by: Hans Ulrich Niedermann <hun@n-dimensional.de>
 ---
- lib/observer/src/Makefile |    8 ++++++--
+ lib/observer/src/Makefile |    9 ++++++---
  lib/webtool/priv/Makefile |    8 ++++++--
- 2 files changed, 12 insertions(+), 4 deletions(-)
+ 2 files changed, 12 insertions(+), 5 deletions(-)
 
 diff --git a/lib/observer/src/Makefile b/lib/observer/src/Makefile
-index b4eb518..353daef 100644
+index 2d06cb6..3875b62 100644
 --- a/lib/observer/src/Makefile
 +++ b/lib/observer/src/Makefile
-@@ -56,11 +56,15 @@ TARGET_FILES= $(MODULES:%=$(EBIN)/%.$(EMULATOR)) $(APP_TARGET) $(APPUP_TARGET)
+@@ -56,13 +56,16 @@ TARGET_FILES= $(MODULES:%=$(EBIN)/%.$(EMULATOR)) $(APP_TARGET) $(APPUP_TARGET)
  PRIVDIR= ../priv
  WEBTOOLFILES= $(PRIVDIR)/crashdump_viewer.tool
  BINDIR= $(PRIVDIR)/bin
 +ifeq ($(findstring win32,$(TARGET)),win32)
-+WIN32_EXECUTABLES= $(BINDIR)/etop.bat $(BINDIR)/getop.bat
++WIN32_EXECUTABLES= $(BINDIR)/etop.bat $(BINDIR)/getop.bat $(BINDIR)/cdv.bat
 +else
 +WIN32_EXECUTABLES=
 +endif
  EXECUTABLES= \
  	$(BINDIR)/etop \
  	$(BINDIR)/getop \
+ 	$(BINDIR)/cdv \
 -	$(BINDIR)/etop.bat \
--	$(BINDIR)/getop.bat
+-	$(BINDIR)/getop.bat \
+-	$(BINDIR)/cdv.bat
 +	$(WIN32_EXECUTABLES)
  CDVDIR= $(PRIVDIR)/crashdump_viewer
  GIF_FILES= \
  	$(CDVDIR)/collapsd.gif \
 diff --git a/lib/webtool/priv/Makefile b/lib/webtool/priv/Makefile
-index 56ab772..c29e912 100644
+index 56ab772..6e1c660 100644
 --- a/lib/webtool/priv/Makefile
 +++ b/lib/webtool/priv/Makefile
 @@ -39,8 +39,12 @@ HTDOCS_FILES =  root/doc/index.html \
@@ -41,7 +44,7 @@ index 56ab772..c29e912 100644
 -SCRIPTS = bin/start_webtool \
 -	  bin/start_webtool.bat
 +ifeq ($(findstring win32,$(TARGET)),win32)
-+WIN32_SCRIPTS= bin/start.bat
++WIN32_SCRIPTS= bin/start_webtool.bat
 +else
 +WIN32_SCRIPTS=
 +endif

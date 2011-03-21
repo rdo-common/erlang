@@ -8,7 +8,7 @@ Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
  1 files changed, 0 insertions(+), 1 deletions(-)
 
 diff --git a/erts/doc/src/Makefile b/erts/doc/src/Makefile
-index be99288..4bb07c4 100644
+index 6578923..44206fd 100644
 --- a/erts/doc/src/Makefile
 +++ b/erts/doc/src/Makefile
 @@ -46,7 +46,6 @@ XML_REF1_FILES = epmd.xml \
