@@ -1819,6 +1819,7 @@ rm -rf $RPM_BUILD_ROOT
 %files snmp
 %defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/snmp-*/
+%{_libdir}/erlang/lib/snmp-*/bin
 %{_libdir}/erlang/lib/snmp-*/ebin
 %{_libdir}/erlang/lib/snmp-*/include
 %{_libdir}/erlang/lib/snmp-*/mibs
