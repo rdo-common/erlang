@@ -53,7 +53,8 @@ n=1
 while read patch
 do
 	otppatch="$(dirname "$patch")/otp-$(basename "$patch")"
-	mv -f "$patch" "$otppatch"
+	${SED-sed} -e '1d' -e '/^-- $/,$d' "$patch" > "$otppatch"
+	rm -f "$patch"
 	comment="$(sed -n 's/^Fedora-Spec-Comment:\s*//p' "$otppatch")"
 	if test "x$comment" = "x"; then comment="Fedora specific patch"; fi
 	echo "# ${comment}" >> "$tmpdir/patch-list-tags.txt"
