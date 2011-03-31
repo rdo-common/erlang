@@ -13,7 +13,9 @@
 
 %bcond_without doc
 
-%if 0%{fedora}
+# Change this back to include all Fedora versions (not just those <
+# 16) when the fop package has been fixed on fc16 (bug 689930).
+%if 0%{fedora} < 16
 %define use_prebuilt_docs 0
 %else
 %define use_prebuilt_docs 1
@@ -23,7 +25,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel_for_rpm}.1%{?dist}
+Release:	%{upstream_rel_for_rpm}.2%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -2318,6 +2320,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Apr  1 2011 Hans Ulrich Niedermann <hun@n-dimensional.de> - R14B-02.2
+- Work around fop-1.0-14.fc16 bug (#689930) by using prebuilt docs for f16/rawhide
+
 * Mon Mar 21 2011 Hans Ulrich Niedermann <hun@n-dimensional.de> - R14B-02.1
 - snmp-4.19 (R14B02) ships lib/snmp/bin/snmpc
 - inets-5.5.2 puts *.hrl in include/
