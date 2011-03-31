@@ -13,6 +13,12 @@
 
 %bcond_without doc
 
+%if 0%{fedora}
+%define use_prebuilt_docs 0
+%else
+%define use_prebuilt_docs 1
+%endif
+
 %global n_uvr %{name}-%{upstream_ver}-%{upstream_rel_for_rpm}
 
 Name:		erlang
@@ -24,7 +30,7 @@ Group:		Development/Languages
 License:	ERPL
 URL:		http://www.erlang.org
 Source0:	http://www.erlang.org/download/otp_src_%{upstream_ver}%{upstream_rel}.tar.gz
-%if 0%{?el4}%{?el5}%{?el6}
+%if %{use_prebuilt_docs}
 Source1:	http://erlang.org/download/otp_doc_html_%{upstream_ver}%{upstream_rel}.tar.gz
 Source2:	http://erlang.org/download/otp_doc_man_%{upstream_ver}%{upstream_rel}.tar.gz
 %endif
@@ -93,7 +99,8 @@ BuildRequires:	zlib-devel
 BuildRequires:	flex
 BuildRequires:	m4
 %if %{with doc}
-%if 0%{?fedora}
+%if %{use_prebuilt_docs}
+%else
 BuildRequires:	fop
 BuildRequires:	libxslt
 # Required for building docs (escript)
@@ -1044,7 +1051,8 @@ popd
 
 make
 %if %{with doc}
-%if 0%{?fedora}
+%if %{use_prebuilt_docs}
+%else
 make docs
 %endif
 %endif
@@ -1083,7 +1091,7 @@ install -m 0644 xemacs-erlang/*.elc "$RPM_BUILD_ROOT%{_xemacs_sitelispdir}/erlan
 
 make DESTDIR=$RPM_BUILD_ROOT install
 %if %{with doc}
-%if 0%{?el4}%{?el5}%{?el6}
+%if %{use_prebuilt_docs}
 # extract prebuilt docs and man-pages
 tar xf %{SOURCE1} -C $RPM_BUILD_ROOT%{_libdir}/erlang
 tar xf %{SOURCE2} -C $RPM_BUILD_ROOT%{_libdir}/erlang
