@@ -9,10 +9,10 @@ without rpathes.
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/lib/ssl/c_src/Makefile.in b/lib/ssl/c_src/Makefile.in
-index bf4843b..90fb679 100644
+index 502c127..e111950 100644
 --- a/lib/ssl/c_src/Makefile.in
 +++ b/lib/ssl/c_src/Makefile.in
-@@ -128,7 +128,7 @@ else
+@@ -130,7 +130,7 @@ else
  CC_R_OPT =
  endif
  

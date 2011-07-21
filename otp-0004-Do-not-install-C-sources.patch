@@ -29,7 +29,7 @@ index 9e9cb18..1d73d3c 100644
  release_docs_spec:
  
 diff --git a/lib/crypto/c_src/Makefile.in b/lib/crypto/c_src/Makefile.in
-index 48f931d..4a7a183 100644
+index 586c70e..e6ab475 100644
 --- a/lib/crypto/c_src/Makefile.in
 +++ b/lib/crypto/c_src/Makefile.in
 @@ -136,10 +136,7 @@ docs:
@@ -134,10 +134,10 @@ index 1a371eb..62eac66 100644
  	$(INSTALL_PROGRAM) $(TARGET_FILES) $(RELSYSDIR)/priv/bin
  endif
 diff --git a/lib/ssl/c_src/Makefile.in b/lib/ssl/c_src/Makefile.in
-index 5e6c74e..bf4843b 100644
+index cf2d267..502c127 100644
 --- a/lib/ssl/c_src/Makefile.in
 +++ b/lib/ssl/c_src/Makefile.in
-@@ -199,15 +199,6 @@ include $(ERL_TOP)/make/otp_release_targets.mk
+@@ -201,15 +201,6 @@ include $(ERL_TOP)/make/otp_release_targets.mk
  release_spec: opt
  	$(INSTALL_DIR) $(RELSYSDIR)/priv/bin
  	$(INSTALL_PROGRAM) $(PORT_PROGRAM) $(RELSYSDIR)/priv/bin

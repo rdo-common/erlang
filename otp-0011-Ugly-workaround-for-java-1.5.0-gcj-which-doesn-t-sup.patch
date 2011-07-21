@@ -1,6 +1,7 @@
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Sun, 21 Nov 2010 00:17:49 +0300
-Subject: [PATCH] Ugly workaround for java-1.5.0-gcj which doesn't support UNICODE fully
+Subject: [PATCH] Ugly workaround for java-1.5.0-gcj which doesn't support
+ UNICODE fully
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 Fedora-Spec-Comment: Required only for el5, el6 on PowerPC

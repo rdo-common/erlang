@@ -1,6 +1,6 @@
 %global upstream_ver R14B
 # Do NOT change %%{upstream_rel} unless UPSTREAM has actually changed it!
-%global upstream_rel 02
+%global upstream_rel 03
 #global upstream_rel %{nil}
 # Use %%{nil} for %%{upstream_rel} for tracking source like otp_src_R14B.tar.gz,
 # and 01 %%{upstream_rel} for tracking source like otp_src_R14B01.tar.gz.
@@ -18,14 +18,14 @@
 %if 0%{fedora} < 16
 %define use_prebuilt_docs 0
 %else
-%define use_prebuilt_docs 1
+%define use_prebuilt_docs 0
 %endif
 
 %global n_uvr %{name}-%{upstream_ver}-%{upstream_rel_for_rpm}
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel_for_rpm}.2%{?dist}
+Release:	%{upstream_rel_for_rpm}.1%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -73,7 +73,7 @@ Patch5: otp-0005-Do-not-install-Java-sources.patch
 #   Fix install dir typo for snmp man3
 Patch6: otp-0006-Fix-install-dir-typo-for-snmp-man3.patch
 # Fedora specific patch
-#   Do not install nteventlog and related doc-files on non-win32 systems
+#   Do not install nteventlog and related doc-files on non-win32
 Patch7: otp-0007-Do-not-install-nteventlog-and-related-doc-files-on-n.patch
 # Fedora specific patch
 #   Do not install *.bat files on non-win32 machines
@@ -85,7 +85,7 @@ Patch9: otp-0009-Do-not-install-VxWorks-specific-docs.patch
 #   Do not install erlang sources
 Patch10: otp-0010-Do-not-install-erlang-sources.patch
 # Required only for el5, el6 on PowerPC
-#   Ugly workaround for java-1.5.0-gcj which doesn't support UNICODE fully
+#   Ugly workaround for java-1.5.0-gcj which doesn't support
 Patch11: otp-0011-Ugly-workaround-for-java-1.5.0-gcj-which-doesn-t-sup.patch
 # Fedora specific patch
 #   Remove rpath from esock_ssl
@@ -373,6 +373,23 @@ Obsoletes:	%{name} < R13B-04.5
 
 %description dialyzer
 A DIscrepany AnaLYZer for ERlang programs.
+
+%package diameter
+Summary:	Diameter (RFC 3588) library
+Group:		Development/Languages
+BuildRequires:	ed
+#Requires: %{name}-compiler%{?_isa} = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+#Requires: %{name}-gs%{?_isa} = %{version}-%{release}
+#Requires: %{name}-hipe%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
+#Requires: %{name}-syntax_tools%{?_isa} = %{version}-%{release}
+#Requires: %{name}-wx%{?_isa} = %{version}-%{release}
+Obsoletes:	%{name} < R13B-04.5
+
+%description diameter
+Diameter (RFC 3588) library
 
 %package doc
 Summary:	Erlang documentation
@@ -1265,7 +1282,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files cosFileTransfer
 %defattr(-,root,root)
-%{_libdir}/erlang/lib/cosFileTransfer-*/
+%dir %{_libdir}/erlang/lib/cosFileTransfer-*/
+%{_libdir}/erlang/lib/cosFileTransfer-*/ebin
+%{_libdir}/erlang/lib/cosFileTransfer-*/include
+%{_libdir}/erlang/lib/cosFileTransfer-*/src
 %if %{with doc}
 %{_libdir}/erlang/man/man3/cosFileTransferApp.*
 %{_libdir}/erlang/man/man3/CosFileTransfer_Directory.*
@@ -1277,7 +1297,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files cosNotification
 %defattr(-,root,root)
-%{_libdir}/erlang/lib/cosNotification-*/
+%dir %{_libdir}/erlang/lib/cosNotification-*/
+%{_libdir}/erlang/lib/cosNotification-*/ebin
+%{_libdir}/erlang/lib/cosNotification-*/include
+%{_libdir}/erlang/lib/cosNotification-*/src
 %if %{with doc}
 %{_libdir}/erlang/man/man3/CosNotification.*
 %{_libdir}/erlang/man/man3/CosNotification_AdminPropertiesAdmin.*
@@ -1311,7 +1334,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files cosProperty
 %defattr(-,root,root)
-%{_libdir}/erlang/lib/cosProperty-*/
+%dir %{_libdir}/erlang/lib/cosProperty-*/
+%{_libdir}/erlang/lib/cosProperty-*/ebin
+%{_libdir}/erlang/lib/cosProperty-*/include
+%{_libdir}/erlang/lib/cosProperty-*/src
 %if %{with doc}
 %{_libdir}/erlang/man/man3/cosProperty.*
 %{_libdir}/erlang/man/man3/CosPropertyService_PropertiesIterator.*
@@ -1324,7 +1350,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files cosTime
 %defattr(-,root,root)
-%{_libdir}/erlang/lib/cosTime-*/
+%dir %{_libdir}/erlang/lib/cosTime-*/
+%{_libdir}/erlang/lib/cosTime-*/ebin
+%{_libdir}/erlang/lib/cosTime-*/include
+%{_libdir}/erlang/lib/cosTime-*/src
 %if %{with doc}
 %{_libdir}/erlang/man/man3/cosTime.*
 %{_libdir}/erlang/man/man3/CosTimerEvent_TimerEventHandler.*
@@ -1336,7 +1365,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files cosTransactions
 %defattr(-,root,root)
-%{_libdir}/erlang/lib/cosTransactions-*/
+%dir %{_libdir}/erlang/lib/cosTransactions-*/
+%{_libdir}/erlang/lib/cosTransactions-*/ebin
+%{_libdir}/erlang/lib/cosTransactions-*/include
+%{_libdir}/erlang/lib/cosTransactions-*/src
 %if %{with doc}
 %{_libdir}/erlang/man/man3/cosTransactions.*
 %{_libdir}/erlang/man/man3/CosTransactions_Control.*
@@ -1374,6 +1406,24 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with doc}
 %{_libdir}/erlang/man/man3/dialyzer.*
 %endif
+
+%files diameter
+%defattr(-,root,root)
+%dir %{_libdir}/erlang/lib/diameter-*/
+%{_libdir}/erlang/lib/diameter-*/bin
+%{_libdir}/erlang/lib/diameter-*/ebin
+%{_libdir}/erlang/lib/diameter-*/include
+%{_libdir}/erlang/lib/diameter-*/src
+%if %{with doc}
+%{_libdir}/erlang/man/man1/diameter_compile.*
+%{_libdir}/erlang/man/man3/diameter.*
+%{_libdir}/erlang/man/man3/diameter_app.*
+%{_libdir}/erlang/man/man3/diameter_sctp.*
+%{_libdir}/erlang/man/man3/diameter_tcp.*
+%{_libdir}/erlang/man/man3/diameter_transport.*
+%{_libdir}/erlang/man/man4/diameter_dict.*
+%endif
+
 
 %files doc
 %defattr(-,root,root)
@@ -1535,6 +1585,12 @@ rm -rf $RPM_BUILD_ROOT
 %files examples
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/asn1-*/examples
+#%{_libdir}/erlang/lib/cosFileTransfer-*/examples
+#%{_libdir}/erlang/lib/cosNotification-*/examples
+#%{_libdir}/erlang/lib/cosProperty-*/examples
+#%{_libdir}/erlang/lib/cosTime-*/examples
+#%{_libdir}/erlang/lib/cosTransactions-*/examples
+%{_libdir}/erlang/lib/diameter-*/examples
 %{_libdir}/erlang/lib/et-*/examples
 %{_libdir}/erlang/lib/eunit-*/examples
 %{_libdir}/erlang/lib/gs-*/examples
@@ -1546,7 +1602,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/observer-*/examples
 %{_libdir}/erlang/lib/orber-*/examples
 %{_libdir}/erlang/lib/reltool-*/examples
+%{_libdir}/erlang/lib/sasl-*/examples
 %{_libdir}/erlang/lib/snmp-*/examples
+#%{_libdir}/erlang/lib/ssh-*/examples
 %{_libdir}/erlang/lib/ssl-*/examples
 %{_libdir}/erlang/lib/stdlib-*/examples
 %{_libdir}/erlang/lib/syntax_tools-*/examples
@@ -1813,7 +1871,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files sasl
 %defattr(-,root,root)
-%{_libdir}/erlang/lib/sasl-*/
+%dir %{_libdir}/erlang/lib/sasl-*/
+%{_libdir}/erlang/lib/sasl-*/ebin
+%{_libdir}/erlang/lib/sasl-*/src
 %if %{with doc}
 %{_libdir}/erlang/man/man3/alarm_handler.*
 %{_libdir}/erlang/man/man3/overload.*
@@ -1885,11 +1945,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man7/SNMPv2-TM.*
 %{_libdir}/erlang/man/man7/SNMP-VIEW-BASED-ACM-MIB.*
 %{_libdir}/erlang/man/man7/STANDARD-MIB.*
+%{_libdir}/erlang/man/man7/TRANSPORT-ADDRESS-MIB.*
 %endif
 
 %files ssh
 %defattr(-,root,root)
-%{_libdir}/erlang/lib/ssh-*/
+%dir %{_libdir}/erlang/lib/ssh-*/
+%{_libdir}/erlang/lib/ssh-*/ebin
+%{_libdir}/erlang/lib/ssh-*/include
+%{_libdir}/erlang/lib/ssh-*/src
 %if %{with doc}
 %{_libdir}/erlang/man/man3/ssh.*
 %{_libdir}/erlang/man/man3/ssh_channel.*
@@ -2320,6 +2384,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jul 20 2011 Peter Lemenkov <lemenkov@gmail.com> - R14B-03.1
+- Ver. R14B03
+- New module - diameter
+- Several new examples directories
+
 * Fri Apr  1 2011 Hans Ulrich Niedermann <hun@n-dimensional.de> - R14B-02.2
 - Work around fop-1.0-14.fc16 bug (#689930) by using prebuilt docs for f16/rawhide
 

@@ -1,6 +1,7 @@
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Sat, 19 Jun 2010 09:59:39 +0400
-Subject: [PATCH] Do not install nteventlog and related doc-files on non-win32 systems
+Subject: [PATCH] Do not install nteventlog and related doc-files on non-win32
+ systems
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 ---

@@ -5,81 +5,85 @@ Subject: [PATCH] Do not install erlang sources
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 Signed-off-by: Hans Ulrich Niedermann <hun@n-dimensional.de>
 ---
- erts/preloaded/src/Makefile        |    2 --
- lib/appmon/src/Makefile            |    2 +-
- lib/asn1/src/Makefile              |    2 +-
- lib/common_test/src/Makefile       |    2 +-
- lib/compiler/src/Makefile          |    4 ++--
- lib/cosEvent/src/Makefile          |    2 +-
- lib/cosEventDomain/src/Makefile    |    2 +-
- lib/cosFileTransfer/src/Makefile   |    3 +--
- lib/cosNotification/src/Makefile   |    3 +--
- lib/cosProperty/src/Makefile       |    3 +--
- lib/cosTime/src/Makefile           |    3 +--
- lib/cosTransactions/src/Makefile   |    2 +-
- lib/crypto/src/Makefile            |    2 --
- lib/debugger/src/Makefile          |    2 +-
- lib/dialyzer/src/Makefile          |    2 +-
- lib/docbuilder/src/Makefile        |    2 +-
- lib/edoc/src/Makefile              |    2 +-
- lib/et/src/Makefile                |    1 -
- lib/eunit/src/Makefile             |    2 --
- lib/gs/src/Makefile                |    4 ++--
- lib/hipe/cerl/Makefile             |    2 +-
- lib/hipe/flow/Makefile             |    2 +-
- lib/hipe/icode/Makefile            |    2 +-
- lib/hipe/main/Makefile             |    2 +-
- lib/hipe/misc/Makefile             |    2 +-
- lib/hipe/rtl/Makefile              |    2 +-
- lib/hipe/util/Makefile             |    3 ---
- lib/ic/src/Makefile                |    2 +-
- lib/inets/src/ftp/Makefile         |    2 +-
- lib/inets/src/http_client/Makefile |    2 +-
- lib/inets/src/http_lib/Makefile    |    2 +-
- lib/inets/src/http_server/Makefile |    2 +-
- lib/inets/src/inets_app/Makefile   |    2 +-
- lib/inets/src/tftp/Makefile        |    2 +-
- lib/inviso/src/Makefile            |    2 --
- lib/kernel/src/Makefile            |    1 -
- lib/megaco/src/app/Makefile        |    2 +-
- lib/megaco/src/binary/Makefile     |    2 +-
- lib/megaco/src/engine/Makefile     |    2 +-
- lib/megaco/src/flex/Makefile.in    |    1 -
- lib/megaco/src/tcp/Makefile        |    2 +-
- lib/megaco/src/text/Makefile       |    2 +-
- lib/megaco/src/udp/Makefile        |    2 +-
- lib/mnesia/src/Makefile            |    2 +-
- lib/observer/src/Makefile          |    1 -
- lib/odbc/src/Makefile              |    2 +-
- lib/orber/COSS/CosNaming/Makefile  |    4 ++--
- lib/orber/src/Makefile             |    2 +-
- lib/os_mon/src/Makefile            |    1 -
- lib/otp_mibs/src/Makefile          |    2 --
- lib/parsetools/src/Makefile        |    2 --
- lib/percept/src/Makefile           |    2 --
- lib/pman/src/Makefile              |    2 +-
- lib/public_key/src/Makefile        |    4 ----
- lib/reltool/src/Makefile           |    2 +-
- lib/runtime_tools/src/Makefile     |    2 --
- lib/sasl/src/Makefile              |    1 -
- lib/snmp/src/agent/Makefile        |    2 +-
- lib/snmp/src/app/Makefile          |    2 +-
- lib/snmp/src/compile/Makefile      |    2 +-
- lib/snmp/src/manager/Makefile      |    2 +-
- lib/snmp/src/misc/Makefile         |    2 +-
- lib/ssh/src/Makefile               |    2 +-
- lib/ssl/src/Makefile               |    2 +-
- lib/stdlib/src/Makefile            |    1 -
- lib/syntax_tools/src/Makefile      |    2 --
- lib/test_server/src/Makefile       |    1 -
- lib/toolbar/src/Makefile           |    2 +-
- lib/tools/src/Makefile             |    2 +-
- lib/tv/src/Makefile                |    2 +-
- lib/typer/src/Makefile             |    2 --
- lib/webtool/src/Makefile           |    2 --
- lib/wx/src/Makefile                |    4 ++--
- lib/xmerl/src/Makefile             |    4 +---
- 74 files changed, 57 insertions(+), 100 deletions(-)
+ erts/preloaded/src/Makefile         |    2 --
+ lib/appmon/src/Makefile             |    2 +-
+ lib/asn1/src/Makefile               |    2 +-
+ lib/common_test/src/Makefile        |    2 +-
+ lib/compiler/src/Makefile           |    4 ++--
+ lib/cosEvent/src/Makefile           |    2 +-
+ lib/cosEventDomain/src/Makefile     |    2 +-
+ lib/cosFileTransfer/src/Makefile    |    3 +--
+ lib/cosNotification/src/Makefile    |    3 +--
+ lib/cosProperty/src/Makefile        |    3 +--
+ lib/cosTime/src/Makefile            |    3 +--
+ lib/cosTransactions/src/Makefile    |    2 +-
+ lib/crypto/src/Makefile             |    2 --
+ lib/debugger/src/Makefile           |    2 +-
+ lib/dialyzer/src/Makefile           |    2 +-
+ lib/diameter/src/app/Makefile       |    1 -
+ lib/diameter/src/compiler/Makefile  |    2 +-
+ lib/diameter/src/transport/Makefile |    2 --
+ lib/docbuilder/src/Makefile         |    2 +-
+ lib/edoc/src/Makefile               |    2 +-
+ lib/erl_docgen/src/Makefile         |    2 --
+ lib/et/src/Makefile                 |    1 -
+ lib/eunit/src/Makefile              |    2 --
+ lib/gs/src/Makefile                 |    4 ++--
+ lib/hipe/cerl/Makefile              |    2 +-
+ lib/hipe/flow/Makefile              |    2 +-
+ lib/hipe/icode/Makefile             |    2 +-
+ lib/hipe/main/Makefile              |    2 +-
+ lib/hipe/misc/Makefile              |    2 +-
+ lib/hipe/rtl/Makefile               |    2 +-
+ lib/hipe/util/Makefile              |    3 ---
+ lib/ic/src/Makefile                 |    2 +-
+ lib/inets/src/ftp/Makefile          |    2 +-
+ lib/inets/src/http_client/Makefile  |    2 +-
+ lib/inets/src/http_lib/Makefile     |    2 +-
+ lib/inets/src/http_server/Makefile  |    2 +-
+ lib/inets/src/inets_app/Makefile    |    2 +-
+ lib/inets/src/tftp/Makefile         |    2 +-
+ lib/inviso/src/Makefile             |    2 --
+ lib/kernel/src/Makefile             |    1 -
+ lib/megaco/src/app/Makefile         |    2 +-
+ lib/megaco/src/binary/Makefile      |    2 +-
+ lib/megaco/src/engine/Makefile      |    2 +-
+ lib/megaco/src/flex/Makefile.in     |    1 -
+ lib/megaco/src/tcp/Makefile         |    2 +-
+ lib/megaco/src/text/Makefile        |    2 +-
+ lib/megaco/src/udp/Makefile         |    2 +-
+ lib/mnesia/src/Makefile             |    2 +-
+ lib/observer/src/Makefile           |    1 -
+ lib/odbc/src/Makefile               |    2 +-
+ lib/orber/COSS/CosNaming/Makefile   |    4 ++--
+ lib/orber/src/Makefile              |    2 +-
+ lib/os_mon/src/Makefile             |    1 -
+ lib/otp_mibs/src/Makefile           |    2 --
+ lib/parsetools/src/Makefile         |    2 --
+ lib/percept/src/Makefile            |    2 --
+ lib/pman/src/Makefile               |    2 +-
+ lib/public_key/src/Makefile         |    4 ----
+ lib/reltool/src/Makefile            |    2 +-
+ lib/runtime_tools/src/Makefile      |    2 --
+ lib/sasl/src/Makefile               |    1 -
+ lib/snmp/src/agent/Makefile         |    2 +-
+ lib/snmp/src/app/Makefile           |    2 +-
+ lib/snmp/src/compile/Makefile       |    2 +-
+ lib/snmp/src/manager/Makefile       |    2 +-
+ lib/snmp/src/misc/Makefile          |    2 +-
+ lib/ssh/src/Makefile                |    2 +-
+ lib/ssl/src/Makefile                |    2 +-
+ lib/stdlib/src/Makefile             |    1 -
+ lib/syntax_tools/src/Makefile       |    2 --
+ lib/test_server/src/Makefile        |    1 -
+ lib/toolbar/src/Makefile            |    2 +-
+ lib/tools/src/Makefile              |    2 +-
+ lib/tv/src/Makefile                 |    2 +-
+ lib/typer/src/Makefile              |    2 --
+ lib/webtool/src/Makefile            |    2 --
+ lib/wx/src/Makefile                 |    4 ++--
+ lib/xmerl/src/Makefile              |    4 +---
+ 78 files changed, 58 insertions(+), 106 deletions(-)
 
 diff --git a/erts/preloaded/src/Makefile b/erts/preloaded/src/Makefile
 index 1456388..81db627 100644
@@ -282,6 +286,44 @@ index 810f86d..f3f2b22 100644
  		$(RELSYSDIR)/src
  	$(INSTALL_DIR) $(RELSYSDIR)/ebin
  	$(INSTALL_DATA) $(INSTALL_FILES) $(RELSYSDIR)/ebin
+diff --git a/lib/diameter/src/app/Makefile b/lib/diameter/src/app/Makefile
+index 6de220d..322fb78 100644
+--- a/lib/diameter/src/app/Makefile
++++ b/lib/diameter/src/app/Makefile
+@@ -169,7 +169,6 @@ release_spec: opt
+ 	$(INSTALL_DIR)  $(RELSYSDIR)/examples
+ 	$(INSTALL_SCRIPT) $(ESCRIPT_FILES) $(RELSYSDIR)/bin
+ 	$(INSTALL_DATA) $(TARGET_FILES) $(RELSYSDIR)/ebin
+-	$(INSTALL_DATA) $(MODULES:%=%.erl) $(SPEC_ERL_FILES) $(RELSYSDIR)/src/app
+ 	$(INSTALL_DATA) $(SPEC_FILES) $(RELSYSDIR)/src/app
+ 	$(INSTALL_DATA) $(INTERNAL_HRL_FILES) $(RELSYSDIR)/src/app
+ 	$(INSTALL_DATA) $(EXTERNAL_HRL_FILES) $(SPEC_HRL_FILES) $(RELSYSDIR)/include
+diff --git a/lib/diameter/src/compiler/Makefile b/lib/diameter/src/compiler/Makefile
+index 3ab7606..119a032 100644
+--- a/lib/diameter/src/compiler/Makefile
++++ b/lib/diameter/src/compiler/Makefile
+@@ -117,7 +117,7 @@ release_spec: opt
+ 	$(INSTALL_DATA) $(TARGET_FILES) $(RELSYSDIR)/ebin
+ 	$(INSTALL_DIR)  $(RELSYSDIR)/src
+ 	$(INSTALL_DIR)  $(RELSYSDIR)/src/compiler
+-	$(INSTALL_DATA) $(ERL_FILES) $(HRL_FILES) $(RELSYSDIR)/src/compiler
++	$(INSTALL_DATA) $(HRL_FILES) $(RELSYSDIR)/src/compiler
+ 
+ release_docs_spec:
+ 
+diff --git a/lib/diameter/src/transport/Makefile b/lib/diameter/src/transport/Makefile
+index 4b53100..7bcc1b9 100644
+--- a/lib/diameter/src/transport/Makefile
++++ b/lib/diameter/src/transport/Makefile
+@@ -116,8 +116,6 @@ endif
+ release_spec: opt
+ 	$(INSTALL_DIR)  $(RELSYSDIR)/ebin
+ 	$(INSTALL_DATA) $(TARGET_FILES) $(RELSYSDIR)/ebin
+-	$(INSTALL_DIR)  $(RELSYSDIR)/src/transport
+-	$(INSTALL_DATA) $(ERL_FILES) $(HRL_FILES) $(RELSYSDIR)/src/transport
+ 
+ release_docs_spec:
+ 
 diff --git a/lib/docbuilder/src/Makefile b/lib/docbuilder/src/Makefile
 index e8a07a5..d0ac3a9 100644
 --- a/lib/docbuilder/src/Makefile
@@ -307,6 +349,19 @@ index 9c5a9d3..5de4e3d 100644
 +	$(INSTALL_DATA) $(HRL_FILES) $(RELSYSDIR)/src
  
  release_docs_spec:
+ 
+diff --git a/lib/erl_docgen/src/Makefile b/lib/erl_docgen/src/Makefile
+index 8e81bcc..c636b87 100644
+--- a/lib/erl_docgen/src/Makefile
++++ b/lib/erl_docgen/src/Makefile
+@@ -87,8 +87,6 @@ $(APPUP_TARGET): $(APPUP_SRC) ../vsn.mk
+ include $(ERL_TOP)/make/otp_release_targets.mk
+ 
+ release_spec: opt
+-	$(INSTALL_DIR) $(RELSYSDIR)/src
+-	$(INSTALL_DATA) $(ERL_FILES) $(RELSYSDIR)/src
+ 	$(INSTALL_DIR) $(RELSYSDIR)/ebin
+ 	$(INSTALL_DATA) $(TARGET_FILES) $(RELSYSDIR)/ebin
  
 diff --git a/lib/et/src/Makefile b/lib/et/src/Makefile
 index bb6632e..3e71e02 100644
@@ -784,10 +839,10 @@ index e573e57..bdbced1 100644
  	$(INSTALL_DATA) $(TARGET_FILES) $(TARGET_TOOLBOX_FILES) $(RELSYSDIR)/ebin
  
 diff --git a/lib/public_key/src/Makefile b/lib/public_key/src/Makefile
-index b042b0c..947009c 100644
+index 5a24b02..5fe76ab 100644
 --- a/lib/public_key/src/Makefile
 +++ b/lib/public_key/src/Makefile
-@@ -46,8 +46,6 @@ MODULES = \
+@@ -47,8 +47,6 @@ MODULES = \
  
  HRL_FILES = $(INCLUDE)/public_key.hrl
  
@@ -796,7 +851,7 @@ index b042b0c..947009c 100644
  ERL_FILES = $(MODULES:%=%.erl)
  
  TARGET_FILES= $(MODULES:%=$(EBIN)/%.$(EMULATOR))
-@@ -100,8 +98,6 @@ $(APPUP_TARGET):	$(APPUP_SRC) ../vsn.mk
+@@ -101,8 +99,6 @@ $(APPUP_TARGET):	$(APPUP_SRC) ../vsn.mk
  include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt
@@ -1037,10 +1092,10 @@ index 62845cd..841cf11 100644
  	$(INSTALL_DATA) $(TARGET_FILES) $(APP_TARGET) $(APPUP_TARGET) \
  		$(RELSYSDIR)/ebin
 diff --git a/lib/wx/src/Makefile b/lib/wx/src/Makefile
-index 3cc6683..83c5168 100644
+index 46bc062..486b623 100644
 --- a/lib/wx/src/Makefile
 +++ b/lib/wx/src/Makefile
-@@ -112,9 +112,9 @@ ifeq ($(INSIDE_ERLSRC), true)
+@@ -111,9 +111,9 @@ ifeq ($(INSIDE_ERLSRC), true)
  include $(ERL_TOP)/make/otp_release_targets.mk
  release_spec: opt 
  	$(INSTALL_DIR) $(RELSYSDIR)/src

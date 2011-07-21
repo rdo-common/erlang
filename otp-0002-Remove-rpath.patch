@@ -10,7 +10,7 @@ Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
  3 files changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/lib/crypto/c_src/Makefile.in b/lib/crypto/c_src/Makefile.in
-index 040adcf..48f931d 100644
+index 276c84d..586c70e 100644
 --- a/lib/crypto/c_src/Makefile.in
 +++ b/lib/crypto/c_src/Makefile.in
 @@ -83,7 +83,7 @@ endif
@@ -19,7 +19,7 @@ index 040adcf..48f931d 100644
  ifeq ($(DYNAMIC_CRYPTO_LIB),yes)
 -SSL_DED_LD_RUNTIME_LIBRARY_PATH = @SSL_DED_LD_RUNTIME_LIBRARY_PATH@
 +SSL_DED_LD_RUNTIME_LIBRARY_PATH =
- CRYPTO_LINK_LIB=$(SSL_DED_LD_RUNTIME_LIBRARY_PATH) -L$(SSL_LIBDIR) -lcrypto
+ CRYPTO_LINK_LIB=$(SSL_DED_LD_RUNTIME_LIBRARY_PATH) -L$(SSL_LIBDIR) -l$(SSL_CRYPTO_LIBNAME)
  else
  SSL_DED_LD_RUNTIME_LIBRARY_PATH=
 diff --git a/lib/crypto/priv/Makefile b/lib/crypto/priv/Makefile
@@ -36,10 +36,10 @@ index 0989f14..0d29444 100644
  
  $(DLL_NIFLIB): $(OBJS)
 diff --git a/lib/ssl/c_src/Makefile.in b/lib/ssl/c_src/Makefile.in
-index 49a209f..5e6c74e 100644
+index 6e413e7..cf2d267 100644
 --- a/lib/ssl/c_src/Makefile.in
 +++ b/lib/ssl/c_src/Makefile.in
-@@ -105,7 +105,7 @@ else
+@@ -107,7 +107,7 @@ else
  SSL_MAKEFILE =
  endif
  
@@ -48,7 +48,7 @@ index 49a209f..5e6c74e 100644
  
  ifeq ($(findstring @,$(CC_R_FLAG)),@)
  # Old erts configure used which hasn't replaced @CFLAG_RUNTIME_LIBRARY_PATH@;
-@@ -117,7 +117,7 @@ else
+@@ -119,7 +119,7 @@ else
  ifeq ($(findstring osf,$(TARGET)),osf)		# osf1: -Wl,-rpath,
  CC_R_FLAG = -Wl,-rpath,
  else						# Default: -Wl,-R
@@ -57,7 +57,7 @@ index 49a209f..5e6c74e 100644
  endif
  endif
  endif
-@@ -125,7 +125,7 @@ endif
+@@ -127,7 +127,7 @@ endif
  ifeq ($(strip $(CC_R_FLAG)),)
  CC_R_OPT =
  else
