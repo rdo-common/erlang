@@ -15,7 +15,7 @@
 
 # Change this back to include all Fedora versions (not just those <
 # 15) when the fop package has been fixed on fc15 (bug 689930).
-%if 0%{?el5?el6?fc15}
+%if 0%{?el5}%{?el6}%{?fc15}
 %define use_prebuilt_docs 1
 %else
 %define use_prebuilt_docs 0
