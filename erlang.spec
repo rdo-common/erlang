@@ -15,7 +15,7 @@
 
 # Change this back to include all Fedora versions (not just those <
 # 15) when the fop package has been fixed on fc15 (bug 689930).
-%if 0%{?fc15}
+%if 0%{?el5?el6?fc15}
 %define use_prebuilt_docs 1
 %else
 %define use_prebuilt_docs 0
@@ -25,7 +25,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel_for_rpm}.2%{?dist}
+Release:	%{upstream_rel_for_rpm}.3%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -2384,6 +2384,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Aug 07 2011 Peter Lemenkov <lemenkov@gmail.com> - R14B-03.3
+- Use prebuilt docs on EL-[56] also
+
 * Thu Jul 21 2011 Peter Lemenkov <lemenkov@gmail.com> - R14B-03.2
 - Fixed building on F-15
 
