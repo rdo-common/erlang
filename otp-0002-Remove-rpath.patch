@@ -10,16 +10,16 @@ Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
  3 files changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/lib/crypto/c_src/Makefile.in b/lib/crypto/c_src/Makefile.in
-index 276c84d..586c70e 100644
+index c2a986c..48ba130 100644
 --- a/lib/crypto/c_src/Makefile.in
 +++ b/lib/crypto/c_src/Makefile.in
-@@ -83,7 +83,7 @@ endif
+@@ -84,7 +84,7 @@ endif
  DYNAMIC_CRYPTO_LIB=@SSL_DYNAMIC_ONLY@
  
  ifeq ($(DYNAMIC_CRYPTO_LIB),yes)
 -SSL_DED_LD_RUNTIME_LIBRARY_PATH = @SSL_DED_LD_RUNTIME_LIBRARY_PATH@
 +SSL_DED_LD_RUNTIME_LIBRARY_PATH =
- CRYPTO_LINK_LIB=$(SSL_DED_LD_RUNTIME_LIBRARY_PATH) -L$(SSL_LIBDIR) -l$(SSL_CRYPTO_LIBNAME)
+ CRYPTO_LINK_LIB=$(SSL_DED_LD_RUNTIME_LIBRARY_PATH) -L$(SSL_LIBDIR) -l$(SSL_CRYPTO_LIBNAME) -l$(SSL_SSL_LIBNAME)
  else
  SSL_DED_LD_RUNTIME_LIBRARY_PATH=
 diff --git a/lib/crypto/priv/Makefile b/lib/crypto/priv/Makefile

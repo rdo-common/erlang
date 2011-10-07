@@ -287,10 +287,10 @@ index 810f86d..f3f2b22 100644
  	$(INSTALL_DIR) $(RELSYSDIR)/ebin
  	$(INSTALL_DATA) $(INSTALL_FILES) $(RELSYSDIR)/ebin
 diff --git a/lib/diameter/src/app/Makefile b/lib/diameter/src/app/Makefile
-index 6de220d..322fb78 100644
+index a75c70d..ba3d10e 100644
 --- a/lib/diameter/src/app/Makefile
 +++ b/lib/diameter/src/app/Makefile
-@@ -169,7 +169,6 @@ release_spec: opt
+@@ -177,7 +177,6 @@ release_spec: opt
  	$(INSTALL_DIR)  $(RELSYSDIR)/examples
  	$(INSTALL_SCRIPT) $(ESCRIPT_FILES) $(RELSYSDIR)/bin
  	$(INSTALL_DATA) $(TARGET_FILES) $(RELSYSDIR)/ebin
@@ -299,10 +299,10 @@ index 6de220d..322fb78 100644
  	$(INSTALL_DATA) $(INTERNAL_HRL_FILES) $(RELSYSDIR)/src/app
  	$(INSTALL_DATA) $(EXTERNAL_HRL_FILES) $(SPEC_HRL_FILES) $(RELSYSDIR)/include
 diff --git a/lib/diameter/src/compiler/Makefile b/lib/diameter/src/compiler/Makefile
-index 3ab7606..119a032 100644
+index 779013b..edc7a3d 100644
 --- a/lib/diameter/src/compiler/Makefile
 +++ b/lib/diameter/src/compiler/Makefile
-@@ -117,7 +117,7 @@ release_spec: opt
+@@ -107,7 +107,7 @@ release_spec: opt
  	$(INSTALL_DATA) $(TARGET_FILES) $(RELSYSDIR)/ebin
  	$(INSTALL_DIR)  $(RELSYSDIR)/src
  	$(INSTALL_DIR)  $(RELSYSDIR)/src/compiler
@@ -338,7 +338,7 @@ index e8a07a5..d0ac3a9 100644
  	$(INSTALL_DATA) $(TARGET_FILES) $(APP_TARGET) $(APPUP_TARGET) $(RELSYSDIR)/ebin
  
 diff --git a/lib/edoc/src/Makefile b/lib/edoc/src/Makefile
-index 9c5a9d3..5de4e3d 100644
+index fcb0b61..2082ca6 100644
 --- a/lib/edoc/src/Makefile
 +++ b/lib/edoc/src/Makefile
 @@ -88,7 +88,7 @@ release_spec: opt
@@ -709,10 +709,10 @@ index 64b6478..5cf0fe2 100644
  
  release_docs_spec:
 diff --git a/lib/mnesia/src/Makefile b/lib/mnesia/src/Makefile
-index e032f56..e357187 100644
+index 1c8ec54..cc00b60 100644
 --- a/lib/mnesia/src/Makefile
 +++ b/lib/mnesia/src/Makefile
-@@ -131,7 +131,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
+@@ -133,7 +133,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt
  	$(INSTALL_DIR) $(RELSYSDIR)/src
@@ -925,17 +925,17 @@ index d89eb4e..2adf916 100644
  	$(INSTALL_DATA) $(TARGET_FILES) $(APP_TARGET) $(APPUP_TARGET) \
  		$(RELSYSDIR)/ebin
 diff --git a/lib/snmp/src/compile/Makefile b/lib/snmp/src/compile/Makefile
-index 0ceaf27..872611d 100644
+index 627af6f..af185bf 100644
 --- a/lib/snmp/src/compile/Makefile
 +++ b/lib/snmp/src/compile/Makefile
-@@ -123,7 +123,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
+@@ -122,7 +122,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
  release_spec: opt
  	$(INSTALL_DIR) $(RELSYSDIR)/src
  	$(INSTALL_DIR) $(RELSYSDIR)/src/compiler
 -	$(INSTALL_DATA) $(ESCRIPT_SRC) $(PARSER_SRC) $(ERL_FILES) $(INTERNAL_HRL_FILES) $(RELSYSDIR)/src/compiler
 +	$(INSTALL_DATA) $(INTERNAL_HRL_FILES) $(RELSYSDIR)/src/compiler
  	$(INSTALL_DIR) $(RELSYSDIR)/ebin
- 	$(INSTALL_DATA) $(TARGET_FILES) $(RELSYSDIR)/ebin
+ 	$(INSTALL_DATA) $(EBIN_FILES) $(RELSYSDIR)/ebin
  	$(INSTALL_DIR) $(RELSYSDIR)/bin
 diff --git a/lib/snmp/src/manager/Makefile b/lib/snmp/src/manager/Makefile
 index c1d5703..568530d 100644

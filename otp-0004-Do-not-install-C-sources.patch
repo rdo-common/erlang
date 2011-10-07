@@ -29,10 +29,10 @@ index 9e9cb18..1d73d3c 100644
  release_docs_spec:
  
 diff --git a/lib/crypto/c_src/Makefile.in b/lib/crypto/c_src/Makefile.in
-index 586c70e..e6ab475 100644
+index 48ba130..553195b 100644
 --- a/lib/crypto/c_src/Makefile.in
 +++ b/lib/crypto/c_src/Makefile.in
-@@ -136,10 +136,7 @@ docs:
+@@ -137,10 +137,7 @@ docs:
  include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt

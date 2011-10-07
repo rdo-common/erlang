@@ -8,10 +8,10 @@ Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
  1 files changed, 0 insertions(+), 1 deletions(-)
 
 diff --git a/erts/doc/src/Makefile b/erts/doc/src/Makefile
-index 6578923..44206fd 100644
+index cfa5527..d18b615 100644
 --- a/erts/doc/src/Makefile
 +++ b/erts/doc/src/Makefile
-@@ -46,7 +46,6 @@ XML_REF1_FILES = epmd.xml \
+@@ -55,7 +55,6 @@ XML_REF3_EFILES = \
  XML_REF3_FILES = \
  	driver_entry.xml \
  	erl_nif.xml \
