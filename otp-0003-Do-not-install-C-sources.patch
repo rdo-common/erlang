@@ -11,28 +11,27 @@ Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
  lib/megaco/src/flex/Makefile.in   |    2 +-
  lib/odbc/c_src/Makefile.in        |    3 ---
  lib/os_mon/c_src/Makefile.in      |    1 -
- lib/ssl/c_src/Makefile.in         |    9 ---------
  lib/tools/c_src/Makefile.in       |    2 --
- 9 files changed, 1 insertions(+), 41 deletions(-)
+ 8 files changed, 1 insertions(+), 32 deletions(-)
 
 diff --git a/lib/asn1/c_src/Makefile b/lib/asn1/c_src/Makefile
-index 9e9cb18..1d73d3c 100644
+index 8c06be5..7013289 100644
 --- a/lib/asn1/c_src/Makefile
 +++ b/lib/asn1/c_src/Makefile
-@@ -125,8 +125,6 @@ include $(ERL_TOP)/make/otp_release_targets.mk
+@@ -112,8 +112,6 @@ include $(ERL_TOP)/make/otp_release_targets.mk
  release_spec: opt
  	$(INSTALL_DIR) $(RELSYSDIR)/priv/lib
- 	$(INSTALL_PROGRAM) $(SHARED_OBJ_FILES) $(RELSYSDIR)/priv/lib
+ 	$(INSTALL_PROGRAM) $(NIF_SHARED_OBJ_FILE) $(RELSYSDIR)/priv/lib
 -	$(INSTALL_DIR) $(RELSYSDIR)/c_src
--	$(INSTALL_DATA) $(C_FILES) $(RELSYSDIR)/c_src
+-	$(INSTALL_DATA) *.c $(RELSYSDIR)/c_src
  
  release_docs_spec:
  
 diff --git a/lib/crypto/c_src/Makefile.in b/lib/crypto/c_src/Makefile.in
-index 48ba130..553195b 100644
+index 3f0f5c4..ba7ab1c 100644
 --- a/lib/crypto/c_src/Makefile.in
 +++ b/lib/crypto/c_src/Makefile.in
-@@ -137,10 +137,7 @@ docs:
+@@ -133,10 +133,7 @@ docs:
  include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt
@@ -44,10 +43,10 @@ index 48ba130..553195b 100644
  
  release_docs_spec:
 diff --git a/lib/erl_interface/src/Makefile.in b/lib/erl_interface/src/Makefile.in
-index 8ff142a..d785902 100644
+index d6b0ca1..91a2cc9 100644
 --- a/lib/erl_interface/src/Makefile.in
 +++ b/lib/erl_interface/src/Makefile.in
-@@ -876,29 +876,11 @@ release: opt
+@@ -846,29 +846,11 @@ release: opt
  	$(INSTALL_DIR) $(RELSYSDIR)/include
  	$(INSTALL_DIR) $(RELSYSDIR)/lib
  	$(INSTALL_DIR) $(RELSYSDIR)/bin
@@ -78,10 +77,10 @@ index 8ff142a..d785902 100644
  release_docs:
  
 diff --git a/lib/ic/c_src/Makefile.in b/lib/ic/c_src/Makefile.in
-index 6eef782..091895b 100644
+index 5e034c4..c101201 100644
 --- a/lib/ic/c_src/Makefile.in
 +++ b/lib/ic/c_src/Makefile.in
-@@ -144,10 +144,8 @@ $(OBJDIR)/%.o: %.c
+@@ -140,10 +140,8 @@ $(OBJDIR)/%.o: %.c
  include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt
@@ -93,7 +92,7 @@ index 6eef782..091895b 100644
  	$(INSTALL_DATA) $(LIBRARY) $(RELSYSDIR)/priv/lib
  
 diff --git a/lib/megaco/src/flex/Makefile.in b/lib/megaco/src/flex/Makefile.in
-index 5af651d..2ccf2a9 100644
+index 7d82644..27275f2 100644
 --- a/lib/megaco/src/flex/Makefile.in
 +++ b/lib/megaco/src/flex/Makefile.in
 @@ -279,7 +279,7 @@ release_spec: opt
@@ -106,10 +105,10 @@ index 5af651d..2ccf2a9 100644
  endif
  
 diff --git a/lib/odbc/c_src/Makefile.in b/lib/odbc/c_src/Makefile.in
-index ed3eeb1..c01d9bf 100644
+index 3a96a53..bbf0d7b 100644
 --- a/lib/odbc/c_src/Makefile.in
 +++ b/lib/odbc/c_src/Makefile.in
-@@ -131,11 +131,8 @@ include $(ERL_TOP)/make/otp_release_targets.mk
+@@ -128,11 +128,8 @@ include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt
  ifdef EXE_TARGET
@@ -122,10 +121,10 @@ index ed3eeb1..c01d9bf 100644
  endif
  
 diff --git a/lib/os_mon/c_src/Makefile.in b/lib/os_mon/c_src/Makefile.in
-index 1a371eb..62eac66 100644
+index bac0413..5c32296 100644
 --- a/lib/os_mon/c_src/Makefile.in
 +++ b/lib/os_mon/c_src/Makefile.in
-@@ -136,7 +136,6 @@ release_spec:
+@@ -132,7 +132,6 @@ release_spec:
  else
  release_spec: opt
  	$(INSTALL_DIR) $(RELSYSDIR)/src
@@ -133,31 +132,11 @@ index 1a371eb..62eac66 100644
  	$(INSTALL_DIR) $(RELSYSDIR)/priv/bin
  	$(INSTALL_PROGRAM) $(TARGET_FILES) $(RELSYSDIR)/priv/bin
  endif
-diff --git a/lib/ssl/c_src/Makefile.in b/lib/ssl/c_src/Makefile.in
-index cf2d267..502c127 100644
---- a/lib/ssl/c_src/Makefile.in
-+++ b/lib/ssl/c_src/Makefile.in
-@@ -201,15 +201,6 @@ include $(ERL_TOP)/make/otp_release_targets.mk
- release_spec: opt
- 	$(INSTALL_DIR) $(RELSYSDIR)/priv/bin
- 	$(INSTALL_PROGRAM) $(PORT_PROGRAM) $(RELSYSDIR)/priv/bin
--ifneq ($(SSL_MAKEFILE),)
--	$(INSTALL_DIR) $(RELSYSDIR)/priv/obj
--	$(INSTALL_DATA) $(OBJS) $(RELSYSDIR)/priv/obj
--	sed 	-e "s;%BINDIR%;../bin;" \
--		-e "s;%SSL_LIBDIR%;$(SSL_LIBDIR);" \
--		-e "s;%OBJS;$(OBJS);" \
--		-e "s;%LIBS%;$(LIBS);" ./Makefile.dist \
--		> $(RELSYSDIR)/priv/obj/Makefile
--endif
- 
- release_docs_spec:
- 
 diff --git a/lib/tools/c_src/Makefile.in b/lib/tools/c_src/Makefile.in
-index 65a7f5f..144c1ba 100644
+index 604332a..f9648b23 100644
 --- a/lib/tools/c_src/Makefile.in
 +++ b/lib/tools/c_src/Makefile.in
-@@ -190,8 +190,6 @@ include ../vsn.mk
+@@ -185,8 +185,6 @@ include ../vsn.mk
  RELSYSDIR = $(RELEASE_PATH)/lib/tools-$(TOOLS_VSN)
  
  release_spec: all
