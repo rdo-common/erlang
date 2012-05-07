@@ -7,13 +7,13 @@ Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 ---
  erts/etc/common/Makefile.in |    4 ----
  erts/etc/unix/Install.src   |   10 ----------
- 2 files changed, 0 insertions(+), 14 deletions(-)
+ 2 files changed, 14 deletions(-)
 
 diff --git a/erts/etc/common/Makefile.in b/erts/etc/common/Makefile.in
-index c3c242b..1fc47a1 100644
+index 28c5e5c..5f7aaf1 100644
 --- a/erts/etc/common/Makefile.in
 +++ b/erts/etc/common/Makefile.in
-@@ -537,10 +537,6 @@ endif
+@@ -565,10 +565,6 @@ endif
  ifneq ($(INSTALL_TOP_BIN),)
  	$(INSTALL_PROGRAM) $(INSTALL_TOP_BIN) $(RELEASE_PATH)
  endif

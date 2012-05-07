@@ -1,7 +1,7 @@
 %global upstream_ver R15B
 # Do NOT change %%{upstream_rel} unless UPSTREAM has actually changed it!
-#%global upstream_rel 01
-%global upstream_rel %{nil}
+%global upstream_rel 01
+#%%global upstream_rel %%{nil}
 # Use %%{nil} for %%{upstream_rel} for tracking source like otp_src_R14B.tar.gz,
 # and 01 %%{upstream_rel} for tracking source like otp_src_R14B01.tar.gz.
 
@@ -121,6 +121,7 @@ Requires: erlang-debugger%{?_isa} = %{version}-%{release}
 Requires: erlang-dialyzer%{?_isa} = %{version}-%{release}
 Requires: erlang-diameter%{?_isa} = %{version}-%{release}
 Requires: erlang-edoc%{?_isa} = %{version}-%{release}
+Requires: erlang-eldap%{?_isa} = %{version}-%{release}
 Requires: erlang-erl_docgen%{?_isa} = %{version}-%{release}
 Requires: erlang-erl_interface%{?_isa} = %{version}-%{release}
 Requires: erlang-erts%{?_isa} = %{version}-%{release}
@@ -204,6 +205,7 @@ Requires: %{name}-erts%{?_isa} = %{version}-%{release}
 Requires: %{name}-inets%{?_isa} = %{version}-%{release}
 Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
 Requires: %{name}-runtime_tools%{?_isa} = %{version}-%{release}
+Requires: %{name}-sasl%{?_isa} = %{version}-%{release}
 Requires: %{name}-snmp%{?_isa} = %{version}-%{release}
 Requires: %{name}-ssh%{?_isa} = %{version}-%{release}
 Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
@@ -367,14 +369,12 @@ A DIscrepany AnaLYZer for ERlang programs.
 Summary:	Diameter (RFC 3588) library
 Group:		Development/Languages
 BuildRequires:	ed
-#Requires: %{name}-compiler%{?_isa} = %{version}-%{release}
 Requires: %{name}-erts%{?_isa} = %{version}-%{release}
-#Requires: %{name}-gs%{?_isa} = %{version}-%{release}
-#Requires: %{name}-hipe%{?_isa} = %{version}-%{release}
 Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-runtime_tools%{?_isa} = %{version}-%{release}
+Requires: %{name}-ssl%{?_isa} = %{version}-%{release}
 Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
-#Requires: %{name}-syntax_tools%{?_isa} = %{version}-%{release}
-#Requires: %{name}-wx%{?_isa} = %{version}-%{release}
+Requires: %{name}-syntax_tools%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description diameter
@@ -395,7 +395,6 @@ Documentation for Erlang.
 %package edoc
 Summary:	A utility used to generate documentation out of tags in source files
 Group:		Development/Languages
-Requires: %{name}-compiler%{?_isa} = %{version}-%{release}
 Requires: %{name}-erts%{?_isa} = %{version}-%{release}
 Requires: %{name}-inets%{?_isa} = %{version}-%{release}
 Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
@@ -407,10 +406,26 @@ Obsoletes:	%{name} < R13B-04.5
 %description edoc
 A utility used to generate documentation out of tags in source files.
 
+%package eldap
+Summary:	Erlang LDAP library
+Group:		Development/Languages
+Requires: %{name}-asn1%{?_isa} = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-ssl%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
+Obsoletes:	%{name} < R13B-04.5
+
+%description eldap
+Erlang LDAP library.
+
 %package erl_docgen
 Summary:	A utility used to generate erlang HTML documentation
 Group:		Development/Languages
+Requires:	%{name}-edoc%{?_isa} = %{version}-%{release}
 Requires:	%{name}-erts%{?_isa} = %{version}-%{release}
+Requires:	%{name}-stdlib%{?_isa} = %{version}-%{release}
+Requires:	%{name}-xmerl%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description erl_docgen
@@ -539,12 +554,12 @@ Group:		Development/Languages
 Requires:	%{name}-erts%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 %if 0%{?fedora}
-BuildRequires:	java-1.6.0-openjdk-devel
+BuildRequires:	java-devel
 %else
 %ifarch %{ix86} x86_64
-BuildRequires:	java-1.6.0-openjdk-devel
+BuildRequires:	java-devel
 %else
-BuildRequires:	java-1.5.0-gcj-devel
+BuildRequires:	java-devel-gcj
 %endif
 %endif
 
@@ -592,6 +607,7 @@ A heavy duty real-time distributed database.
 %package observer
 Summary:	A set of tools for tracing and investigation of distributed systems
 Group:		Development/Languages
+Requires: %{name}-appmon%{?_isa} = %{version}-%{release}
 Requires: %{name}-erts%{?_isa} = %{version}-%{release}
 Requires: %{name}-et%{?_isa} = %{version}-%{release}
 Requires: %{name}-gs%{?_isa} = %{version}-%{release}
@@ -600,6 +616,7 @@ Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
 Requires: %{name}-runtime_tools%{?_isa} = %{version}-%{release}
 Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Requires: %{name}-webtool%{?_isa} = %{version}-%{release}
+Requires: %{name}-wx%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description observer
@@ -699,6 +716,7 @@ A graphical process manager used to inspect Erlang processes.
 %package public_key
 Summary:	API to public key infrastructure
 Group:		Development/Languages
+Requires: %{name}-asn1%{?_isa} = %{version}-%{release}
 Requires: %{name}-crypto%{?_isa} = %{version}-%{release}
 Requires: %{name}-erts%{?_isa} = %{version}-%{release}
 Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
@@ -733,6 +751,7 @@ Summary:	A set of tools to include in a production system
 Group:		Development/Languages
 Requires: %{name}-erts%{?_isa} = %{version}-%{release}
 Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+Requires: %{name}-mnesia%{?_isa} = %{version}-%{release}
 Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
@@ -1204,6 +1223,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files common_test
 %defattr(-,root,root)
+%{_bindir}/ct_run
 %{_libdir}/erlang/lib/common_test-*/
 %if %{with doc}
 %{_libdir}/erlang/man/man3/ct.*
@@ -1416,6 +1436,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/edoc_run.*
 %endif
 
+%files eldap
+%defattr(-,root,root)
+%{_libdir}/erlang/lib/eldap-*/
+%if %{with doc}
+%{_libdir}/erlang/man/man3/eldap.*
+%endif
+
 %files erl_docgen
 %defattr(-,root,root)
 %{_libdir}/erlang/lib/erl_docgen-*/
@@ -1476,7 +1503,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/bin/start_erl
 %{_libdir}/erlang/bin/start_sasl.boot
 %{_libdir}/erlang/bin/to_erl
-%dir %{_libdir}/erlang/erts-*/bin
+%dir %{_libdir}/erlang/erts-*/
+%dir %{_libdir}/erlang/erts-*/bin/
 %{_libdir}/erlang/erts-*/bin/beam
 %{_libdir}/erlang/erts-*/bin/beam.smp
 %{_libdir}/erlang/erts-*/bin/child_setup
@@ -1496,8 +1524,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/erts-*/bin/start_erl.src
 %{_libdir}/erlang/erts-*/bin/to_erl
 %{_libdir}/erlang/erts-*/include
-%{_libdir}/erlang/erts-*/lib
-%{_libdir}/erlang/erts-*/src
+%{_libdir}/erlang/erts-*/lib/
+%{_libdir}/erlang/erts-*/src/
 %{_libdir}/erlang/lib/erts-*/
 %if %{with doc}
 %{_libdir}/erlang/man/man1/ct_run.*
@@ -1610,6 +1638,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/inets-*/src
 %if %{with doc}
 %{_libdir}/erlang/man/man3/ftp.*
+%{_libdir}/erlang/man/man3/http_uri.*
 %{_libdir}/erlang/man/man3/httpc.*
 %{_libdir}/erlang/man/man3/httpd.*
 %{_libdir}/erlang/man/man3/httpd_conf.*
@@ -1827,6 +1856,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/runtime_tools-*/
 %if %{with doc}
 %{_libdir}/erlang/man/man3/dbg.*
+%{_libdir}/erlang/man/man3/dyntrace.*
 %{_libdir}/erlang/man/man3/erts_alloc_config.*
 %{_libdir}/erlang/man/man6/runtime_tools.*
 %endif
@@ -2286,6 +2316,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/wxSysColourChangedEvent.*
 %{_libdir}/erlang/man/man3/wxSystemOptions.*
 %{_libdir}/erlang/man/man3/wxSystemSettings.*
+%{_libdir}/erlang/man/man3/wxTaskBarIcon.*
+%{_libdir}/erlang/man/man3/wxTaskBarIconEvent.*
 %{_libdir}/erlang/man/man3/wxTextAttr.*
 %{_libdir}/erlang/man/man3/wxTextCtrl.*
 %{_libdir}/erlang/man/man3/wxTextDataObject.*
@@ -2345,6 +2377,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon May 07 2012 Peter Lemenkov <lemenkov@gmail.com> - R15B-01.1
+- Ver. R15B01
+- New sub-package - eldap
+
 * Tue Feb 07 2012 Peter Lemenkov <lemenkov@gmail.com> - R15B-00.1
 - Ver. R15B
 
