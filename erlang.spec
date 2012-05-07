@@ -25,7 +25,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel_for_rpm}.1%{?dist}
+Release:	%{upstream_rel_for_rpm}.2%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -1573,32 +1573,33 @@ rm -rf $RPM_BUILD_ROOT
 
 %files examples
 %defattr(-,root,root)
-%{_libdir}/erlang/lib/asn1-*/examples
-#%{_libdir}/erlang/lib/cosFileTransfer-*/examples
-#%{_libdir}/erlang/lib/cosNotification-*/examples
-#%{_libdir}/erlang/lib/cosProperty-*/examples
-#%{_libdir}/erlang/lib/cosTime-*/examples
-#%{_libdir}/erlang/lib/cosTransactions-*/examples
-%{_libdir}/erlang/lib/diameter-*/examples
-%{_libdir}/erlang/lib/et-*/examples
-%{_libdir}/erlang/lib/eunit-*/examples
-%{_libdir}/erlang/lib/gs-*/examples
-%{_libdir}/erlang/lib/ic-*/examples
-%{_libdir}/erlang/lib/inets-*/examples
-%{_libdir}/erlang/lib/kernel-*/examples
-%{_libdir}/erlang/lib/megaco-*/examples
-%{_libdir}/erlang/lib/mnesia-*/examples
-%{_libdir}/erlang/lib/observer-*/examples
-%{_libdir}/erlang/lib/orber-*/examples
-%{_libdir}/erlang/lib/reltool-*/examples
-%{_libdir}/erlang/lib/sasl-*/examples
-%{_libdir}/erlang/lib/snmp-*/examples
-#%{_libdir}/erlang/lib/ssh-*/examples
-%{_libdir}/erlang/lib/ssl-*/examples
-%{_libdir}/erlang/lib/stdlib-*/examples
-%{_libdir}/erlang/lib/syntax_tools-*/examples
-%{_libdir}/erlang/lib/tools-*/examples
-%{_libdir}/erlang/lib/wx-*/examples
+%{_libdir}/erlang/lib/asn1-*/examples/
+#%{_libdir}/erlang/lib/cosFileTransfer-*/examples/
+#%{_libdir}/erlang/lib/cosNotification-*/examples/
+#%{_libdir}/erlang/lib/cosProperty-*/examples/
+#%{_libdir}/erlang/lib/cosTime-*/examples/
+#%{_libdir}/erlang/lib/cosTransactions-*/examples/
+%{_libdir}/erlang/lib/diameter-*/examples/
+%{_libdir}/erlang/lib/et-*/examples/
+%{_libdir}/erlang/lib/eunit-*/examples/
+%{_libdir}/erlang/lib/gs-*/examples/
+%{_libdir}/erlang/lib/ic-*/examples/
+%{_libdir}/erlang/lib/inets-*/examples/
+%{_libdir}/erlang/lib/kernel-*/examples/
+%{_libdir}/erlang/lib/megaco-*/examples/
+%{_libdir}/erlang/lib/mnesia-*/examples/
+%{_libdir}/erlang/lib/observer-*/examples/
+%{_libdir}/erlang/lib/orber-*/examples/
+%{_libdir}/erlang/lib/reltool-*/examples/
+%{_libdir}/erlang/lib/runtime_tools-*/examples/
+%{_libdir}/erlang/lib/sasl-*/examples/
+%{_libdir}/erlang/lib/snmp-*/examples/
+#%{_libdir}/erlang/lib/ssh-*/examples/
+%{_libdir}/erlang/lib/ssl-*/examples/
+%{_libdir}/erlang/lib/stdlib-*/examples/
+%{_libdir}/erlang/lib/syntax_tools-*/examples/
+%{_libdir}/erlang/lib/tools-*/examples/
+%{_libdir}/erlang/lib/wx-*/examples/
 
 %files gs
 %defattr(-,root,root)
@@ -1737,7 +1738,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/mnesia-*/
 %{_libdir}/erlang/lib/mnesia-*/ebin
-%{_libdir}/erlang/lib/mnesia-*/include
+#%{_libdir}/erlang/lib/mnesia-*/include
 %{_libdir}/erlang/lib/mnesia-*/src
 %if %{with doc}
 %{_libdir}/erlang/man/man3/mnesia.*
@@ -1747,7 +1748,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %files observer
 %defattr(-,root,root)
-%{_libdir}/erlang/lib/observer-*/
+%dir %{_libdir}/erlang/lib/observer-*/
+%{_libdir}/erlang/lib/observer-*/ebin/
+%{_libdir}/erlang/lib/observer-*/include/
+%{_libdir}/erlang/lib/observer-*/priv/
+%{_libdir}/erlang/lib/observer-*/src/
 %if %{with doc}
 %{_libdir}/erlang/man/man3/crashdump.*
 %{_libdir}/erlang/man/man3/observer.*
@@ -1853,7 +1858,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files runtime_tools
 %defattr(-,root,root)
-%{_libdir}/erlang/lib/runtime_tools-*/
+%dir %{_libdir}/erlang/lib/runtime_tools-*/
+%{_libdir}/erlang/lib/runtime_tools-*/ebin/
+%{_libdir}/erlang/lib/runtime_tools-*/include/
+%{_libdir}/erlang/lib/runtime_tools-*/priv/
 %if %{with doc}
 %{_libdir}/erlang/man/man3/dbg.*
 %{_libdir}/erlang/man/man3/dyntrace.*
@@ -2098,7 +2106,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/typer
 %{_libdir}/erlang/bin/typer
 %{_libdir}/erlang/erts-*/bin/typer
-%{_libdir}/erlang/lib/typer-*/
+%dir %{_libdir}/erlang/lib/typer-*/
+%{_libdir}/erlang/lib/typer-*/ebin/
+#%{_libdir}/erlang/lib/typer-*/src/
 
 %files webtool
 %defattr(-,root,root)
@@ -2377,6 +2387,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon May 07 2012 Peter Lemenkov <lemenkov@gmail.com> - R15B-01.2
+- Fixed examples packaging
+
 * Mon May 07 2012 Peter Lemenkov <lemenkov@gmail.com> - R15B-01.1
 - Ver. R15B01
 - New sub-package - eldap
