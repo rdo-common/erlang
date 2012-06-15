@@ -25,7 +25,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel_for_rpm}.2%{?dist}
+Release:	%{upstream_rel_for_rpm}.3%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -1063,6 +1063,8 @@ make
 %if %{with doc}
 %if %{use_prebuilt_docs}
 %else
+# should use FOP_OPTS after #832323 is resolved
+export BASE_OPTIONS=-Xmx1024m
 make docs
 %endif
 %endif
@@ -2387,6 +2389,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jun 15 2012 Dan Horák <dan[at]danny.cz - R15B-01.3
+- resolve OOM condition when generating docs
+
 * Mon May 07 2012 Peter Lemenkov <lemenkov@gmail.com> - R15B-01.2
 - Fixed examples packaging
 
