@@ -25,7 +25,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel_for_rpm}.4%{?dist}
+Release:	%{upstream_rel_for_rpm}.4%{?dist}.1
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -2393,6 +2393,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jul 18 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - R15B-01.4.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
 * Tue Jun 26 2012 Peter Lemenkov <lemenkov@gmail.com> - R15B-01.3
 - Return back erl_interface' private API headers (rhbz #818419)
 
