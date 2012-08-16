@@ -25,7 +25,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel_for_rpm}.4%{?dist}.1
+Release:	%{upstream_rel_for_rpm}.4%{?dist}.2
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -1068,7 +1068,11 @@ make
 %if %{use_prebuilt_docs}
 %else
 # should use FOP_OPTS after #832323 is resolved
+%ifnarch ppc %{power64}
 export BASE_OPTIONS=-Xmx1024m
+%else
+export BASE_OPTIONS=-Xmx1536m
+%endif
 make docs
 %endif
 %endif
@@ -2393,6 +2397,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Aug 15 2012 Karsten Hopp <karsten@redhat.com> R15B-01.4.2
+- set BASE_OPTIONS to -Xmx1536m on ppc*
+
 * Wed Jul 18 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - R15B-01.4.1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
