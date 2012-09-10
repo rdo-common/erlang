@@ -1202,7 +1202,6 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %files
-%defattr(-,root,root)
 %if %{with doc}
 %dir %{_docdir}/%{n_uvr}/
 %doc %{_docdir}/%{n_uvr}/AUTHORS
@@ -1214,14 +1213,12 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files appmon
-%defattr(-,root,root)
 %{_libdir}/erlang/lib/appmon-*/
 %if %{with doc}
 %{_libdir}/erlang/man/man3/appmon.*
 %endif
 
 %files asn1
-%defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/asn1-*/
 %{_libdir}/erlang/lib/asn1-*/ebin
 %{_libdir}/erlang/lib/asn1-*/priv
@@ -1232,7 +1229,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files common_test
-%defattr(-,root,root)
 %{_bindir}/ct_run
 %{_libdir}/erlang/lib/common_test-*/
 %if %{with doc}
@@ -1252,14 +1248,12 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files compiler
-%defattr(-,root,root)
 %{_libdir}/erlang/lib/compiler-*/
 %if %{with doc}
 %{_libdir}/erlang/man/man3/compile.*
 %endif
 
 %files cosEvent
-%defattr(-,root,root)
 %{_libdir}/erlang/lib/cosEvent-*/
 %if %{with doc}
 %{_libdir}/erlang/man/man3/cosEventApp.*
@@ -1274,7 +1268,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files cosEventDomain
-%defattr(-,root,root)
 %{_libdir}/erlang/lib/cosEventDomain-*/
 %if %{with doc}
 %{_libdir}/erlang/man/man3/CosEventDomainAdmin.*
@@ -1284,7 +1277,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files cosFileTransfer
-%defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/cosFileTransfer-*/
 %{_libdir}/erlang/lib/cosFileTransfer-*/ebin
 %{_libdir}/erlang/lib/cosFileTransfer-*/include
@@ -1299,7 +1291,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files cosNotification
-%defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/cosNotification-*/
 %{_libdir}/erlang/lib/cosNotification-*/ebin
 %{_libdir}/erlang/lib/cosNotification-*/include
@@ -1336,7 +1327,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files cosProperty
-%defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/cosProperty-*/
 %{_libdir}/erlang/lib/cosProperty-*/ebin
 %{_libdir}/erlang/lib/cosProperty-*/include
@@ -1352,7 +1342,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files cosTime
-%defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/cosTime-*/
 %{_libdir}/erlang/lib/cosTime-*/ebin
 %{_libdir}/erlang/lib/cosTime-*/include
@@ -1367,7 +1356,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files cosTransactions
-%defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/cosTransactions-*/
 %{_libdir}/erlang/lib/cosTransactions-*/ebin
 %{_libdir}/erlang/lib/cosTransactions-*/include
@@ -1384,7 +1372,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files crypto
-%defattr(-,root,root)
 %{_libdir}/erlang/lib/crypto-*/
 %if %{with doc}
 %{_libdir}/erlang/man/man3/crypto.*
@@ -1392,7 +1379,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files debugger
-%defattr(-,root,root)
 %{_libdir}/erlang/lib/debugger-*/
 %if %{with doc}
 %{_libdir}/erlang/man/man3/debugger.*
@@ -1401,7 +1387,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files dialyzer
-%defattr(-,root,root)
 %{_bindir}/dialyzer
 %{_libdir}/erlang/bin/dialyzer
 %{_libdir}/erlang/erts-*/bin/dialyzer
@@ -1411,7 +1396,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files diameter
-%defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/diameter-*/
 %{_libdir}/erlang/lib/diameter-*/bin
 %{_libdir}/erlang/lib/diameter-*/ebin
@@ -1428,7 +1412,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files doc
-%defattr(-,root,root)
 %if %{with doc}
 %doc %{_docdir}/%{n_uvr}/doc
 %doc %{_docdir}/%{n_uvr}/erts-*/
@@ -1436,7 +1419,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files edoc
-%defattr(-,root,root)
 %{_libdir}/erlang/lib/edoc-*/
 %if %{with doc}
 %{_libdir}/erlang/man/man3/edoc.*
@@ -1448,19 +1430,16 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files eldap
-%defattr(-,root,root)
 %{_libdir}/erlang/lib/eldap-*/
 %if %{with doc}
 %{_libdir}/erlang/man/man3/eldap.*
 %endif
 
 %files erl_docgen
-%defattr(-,root,root)
 %{_libdir}/erlang/lib/erl_docgen-*/
 %{_libdir}/erlang/man/man6/erl_docgen.*
 
 %files erl_interface
-%defattr(-,root,root)
 %{_libdir}/erlang/lib/erl_interface-*/
 %if %{with doc}
 %{_libdir}/erlang/man/man1/erl_call.*
@@ -1477,8 +1456,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files erts
-%defattr(-,root,root)
-
 # TODO these directories should be packaged separately
 %dir %{_libdir}/erlang/
 %dir %{_libdir}/erlang/bin/
@@ -1560,7 +1537,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/usr/
 
 %files et
-%defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/et-*/
 %{_libdir}/erlang/lib/et-*/ebin
 %{_libdir}/erlang/lib/et-*/include
@@ -1573,7 +1549,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files eunit
-%defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/eunit-*/
 %{_libdir}/erlang/lib/eunit-*/ebin
 %{_libdir}/erlang/lib/eunit-*/include
@@ -1583,7 +1558,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files examples
-%defattr(-,root,root)
 %{_libdir}/erlang/lib/asn1-*/examples/
 #%{_libdir}/erlang/lib/cosFileTransfer-*/examples/
 #%{_libdir}/erlang/lib/cosNotification-*/examples/
@@ -1613,7 +1587,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/wx-*/examples/
 
 %files gs
-%defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/gs-*/
 %{_libdir}/erlang/lib/gs-*/contribs
 %{_libdir}/erlang/lib/gs-*/ebin
@@ -1624,11 +1597,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files hipe
-%defattr(-,root,root)
 %{_libdir}/erlang/lib/hipe-*/
 
 %files ic
-%defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/ic-*/
 %{_libdir}/erlang/lib/ic-*/ebin
 %{_libdir}/erlang/lib/ic-*/include
@@ -1642,7 +1613,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files inets
-%defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/inets-*/
 %{_libdir}/erlang/lib/inets-*/ebin
 %{_libdir}/erlang/lib/inets-*/include
@@ -1665,7 +1635,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files inviso
-%defattr(-,root,root)
 %{_libdir}/erlang/lib/inviso-*/
 %if %{with doc}
 %{_libdir}/erlang/man/man3/inviso.*
@@ -1677,12 +1646,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files jinterface
-%defattr(-,root,root)
 %{_libdir}/erlang/lib/jinterface-*/
 %{_javadir}/%{name}/OtpErlang.jar
 
 %files kernel
-%defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/kernel-*/
 %{_libdir}/erlang/lib/kernel-*/ebin
 %{_libdir}/erlang/lib/kernel-*/include
@@ -1724,7 +1691,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files megaco
-%defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/megaco-*/
 %{_libdir}/erlang/lib/megaco-*/ebin
 %{_libdir}/erlang/lib/megaco-*/include
@@ -1746,7 +1712,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files mnesia
-%defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/mnesia-*/
 %{_libdir}/erlang/lib/mnesia-*/ebin
 #%{_libdir}/erlang/lib/mnesia-*/include
@@ -1758,7 +1723,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files observer
-%defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/observer-*/
 %{_libdir}/erlang/lib/observer-*/ebin/
 %{_libdir}/erlang/lib/observer-*/include/
@@ -1772,14 +1736,12 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files odbc
-%defattr(-,root,root)
 %{_libdir}/erlang/lib/odbc-*/
 %if %{with doc}
 %{_libdir}/erlang/man/man3/odbc.*
 %endif
 
 %files orber
-%defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/orber-*/
 %{_libdir}/erlang/lib/orber-*/COSS
 %{_libdir}/erlang/lib/orber-*/ebin
@@ -1809,7 +1771,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files os_mon
-%defattr(-,root,root)
 %{_libdir}/erlang/lib/os_mon-*/
 %if %{with doc}
 %{_libdir}/erlang/man/man3/cpu_sup.*
@@ -1821,14 +1782,12 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files otp_mibs
-%defattr(-,root,root)
 %{_libdir}/erlang/lib/otp_mibs-*/
 %if %{with doc}
 %{_libdir}/erlang/man/man3/otp_mib.*
 %endif
 
 %files parsetools
-%defattr(-,root,root)
 %{_libdir}/erlang/lib/parsetools-*/
 %if %{with doc}
 %{_libdir}/erlang/man/man3/leex.*
@@ -1836,7 +1795,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files percept
-%defattr(-,root,root)
 %{_libdir}/erlang/lib/percept-*/
 %if %{with doc}
 %{_libdir}/erlang/man/man3/egd.*
@@ -1845,21 +1803,18 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files pman
-%defattr(-,root,root)
 %{_libdir}/erlang/lib/pman-*/
 %if %{with doc}
 %{_libdir}/erlang/man/man3/pman.*
 %endif
 
 %files public_key
-%defattr(-,root,root)
 %{_libdir}/erlang/lib/public_key-*/
 %if %{with doc}
 %{_libdir}/erlang/man/man3/public_key.*
 %endif
 
 %files reltool
-%defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/reltool-*/
 %{_libdir}/erlang/lib/reltool-*/ebin
 %{_libdir}/erlang/lib/reltool-*/src
@@ -1868,7 +1823,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files runtime_tools
-%defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/runtime_tools-*/
 %{_libdir}/erlang/lib/runtime_tools-*/ebin/
 %{_libdir}/erlang/lib/runtime_tools-*/include/
@@ -1881,7 +1835,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files sasl
-%defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/sasl-*/
 %{_libdir}/erlang/lib/sasl-*/ebin
 %{_libdir}/erlang/lib/sasl-*/src
@@ -1899,7 +1852,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files snmp
-%defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/snmp-*/
 %{_libdir}/erlang/lib/snmp-*/bin
 %{_libdir}/erlang/lib/snmp-*/ebin
@@ -1960,7 +1912,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files ssh
-%defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/ssh-*/
 %{_libdir}/erlang/lib/ssh-*/ebin
 %{_libdir}/erlang/lib/ssh-*/include
@@ -1974,7 +1925,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files ssl
-%defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/ssl-*/
 %{_libdir}/erlang/lib/ssl-*/ebin
 %{_libdir}/erlang/lib/ssl-*/src
@@ -1985,7 +1935,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files stdlib
-%defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/stdlib-*/
 %{_libdir}/erlang/lib/stdlib-*/ebin
 %{_libdir}/erlang/lib/stdlib-*/include
@@ -2053,7 +2002,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files syntax_tools
-%defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/syntax_tools-*/
 %{_libdir}/erlang/lib/syntax_tools-*/ebin
 %if %{with doc}
@@ -2069,7 +2017,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files test_server
-%defattr(-,root,root)
 %{_libdir}/erlang/lib/test_server-*/
 %if %{with doc}
 %{_libdir}/erlang/man/man3/test_server.*
@@ -2078,14 +2025,12 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files toolbar
-%defattr(-,root,root)
 %{_libdir}/erlang/lib/toolbar-*/
 %if %{with doc}
 %{_libdir}/erlang/man/man3/toolbar.*
 %endif
 
 %files tools
-%defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/tools-*/
 %{_libdir}/erlang/lib/tools-*/bin
 %{_libdir}/erlang/lib/tools-*/ebin
@@ -2106,14 +2051,12 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files tv
-%defattr(-,root,root)
 %{_libdir}/erlang/lib/tv-*/
 %if %{with doc}
 %{_libdir}/erlang/man/man3/tv.*
 %endif
 
 %files typer
-%defattr(-,root,root)
 %{_bindir}/typer
 %{_libdir}/erlang/bin/typer
 %{_libdir}/erlang/erts-*/bin/typer
@@ -2122,7 +2065,6 @@ rm -rf $RPM_BUILD_ROOT
 #%{_libdir}/erlang/lib/typer-*/src/
 
 %files webtool
-%defattr(-,root,root)
 %{_libdir}/erlang/lib/webtool-*/
 %if %{with doc}
 %{_libdir}/erlang/man/man1/start_webtool.*
@@ -2130,7 +2072,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files wx
-%defattr(-,root,root)
 %dir %{_libdir}/erlang/lib/wx-*/
 %{_libdir}/erlang/lib/wx-*/ebin
 %{_libdir}/erlang/lib/wx-*/include
@@ -2360,7 +2301,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files xmerl
-%defattr(-,root,root)
 %{_libdir}/erlang/lib/xmerl-*/
 %if %{with doc}
 %{_libdir}/erlang/man/man3/xmerl.*
@@ -2374,25 +2314,21 @@ rm -rf $RPM_BUILD_ROOT
 
 %if 0%{?el6}%{?fedora}
 %files -n emacs-erlang
-%defattr(-,root,root,-)
 %dir %{_emacs_sitelispdir}/erlang
 %doc %{_emacs_sitelispdir}/erlang/README
 %{_emacs_sitelispdir}/erlang/*.elc
 %{_emacs_sitestartdir}/erlang-init.el
 
 %files -n emacs-erlang-el
-%defattr(-,root,root,-)
 %{_emacs_sitelispdir}/erlang/*.el
 
 %files -n xemacs-erlang
-%defattr(-,root,root,-)
 %dir %{_xemacs_sitelispdir}/erlang
 %doc %{_xemacs_sitelispdir}/erlang/README
 %{_xemacs_sitelispdir}/erlang/*.elc
 %{_xemacs_sitestartdir}/erlang-init.el
 
 %files -n xemacs-erlang-el
-%defattr(-,root,root,-)
 %{_xemacs_sitelispdir}/erlang/*.el
 %endif
 
