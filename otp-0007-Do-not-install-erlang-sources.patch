@@ -35,7 +35,7 @@ Signed-off-by: Hans Ulrich Niedermann <hun@n-dimensional.de>
  lib/hipe/main/Makefile             | 2 +-
  lib/hipe/misc/Makefile             | 2 +-
  lib/hipe/rtl/Makefile              | 2 +-
- lib/hipe/util/Makefile             | 3 +--
+ lib/hipe/util/Makefile             | 3 ---
  lib/ic/src/Makefile                | 2 +-
  lib/inets/src/ftp/Makefile         | 2 +-
  lib/inets/src/http_client/Makefile | 2 +-
@@ -83,7 +83,7 @@ Signed-off-by: Hans Ulrich Niedermann <hun@n-dimensional.de>
  lib/webtool/src/Makefile           | 2 --
  lib/wx/src/Makefile                | 4 ++--
  lib/xmerl/src/Makefile             | 4 +---
- 76 files changed, 58 insertions(+), 111 deletions(-)
+ 76 files changed, 57 insertions(+), 112 deletions(-)
 
 diff --git a/erts/preloaded/src/Makefile b/erts/preloaded/src/Makefile
 index 5bcc2eb..c87dc9e 100644
@@ -465,7 +465,7 @@ index 426d1bd..44238b9 100644
  	$(INSTALL_DATA) $(TARGET_FILES) "$(RELSYSDIR)/ebin"
  
 diff --git a/lib/hipe/util/Makefile b/lib/hipe/util/Makefile
-index a5ee232..e46ece0 100644
+index a5ee232..f03e41d 100644
 --- a/lib/hipe/util/Makefile
 +++ b/lib/hipe/util/Makefile
 @@ -49,7 +49,6 @@ HIPE_MODULES =
@@ -476,12 +476,12 @@ index a5ee232..e46ece0 100644
  ERL_FILES= $(MODULES:%=%.erl)
  TARGET_FILES= $(MODULES:%=$(EBIN)/%.$(EMULATOR))
  DOC_FILES= $(MODULES:%=$(DOCS)/%.html)
-@@ -104,7 +103,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
+@@ -103,8 +102,6 @@ $(DOCS)/%.html:%.erl
+ include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt
- 	$(INSTALL_DIR) "$(RELSYSDIR)/util"
+-	$(INSTALL_DIR) "$(RELSYSDIR)/util"
 -	$(INSTALL_DATA) $(ERL_FILES) $(HRL_FILES) "$(RELSYSDIR)/util"
-+	$(INSTALL_DATA) $(HRL_FILES) "$(RELSYSDIR)/util"
  	$(INSTALL_DIR) "$(RELSYSDIR)/ebin"
  	$(INSTALL_DATA) $(TARGET_FILES) "$(RELSYSDIR)/ebin"
  
