@@ -65,7 +65,7 @@ Signed-off-by: Hans Ulrich Niedermann <hun@n-dimensional.de>
  lib/public_key/src/Makefile        | 4 ----
  lib/reltool/src/Makefile           | 2 +-
  lib/runtime_tools/src/Makefile     | 2 --
- lib/sasl/src/Makefile              | 2 +-
+ lib/sasl/src/Makefile              | 1 -
  lib/snmp/src/agent/Makefile        | 2 +-
  lib/snmp/src/app/Makefile          | 2 +-
  lib/snmp/src/compile/Makefile      | 2 +-
@@ -83,7 +83,7 @@ Signed-off-by: Hans Ulrich Niedermann <hun@n-dimensional.de>
  lib/webtool/src/Makefile           | 2 --
  lib/wx/src/Makefile                | 4 ++--
  lib/xmerl/src/Makefile             | 4 +---
- 76 files changed, 60 insertions(+), 110 deletions(-)
+ 76 files changed, 59 insertions(+), 110 deletions(-)
 
 diff --git a/erts/preloaded/src/Makefile b/erts/preloaded/src/Makefile
 index 5bcc2eb..c87dc9e 100644
@@ -869,15 +869,14 @@ index 810e3e8..b529c92 100644
  	$(INSTALL_DATA) $(HRL_FILES) "$(RELSYSDIR)/include"
  	$(INSTALL_DIR) "$(RELSYSDIR)/examples"
 diff --git a/lib/sasl/src/Makefile b/lib/sasl/src/Makefile
-index de0c45e..1f8bd28 100644
+index de0c45e..58c2ecb 100644
 --- a/lib/sasl/src/Makefile
 +++ b/lib/sasl/src/Makefile
-@@ -92,7 +92,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
+@@ -92,7 +92,6 @@ include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt
  	$(INSTALL_DIR) "$(RELSYSDIR)/src"
 -	$(INSTALL_DATA) $(ERL_FILES) "$(RELSYSDIR)/src"
-+	$(INSTALL_DATA) "$(RELSYSDIR)/src"
  	$(INSTALL_DATA) $(INTERNAL_HRL_FILES) "$(RELSYSDIR)/src"
  	$(INSTALL_DIR) "$(RELSYSDIR)/ebin"
  	$(INSTALL_DATA) $(TARGET_FILES) "$(RELSYSDIR)/ebin"
