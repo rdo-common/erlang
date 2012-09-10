@@ -48,7 +48,7 @@ Signed-off-by: Hans Ulrich Niedermann <hun@n-dimensional.de>
  lib/megaco/src/app/Makefile        | 2 +-
  lib/megaco/src/binary/Makefile     | 2 +-
  lib/megaco/src/engine/Makefile     | 2 +-
- lib/megaco/src/flex/Makefile.in    | 2 +-
+ lib/megaco/src/flex/Makefile.in    | 2 --
  lib/megaco/src/tcp/Makefile        | 2 +-
  lib/megaco/src/text/Makefile       | 2 +-
  lib/megaco/src/udp/Makefile        | 2 +-
@@ -83,7 +83,7 @@ Signed-off-by: Hans Ulrich Niedermann <hun@n-dimensional.de>
  lib/webtool/src/Makefile           | 2 --
  lib/wx/src/Makefile                | 4 ++--
  lib/xmerl/src/Makefile             | 4 +---
- 76 files changed, 59 insertions(+), 110 deletions(-)
+ 76 files changed, 58 insertions(+), 111 deletions(-)
 
 diff --git a/erts/preloaded/src/Makefile b/erts/preloaded/src/Makefile
 index 5bcc2eb..c87dc9e 100644
@@ -641,18 +641,18 @@ index 7cecef1..841a88a 100644
  
  
 diff --git a/lib/megaco/src/flex/Makefile.in b/lib/megaco/src/flex/Makefile.in
-index b36ef26..5b5042d 100644
+index b36ef26..2e748fe 100644
 --- a/lib/megaco/src/flex/Makefile.in
 +++ b/lib/megaco/src/flex/Makefile.in
-@@ -276,7 +276,7 @@ release_spec: opt
+@@ -276,8 +276,6 @@ release_spec: opt
  	$(INSTALL_DIR)  "$(RELSYSDIR)/src/flex"
  	$(INSTALL_DIR)  "$(RELSYSDIR)/priv/lib"
  	$(INSTALL_DIR)  "$(RELSYSDIR)/include"
 -	$(INSTALL_DATA) $(ERL_FILES) $(INTERNAL_HRL_FILES) "$(RELSYSDIR)/src/flex"
-+	$(INSTALL_DATA) $(INTERNAL_HRL_FILES) "$(RELSYSDIR)/src/flex"
- 	$(INSTALL_DATA) $(TARGET_FILES) "$(RELSYSDIR)/ebin"
+-	$(INSTALL_DATA) $(TARGET_FILES) "$(RELSYSDIR)/ebin"
  ifeq ($(ENABLE_MEGACO_FLEX_SCANNER),true)
  	$(INSTALL_DATA) $(FLEX_FILES) "$(RELSYSDIR)/src/flex"
+ 	$(INSTALL_PROGRAM) $(SOLIBS) "$(RELSYSDIR)/priv/lib"
 diff --git a/lib/megaco/src/tcp/Makefile b/lib/megaco/src/tcp/Makefile
 index 0c30aba..aa553ff 100644
 --- a/lib/megaco/src/tcp/Makefile
