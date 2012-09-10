@@ -1,6 +1,6 @@
 %global upstream_ver R15B
 # Do NOT change %%{upstream_rel} unless UPSTREAM has actually changed it!
-%global upstream_rel 01
+%global upstream_rel 02
 #%%global upstream_rel %%{nil}
 # Use %%{nil} for %%{upstream_rel} for tracking source like otp_src_R14B.tar.gz,
 # and 01 %%{upstream_rel} for tracking source like otp_src_R14B01.tar.gz.
@@ -25,7 +25,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel_for_rpm}.4%{?dist}.2
+Release:	%{upstream_rel_for_rpm}.1%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -2397,6 +2397,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Sep 10 2012 Peter Lemenkov <lemenkov@gmail.com> - R15B-02.1
+- Ver. R15B02
+
 * Wed Aug 15 2012 Karsten Hopp <karsten@redhat.com> R15B-01.4.2
 - set BASE_OPTIONS to -Xmx1536m on ppc*
 

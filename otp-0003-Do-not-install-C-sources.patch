@@ -6,159 +6,160 @@ Don't install *.c and *.o files at all.
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 ---
- lib/asn1/c_src/Makefile             |    2 --
- lib/crypto/c_src/Makefile.in        |    3 ---
- lib/erl_interface/src/Makefile.in   |   18 ------------------
- lib/ic/c_src/Makefile.in            |    2 --
- lib/megaco/src/flex/Makefile.in     |    2 +-
- lib/odbc/c_src/Makefile.in          |    3 ---
- lib/os_mon/c_src/Makefile.in        |    1 -
- lib/runtime_tools/c_src/Makefile.in |    2 --
- lib/tools/c_src/Makefile.in         |    2 --
- 9 files changed, 1 insertion(+), 34 deletions(-)
+ lib/asn1/c_src/Makefile             |  2 --
+ lib/crypto/c_src/Makefile.in        |  3 ---
+ lib/erl_interface/src/Makefile.in   | 18 ------------------
+ lib/ic/c_src/Makefile.in            |  2 --
+ lib/megaco/src/flex/Makefile.in     |  2 +-
+ lib/odbc/c_src/Makefile.in          |  3 ---
+ lib/os_mon/c_src/Makefile.in        |  2 --
+ lib/runtime_tools/c_src/Makefile.in |  2 --
+ lib/tools/c_src/Makefile.in         |  2 --
+ 9 files changed, 1 insertion(+), 35 deletions(-)
 
 diff --git a/lib/asn1/c_src/Makefile b/lib/asn1/c_src/Makefile
-index 8c06be5..7013289 100644
+index a73d01a..102d4fb 100644
 --- a/lib/asn1/c_src/Makefile
 +++ b/lib/asn1/c_src/Makefile
 @@ -112,8 +112,6 @@ include $(ERL_TOP)/make/otp_release_targets.mk
  release_spec: opt
- 	$(INSTALL_DIR) $(RELSYSDIR)/priv/lib
- 	$(INSTALL_PROGRAM) $(NIF_SHARED_OBJ_FILE) $(RELSYSDIR)/priv/lib
--	$(INSTALL_DIR) $(RELSYSDIR)/c_src
--	$(INSTALL_DATA) *.c $(RELSYSDIR)/c_src
+ 	$(INSTALL_DIR) "$(RELSYSDIR)/priv/lib"
+ 	$(INSTALL_PROGRAM) $(NIF_SHARED_OBJ_FILE) "$(RELSYSDIR)/priv/lib"
+-	$(INSTALL_DIR) "$(RELSYSDIR)/c_src"
+-	$(INSTALL_DATA) *.c "$(RELSYSDIR)/c_src"
  
  release_docs_spec:
  
 diff --git a/lib/crypto/c_src/Makefile.in b/lib/crypto/c_src/Makefile.in
-index 3f0f5c4..ba7ab1c 100644
+index 80e95ef..c644ad2 100644
 --- a/lib/crypto/c_src/Makefile.in
 +++ b/lib/crypto/c_src/Makefile.in
 @@ -133,10 +133,7 @@ docs:
  include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt
--	$(INSTALL_DIR) $(RELSYSDIR)/priv/obj
- 	$(INSTALL_DIR) $(RELSYSDIR)/priv/lib
--	$(INSTALL_DATA) $(NIF_MAKEFILE) $(RELSYSDIR)/priv/obj
--	$(INSTALL_PROGRAM) $(OBJS) $(RELSYSDIR)/priv/obj
- 	$(INSTALL_PROGRAM) $(NIF_LIB) $(RELSYSDIR)/priv/lib
+-	$(INSTALL_DIR) "$(RELSYSDIR)/priv/obj"
+ 	$(INSTALL_DIR) "$(RELSYSDIR)/priv/lib"
+-	$(INSTALL_DATA) $(NIF_MAKEFILE) "$(RELSYSDIR)/priv/obj"
+-	$(INSTALL_PROGRAM) $(OBJS) "$(RELSYSDIR)/priv/obj"
+ 	$(INSTALL_PROGRAM) $(NIF_LIB) "$(RELSYSDIR)/priv/lib"
  
  release_docs_spec:
 diff --git a/lib/erl_interface/src/Makefile.in b/lib/erl_interface/src/Makefile.in
-index d6b0ca1..91a2cc9 100644
+index cb41391..9aeba86 100644
 --- a/lib/erl_interface/src/Makefile.in
 +++ b/lib/erl_interface/src/Makefile.in
 @@ -846,29 +846,11 @@ release: opt
- 	$(INSTALL_DIR) $(RELSYSDIR)/include
- 	$(INSTALL_DIR) $(RELSYSDIR)/lib
- 	$(INSTALL_DIR) $(RELSYSDIR)/bin
--	$(INSTALL_DIR) $(RELSYSDIR)/src/auxdir
--	$(INSTALL_DIR) $(RELSYSDIR)/src/connect
--	$(INSTALL_DIR) $(RELSYSDIR)/src/decode
--	$(INSTALL_DIR) $(RELSYSDIR)/src/encode
--	$(INSTALL_DIR) $(RELSYSDIR)/src/epmd
--	$(INSTALL_DIR) $(RELSYSDIR)/src/legacy
--	$(INSTALL_DIR) $(RELSYSDIR)/src/misc
--	$(INSTALL_DIR) $(RELSYSDIR)/src/prog
--	$(INSTALL_DIR) $(RELSYSDIR)/src/registry
- 	$(INSTALL_DATA) $(HEADERS)     $(RELSYSDIR)/include
- 	$(INSTALL_DATA) $(OBJ_TARGETS) $(RELSYSDIR)/lib
+ 	$(INSTALL_DIR) "$(RELSYSDIR)/include"
+ 	$(INSTALL_DIR) "$(RELSYSDIR)/lib"
+ 	$(INSTALL_DIR) "$(RELSYSDIR)/bin"
+-	$(INSTALL_DIR) "$(RELSYSDIR)/src/auxdir"
+-	$(INSTALL_DIR) "$(RELSYSDIR)/src/connect"
+-	$(INSTALL_DIR) "$(RELSYSDIR)/src/decode"
+-	$(INSTALL_DIR) "$(RELSYSDIR)/src/encode"
+-	$(INSTALL_DIR) "$(RELSYSDIR)/src/epmd"
+-	$(INSTALL_DIR) "$(RELSYSDIR)/src/legacy"
+-	$(INSTALL_DIR) "$(RELSYSDIR)/src/misc"
+-	$(INSTALL_DIR) "$(RELSYSDIR)/src/prog"
+-	$(INSTALL_DIR) "$(RELSYSDIR)/src/registry"
+ 	$(INSTALL_DATA) $(HEADERS)     "$(RELSYSDIR)/include"
+ 	$(INSTALL_DATA) $(OBJ_TARGETS) "$(RELSYSDIR)/lib"
  ifneq ($(EXE_TARGETS),)
- 	$(INSTALL_PROGRAM) $(EXE_TARGETS) $(RELSYSDIR)/bin
+ 	$(INSTALL_PROGRAM) $(EXE_TARGETS) "$(RELSYSDIR)/bin"
  endif
--	$(INSTALL_DATA) $(EXTRA)        $(RELSYSDIR)/src
--	$(INSTALL_DATA) connect/*.[ch]  $(RELSYSDIR)/src/connect
--	$(INSTALL_DATA) decode/*.[ch]   $(RELSYSDIR)/src/decode
--	$(INSTALL_DATA) encode/*.[ch]   $(RELSYSDIR)/src/encode
--	$(INSTALL_DATA) epmd/*.[ch]     $(RELSYSDIR)/src/epmd
--	$(INSTALL_DATA) misc/*.[ch]     $(RELSYSDIR)/src/misc
--	$(INSTALL_DATA) registry/*.[ch] $(RELSYSDIR)/src/registry
--	$(INSTALL_DATA) legacy/*.[ch]   $(RELSYSDIR)/src/legacy
--	$(INSTALL_DATA) prog/*.[ch]     $(RELSYSDIR)/src/prog
+-	$(INSTALL_DATA) $(EXTRA)        "$(RELSYSDIR)/src"
+-	$(INSTALL_DATA) connect/*.[ch]  "$(RELSYSDIR)/src/connect"
+-	$(INSTALL_DATA) decode/*.[ch]   "$(RELSYSDIR)/src/decode"
+-	$(INSTALL_DATA) encode/*.[ch]   "$(RELSYSDIR)/src/encode"
+-	$(INSTALL_DATA) epmd/*.[ch]     "$(RELSYSDIR)/src/epmd"
+-	$(INSTALL_DATA) misc/*.[ch]     "$(RELSYSDIR)/src/misc"
+-	$(INSTALL_DATA) registry/*.[ch] "$(RELSYSDIR)/src/registry"
+-	$(INSTALL_DATA) legacy/*.[ch]   "$(RELSYSDIR)/src/legacy"
+-	$(INSTALL_DATA) prog/*.[ch]     "$(RELSYSDIR)/src/prog"
  
  release_docs:
  
 diff --git a/lib/ic/c_src/Makefile.in b/lib/ic/c_src/Makefile.in
-index 5e034c4..c101201 100644
+index de46ead..b30ce1e 100644
 --- a/lib/ic/c_src/Makefile.in
 +++ b/lib/ic/c_src/Makefile.in
 @@ -140,10 +140,8 @@ $(OBJDIR)/%.o: %.c
  include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt
--	$(INSTALL_DIR) $(RELSYSDIR)/c_src
- 	$(INSTALL_DIR) $(RELSYSDIR)/include
- 	$(INSTALL_DIR) $(RELSYSDIR)/priv/lib
--	$(INSTALL_DATA) ic.c ic_tmo.c $(RELSYSDIR)/c_src
- 	$(INSTALL_DATA) $(IDL_FILES) $(H_FILES) $(RELSYSDIR)/include
- 	$(INSTALL_DATA) $(LIBRARY) $(RELSYSDIR)/priv/lib
+-	$(INSTALL_DIR) "$(RELSYSDIR)/c_src"
+ 	$(INSTALL_DIR) "$(RELSYSDIR)/include"
+ 	$(INSTALL_DIR) "$(RELSYSDIR)/priv/lib"
+-	$(INSTALL_DATA) ic.c ic_tmo.c "$(RELSYSDIR)/c_src"
+ 	$(INSTALL_DATA) $(IDL_FILES) $(H_FILES) "$(RELSYSDIR)/include"
+ 	$(INSTALL_DATA) $(LIBRARY) "$(RELSYSDIR)/priv/lib"
  
 diff --git a/lib/megaco/src/flex/Makefile.in b/lib/megaco/src/flex/Makefile.in
-index 7d82644..27275f2 100644
+index 69c2425..b36ef26 100644
 --- a/lib/megaco/src/flex/Makefile.in
 +++ b/lib/megaco/src/flex/Makefile.in
 @@ -279,7 +279,7 @@ release_spec: opt
- 	$(INSTALL_DATA) $(ERL_FILES) $(INTERNAL_HRL_FILES) $(RELSYSDIR)/src/flex
- 	$(INSTALL_DATA) $(TARGET_FILES) $(RELSYSDIR)/ebin
+ 	$(INSTALL_DATA) $(ERL_FILES) $(INTERNAL_HRL_FILES) "$(RELSYSDIR)/src/flex"
+ 	$(INSTALL_DATA) $(TARGET_FILES) "$(RELSYSDIR)/ebin"
  ifeq ($(ENABLE_MEGACO_FLEX_SCANNER),true)
--	$(INSTALL_DATA) $(FLEX_FILES) $(C_TARGETS) $(RELSYSDIR)/src/flex
-+	$(INSTALL_DATA) $(FLEX_FILES) $(RELSYSDIR)/src/flex
- 	$(INSTALL_PROGRAM) $(SOLIBS) $(RELSYSDIR)/priv/lib
+-	$(INSTALL_DATA) $(FLEX_FILES) $(C_TARGETS) "$(RELSYSDIR)/src/flex"
++	$(INSTALL_DATA) $(FLEX_FILES) "$(RELSYSDIR)/src/flex"
+ 	$(INSTALL_PROGRAM) $(SOLIBS) "$(RELSYSDIR)/priv/lib"
  endif
  
 diff --git a/lib/odbc/c_src/Makefile.in b/lib/odbc/c_src/Makefile.in
-index 3a96a53..bbf0d7b 100644
+index 026da39..3a568e4 100644
 --- a/lib/odbc/c_src/Makefile.in
 +++ b/lib/odbc/c_src/Makefile.in
 @@ -128,11 +128,8 @@ include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt
  ifdef EXE_TARGET
--	$(INSTALL_DIR) $(RELSYSDIR)/c_src
--	$(INSTALL_DATA) $(C_FILES) $(H_FILES) $(RELSYSDIR)/c_src
- 	$(INSTALL_DIR) $(RELSYSDIR)/priv
- 	$(INSTALL_DIR) $(RELSYSDIR)/priv/bin
--	$(INSTALL_DIR) $(RELSYSDIR)/priv/obj
- 	$(INSTALL_PROGRAM) $(EXE_TARGET) $(RELSYSDIR)/priv/bin
+-	$(INSTALL_DIR) "$(RELSYSDIR)/c_src"
+-	$(INSTALL_DATA) $(C_FILES) $(H_FILES) "$(RELSYSDIR)/c_src"
+ 	$(INSTALL_DIR) "$(RELSYSDIR)/priv"
+ 	$(INSTALL_DIR) "$(RELSYSDIR)/priv/bin"
+-	$(INSTALL_DIR) "$(RELSYSDIR)/priv/obj"
+ 	$(INSTALL_PROGRAM) $(EXE_TARGET) "$(RELSYSDIR)/priv/bin"
  endif
  
 diff --git a/lib/os_mon/c_src/Makefile.in b/lib/os_mon/c_src/Makefile.in
-index bac0413..5c32296 100644
+index 2b16789..1241014 100644
 --- a/lib/os_mon/c_src/Makefile.in
 +++ b/lib/os_mon/c_src/Makefile.in
-@@ -132,7 +132,6 @@ release_spec:
+@@ -131,8 +131,6 @@ ifeq ($(findstring vxworks_simso,$(TARGET)),vxworks_simso)
+ release_spec:
  else
  release_spec: opt
- 	$(INSTALL_DIR) $(RELSYSDIR)/src
--	$(INSTALL_DATA) $(C_FILES) $(RELSYSDIR)/src
- 	$(INSTALL_DIR) $(RELSYSDIR)/priv/bin
- 	$(INSTALL_PROGRAM) $(TARGET_FILES) $(RELSYSDIR)/priv/bin
+-	$(INSTALL_DIR) "$(RELSYSDIR)/src"
+-	$(INSTALL_DATA) $(C_FILES) "$(RELSYSDIR)/src"
+ 	$(INSTALL_DIR) "$(RELSYSDIR)/priv/bin"
+ 	$(INSTALL_PROGRAM) $(TARGET_FILES) "$(RELSYSDIR)/priv/bin"
  endif
 diff --git a/lib/runtime_tools/c_src/Makefile.in b/lib/runtime_tools/c_src/Makefile.in
-index cbbcfa2..20f1ca6 100644
+index 754e6cc..1c367ef 100644
 --- a/lib/runtime_tools/c_src/Makefile.in
 +++ b/lib/runtime_tools/c_src/Makefile.in
 @@ -193,9 +193,7 @@ docs:
  include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt
--	$(INSTALL_DIR) $(RELSYSDIR)/priv/obj
- 	$(INSTALL_DIR) $(RELSYSDIR)/priv/lib
--	$(INSTALL_PROGRAM) $(DYNTRACE_OBJS) $(RELSYSDIR)/priv/obj
- 	$(INSTALL_PROGRAM) $(NIF_LIB) $(SOLIBS) $(RELSYSDIR)/priv/lib
+-	$(INSTALL_DIR) "$(RELSYSDIR)/priv/obj"
+ 	$(INSTALL_DIR) "$(RELSYSDIR)/priv/lib"
+-	$(INSTALL_PROGRAM) $(DYNTRACE_OBJS) "$(RELSYSDIR)/priv/obj"
+ 	$(INSTALL_PROGRAM) $(NIF_LIB) $(SOLIBS) "$(RELSYSDIR)/priv/lib"
  
  release_docs_spec:
 diff --git a/lib/tools/c_src/Makefile.in b/lib/tools/c_src/Makefile.in
-index b8c4aed..f7f5dff 100644
+index 0382d32..f74eb5a 100644
 --- a/lib/tools/c_src/Makefile.in
 +++ b/lib/tools/c_src/Makefile.in
 @@ -188,8 +188,6 @@ include ../vsn.mk
  RELSYSDIR = $(RELEASE_PATH)/lib/tools-$(TOOLS_VSN)
  
  release_spec: all
--	$(INSTALL_DIR) $(RELSYSDIR)/c_src
--	$(INSTALL_DATA) $(EMEM_SRCS) $(EMEM_HEADERS) $(RELSYSDIR)/c_src
+-	$(INSTALL_DIR) "$(RELSYSDIR)/c_src"
+-	$(INSTALL_DATA) $(EMEM_SRCS) $(EMEM_HEADERS) "$(RELSYSDIR)/c_src"
  ifneq ($(PROGS),)
- 	$(INSTALL_DIR) $(RELSYSDIR)/bin
- 	$(INSTALL_PROGRAM) $(PROGS) $(RELSYSDIR)/bin
+ 	$(INSTALL_DIR) "$(RELSYSDIR)/bin"
+ 	$(INSTALL_PROGRAM) $(PROGS) "$(RELSYSDIR)/bin"

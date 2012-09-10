@@ -4,33 +4,33 @@ Subject: [PATCH] Do not install Java sources
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 ---
- lib/ic/java_src/com/ericsson/otp/ic/Makefile             |    2 --
- lib/jinterface/java_src/com/ericsson/otp/erlang/Makefile |    2 --
+ lib/ic/java_src/com/ericsson/otp/ic/Makefile             | 2 --
+ lib/jinterface/java_src/com/ericsson/otp/erlang/Makefile | 2 --
  2 files changed, 4 deletions(-)
 
 diff --git a/lib/ic/java_src/com/ericsson/otp/ic/Makefile b/lib/ic/java_src/com/ericsson/otp/ic/Makefile
-index f730749..f7ec624 100644
+index cf4c353..57f64d9 100644
 --- a/lib/ic/java_src/com/ericsson/otp/ic/Makefile
 +++ b/lib/ic/java_src/com/ericsson/otp/ic/Makefile
 @@ -109,8 +109,6 @@ docs:
  include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt
--	$(INSTALL_DIR) $(RELSYSDIR)/java_src/com/ericsson/otp/ic
--	$(INSTALL_DATA) $(JAVA_FILES) $(RELSYSDIR)/java_src/com/ericsson/otp/ic
- 	$(INSTALL_DIR) $(RELSYSDIR)/priv
- 	$(INSTALL_DATA) $(JAVA_DEST_ROOT)$(JARFILE) $(RELSYSDIR)/priv
+-	$(INSTALL_DIR) "$(RELSYSDIR)/java_src/com/ericsson/otp/ic"
+-	$(INSTALL_DATA) $(JAVA_FILES) "$(RELSYSDIR)/java_src/com/ericsson/otp/ic"
+ 	$(INSTALL_DIR) "$(RELSYSDIR)/priv"
+ 	$(INSTALL_DATA) $(JAVA_DEST_ROOT)$(JARFILE) "$(RELSYSDIR)/priv"
  
 diff --git a/lib/jinterface/java_src/com/ericsson/otp/erlang/Makefile b/lib/jinterface/java_src/com/ericsson/otp/erlang/Makefile
-index 365798e..68deb9c 100644
+index 8ae63a1..8605a20 100644
 --- a/lib/jinterface/java_src/com/ericsson/otp/erlang/Makefile
 +++ b/lib/jinterface/java_src/com/ericsson/otp/erlang/Makefile
 @@ -99,8 +99,6 @@ release release_docs release_tests release_html:
- 	$(MAKE) $(MFLAGS) RELEASE_PATH=$(RELEASE_PATH) $(TARGET_MAKEFILE)  $@_spec
+ 	$(MAKE) $(MFLAGS) RELEASE_PATH="$(RELEASE_PATH)" $(TARGET_MAKEFILE)  $@_spec
  
  release_spec: opt
--	$(INSTALL_DIR) $(RELSYSDIR)/java_src/com/ericsson/otp/erlang
--	$(INSTALL_DATA) $(JAVA_SRC) $(RELSYSDIR)/java_src/com/ericsson/otp/erlang
- 	$(INSTALL_DIR) $(RELSYSDIR)/priv
- 	$(INSTALL_DATA) $(JAVA_DEST_ROOT)$(JARFILE) $(RELSYSDIR)/priv
+-	$(INSTALL_DIR) "$(RELSYSDIR)/java_src/com/ericsson/otp/erlang"
+-	$(INSTALL_DATA) $(JAVA_SRC) "$(RELSYSDIR)/java_src/com/ericsson/otp/erlang"
+ 	$(INSTALL_DIR) "$(RELSYSDIR)/priv"
+ 	$(INSTALL_DATA) $(JAVA_DEST_ROOT)$(JARFILE) "$(RELSYSDIR)/priv"
  

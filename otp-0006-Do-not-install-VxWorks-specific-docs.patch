@@ -4,11 +4,11 @@ Subject: [PATCH] Do not install VxWorks-specific docs
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 ---
- erts/doc/src/Makefile |    1 -
+ erts/doc/src/Makefile | 1 -
  1 file changed, 1 deletion(-)
 
 diff --git a/erts/doc/src/Makefile b/erts/doc/src/Makefile
-index cfa5527..d18b615 100644
+index da245d7..a494b3a 100644
 --- a/erts/doc/src/Makefile
 +++ b/erts/doc/src/Makefile
 @@ -55,7 +55,6 @@ XML_REF3_EFILES = \
