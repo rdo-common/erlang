@@ -1241,6 +1241,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/ct_ftp.*
 %{_libdir}/erlang/man/man3/ct_hooks.*
 %{_libdir}/erlang/man/man3/ct_master.*
+%{_libdir}/erlang/man/man3/ct_netconfc.*
 %{_libdir}/erlang/man/man3/ct_rpc.*
 %{_libdir}/erlang/man/man3/ct_slave.*
 %{_libdir}/erlang/man/man3/ct_snmp.*
