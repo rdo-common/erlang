@@ -1,6 +1,6 @@
 %global upstream_ver R15B
 # Do NOT change %%{upstream_rel} unless UPSTREAM has actually changed it!
-%global upstream_rel 02
+%global upstream_rel 03
 #%%global upstream_rel %%{nil}
 # Use %%{nil} for %%{upstream_rel} for tracking source like otp_src_R14B.tar.gz,
 # and 01 %%{upstream_rel} for tracking source like otp_src_R14B01.tar.gz.
@@ -31,11 +31,12 @@ Summary:	General-purpose programming language and runtime environment
 Group:		Development/Languages
 License:	ERPL
 URL:		http://www.erlang.org
-Source0:	http://www.erlang.org/download/otp_src_%{upstream_ver}%{upstream_rel}.tar.gz
+Source0:	http://www.erlang.org/download/otp_src_%{upstream_ver}%{upstream_rel}-1.tar.gz
 %if %{use_prebuilt_docs}
-Source1:	http://erlang.org/download/otp_doc_html_%{upstream_ver}%{upstream_rel}.tar.gz
-Source2:	http://erlang.org/download/otp_doc_man_%{upstream_ver}%{upstream_rel}.tar.gz
+Source1:	http://erlang.org/download/otp_doc_html_%{upstream_ver}%{upstream_rel}-1.tar.gz
+Source2:	http://erlang.org/download/otp_doc_man_%{upstream_ver}%{upstream_rel}-1.tar.gz
 %endif
+Source4:	http://www.erlang.org/download/otp_src_%{upstream_ver}%{upstream_rel}-1.readme
 
 
 # For the source of the Fedora specific patches, see the respective
@@ -1028,8 +1029,9 @@ CFLAGS="$RPM_OPT_FLAGS -mcpu=ultrasparc -fno-strict-aliasing" %configure --enabl
 CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing" %configure --enable-shared-zlib
 %endif
 
-# remove pre-built stuff
-make clean
+# FIXME remove pre-built BEAM files
+# some of them are required for compilation
+#find ./lib -type f -name "*.beam" -delete
 
 # GNU Emacs/XEmacs related stuff
 erlang_tools_vsn="$(sed -n 's/TOOLS_VSN = //p' lib/tools/vsn.mk)"
@@ -1405,6 +1407,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man1/diameter_compile.*
 %{_libdir}/erlang/man/man3/diameter.*
 %{_libdir}/erlang/man/man3/diameter_app.*
+%{_libdir}/erlang/man/man3/diameter_codec.*
+%{_libdir}/erlang/man/man3/diameter_make.*
 %{_libdir}/erlang/man/man3/diameter_sctp.*
 %{_libdir}/erlang/man/man3/diameter_tcp.*
 %{_libdir}/erlang/man/man3/diameter_transport.*
@@ -2334,6 +2338,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Dec 21 2012 Peter Lemenkov <lemenkov@gmail.com> - R15B-03.1
+- Ver. R15B03 (actually R15B03-1)
+
 * Mon Sep 10 2012 Peter Lemenkov <lemenkov@gmail.com> - R15B-02.1
 - Ver. R15B02
 
