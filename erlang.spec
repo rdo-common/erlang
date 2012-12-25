@@ -25,7 +25,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel_for_rpm}.1%{?dist}
+Release:	%{upstream_rel_for_rpm}.2%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -1029,9 +1029,8 @@ CFLAGS="$RPM_OPT_FLAGS -mcpu=ultrasparc -fno-strict-aliasing" %configure --enabl
 CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing" %configure --enable-shared-zlib
 %endif
 
-# FIXME remove pre-built BEAM files
-# some of them are required for compilation
-#find ./lib -type f -name "*.beam" -delete
+# Remove pre-built BEAM files
+make clean
 
 # GNU Emacs/XEmacs related stuff
 erlang_tools_vsn="$(sed -n 's/TOOLS_VSN = //p' lib/tools/vsn.mk)"
@@ -2338,6 +2337,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Dec 25 2012 Peter Lemenkov <lemenkov@gmail.com> - R15B-03.2
+- Run make clean before build (to remove pre-built files)
+
 * Fri Dec 21 2012 Peter Lemenkov <lemenkov@gmail.com> - R15B-03.1
 - Ver. R15B03 (actually R15B03-1)
 

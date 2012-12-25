@@ -55,13 +55,14 @@ Signed-off-by: Hans Ulrich Niedermann <hun@n-dimensional.de>
  lib/mnesia/src/Makefile            | 2 +-
  lib/observer/src/Makefile          | 1 -
  lib/odbc/src/Makefile              | 2 +-
- lib/orber/COSS/CosNaming/Makefile  | 2 +-
+ lib/orber/COSS/CosNaming/Makefile  | 4 ++--
  lib/orber/src/Makefile             | 2 +-
  lib/os_mon/src/Makefile            | 1 -
  lib/otp_mibs/src/Makefile          | 2 --
  lib/parsetools/src/Makefile        | 2 --
  lib/percept/src/Makefile           | 2 --
  lib/pman/src/Makefile              | 2 +-
+ lib/public_key/asn1/Makefile       | 4 ++--
  lib/public_key/src/Makefile        | 4 ----
  lib/reltool/src/Makefile           | 2 +-
  lib/runtime_tools/src/Makefile     | 2 --
@@ -83,7 +84,7 @@ Signed-off-by: Hans Ulrich Niedermann <hun@n-dimensional.de>
  lib/webtool/src/Makefile           | 2 --
  lib/wx/src/Makefile                | 4 ++--
  lib/xmerl/src/Makefile             | 4 +---
- 76 files changed, 57 insertions(+), 112 deletions(-)
+ 77 files changed, 60 insertions(+), 115 deletions(-)
 
 diff --git a/erts/preloaded/src/Makefile b/erts/preloaded/src/Makefile
 index 5bcc2eb..c87dc9e 100644
@@ -731,18 +732,20 @@ index 2af65cc..2358d16 100644
  	$(INSTALL_DATA) $(EXT_HRL_FILES) "$(RELSYSDIR)/include"
  	$(INSTALL_DIR) "$(RELSYSDIR)/ebin"
 diff --git a/lib/orber/COSS/CosNaming/Makefile b/lib/orber/COSS/CosNaming/Makefile
-index 769c08a..9906247 100644
+index 769c08a..cfc56b3 100644
 --- a/lib/orber/COSS/CosNaming/Makefile
 +++ b/lib/orber/COSS/CosNaming/Makefile
-@@ -144,7 +144,7 @@ release_spec: opt
+@@ -144,8 +144,8 @@ release_spec: opt
  	$(INSTALL_DIR) "$(RELSYSDIR)/ebin"
  	$(INSTALL_DATA) $(TARGET_FILES) $(APP_TARGET) "$(RELSYSDIR)/ebin"
  	$(INSTALL_DIR) "$(RELSYSDIR)/COSS/CosNaming"
 -	$(INSTALL_DATA) $(ERL_FILES) $(HRL_FILES) $(IDL_FILE) "$(RELSYSDIR)/COSS/CosNaming"
+-	$(INSTALL_DATA) $(GEN_FILES) "$(RELSYSDIR)/COSS/CosNaming"
 +	$(INSTALL_DATA) $(HRL_FILES) $(IDL_FILE) "$(RELSYSDIR)/COSS/CosNaming"
- 	$(INSTALL_DATA) $(GEN_FILES) "$(RELSYSDIR)/COSS/CosNaming"
++	$(INSTALL_DATA) $(GEN_HRL_FILES) $(GEN_EXT_HRL_FILES) "$(RELSYSDIR)/COSS/CosNaming"
  
  
+ release_docs_spec:
 diff --git a/lib/orber/src/Makefile b/lib/orber/src/Makefile
 index 72610de..a800d2f 100644
 --- a/lib/orber/src/Makefile
@@ -819,6 +822,21 @@ index fa01fe7..5197f4b 100644
 +	$(INSTALL_DATA) $(HRL_FILES) $(TOOLBOX_FILES) "$(RELSYSDIR)/src"
  	$(INSTALL_DIR) "$(RELSYSDIR)/ebin"
  	$(INSTALL_DATA) $(TARGET_FILES) $(TARGET_TOOLBOX_FILES) "$(RELSYSDIR)/ebin"
+ 
+diff --git a/lib/public_key/asn1/Makefile b/lib/public_key/asn1/Makefile
+index 957c332..26d9420 100644
+--- a/lib/public_key/asn1/Makefile
++++ b/lib/public_key/asn1/Makefile
+@@ -95,8 +95,8 @@ release_spec: opt
+ 	$(INSTALL_DIR) "$(RELSYSDIR)/include"
+ 	$(INSTALL_DATA) $(HRL_FILES) "$(RELSYSDIR)/include"
+ 	$(INSTALL_DIR) "$(RELSYSDIR)/asn1"
+-	$(INSTALL_DATA) $(ASN_ASNS) $(ASN_ERLS) $(ASN_HRLS) $(ASN_CONFIGS) \
+-		 $(GEN_ERLS) "$(RELSYSDIR)/asn1"
++	$(INSTALL_DATA) $(ASN_ASNS) $(ASN_HRLS) $(ASN_CONFIGS) \
++		 "$(RELSYSDIR)/asn1"
+ 	$(INSTALL_DIR) "$(RELSYSDIR)/ebin"
+ 	$(INSTALL_DATA) $(TARGET_FILES) "$(RELSYSDIR)/ebin"
  
 diff --git a/lib/public_key/src/Makefile b/lib/public_key/src/Makefile
 index d5cd13d..d2a35f8 100644
