@@ -9,10 +9,10 @@ Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
  2 files changed, 4 deletions(-)
 
 diff --git a/lib/ic/java_src/com/ericsson/otp/ic/Makefile b/lib/ic/java_src/com/ericsson/otp/ic/Makefile
-index cf4c353..57f64d9 100644
+index 273614e..5b1fb57 100644
 --- a/lib/ic/java_src/com/ericsson/otp/ic/Makefile
 +++ b/lib/ic/java_src/com/ericsson/otp/ic/Makefile
-@@ -109,8 +109,6 @@ docs:
+@@ -112,8 +112,6 @@ docs:
  include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt
@@ -22,15 +22,15 @@ index cf4c353..57f64d9 100644
  	$(INSTALL_DATA) $(JAVA_DEST_ROOT)$(JARFILE) "$(RELSYSDIR)/priv"
  
 diff --git a/lib/jinterface/java_src/com/ericsson/otp/erlang/Makefile b/lib/jinterface/java_src/com/ericsson/otp/erlang/Makefile
-index 8ae63a1..8605a20 100644
+index f476d45..44429a4 100644
 --- a/lib/jinterface/java_src/com/ericsson/otp/erlang/Makefile
 +++ b/lib/jinterface/java_src/com/ericsson/otp/erlang/Makefile
-@@ -99,8 +99,6 @@ release release_docs release_tests release_html:
- 	$(MAKE) $(MFLAGS) RELEASE_PATH="$(RELEASE_PATH)" $(TARGET_MAKEFILE)  $@_spec
+@@ -102,8 +102,6 @@ release release_docs release_tests release_html:
+ 	$(V_at)$(MAKE) $(MFLAGS) RELEASE_PATH="$(RELEASE_PATH)" $(TARGET_MAKEFILE)  $@_spec
  
  release_spec: opt
--	$(INSTALL_DIR) "$(RELSYSDIR)/java_src/com/ericsson/otp/erlang"
--	$(INSTALL_DATA) $(JAVA_SRC) "$(RELSYSDIR)/java_src/com/ericsson/otp/erlang"
- 	$(INSTALL_DIR) "$(RELSYSDIR)/priv"
- 	$(INSTALL_DATA) $(JAVA_DEST_ROOT)$(JARFILE) "$(RELSYSDIR)/priv"
+-	$(V_at)$(INSTALL_DIR) "$(RELSYSDIR)/java_src/com/ericsson/otp/erlang"
+-	$(V_at)$(INSTALL_DATA) $(JAVA_SRC) "$(RELSYSDIR)/java_src/com/ericsson/otp/erlang"
+ 	$(V_at)$(INSTALL_DIR) "$(RELSYSDIR)/priv"
+ 	$(V_at)$(INSTALL_DATA) $(JAVA_DEST_ROOT)$(JARFILE) "$(RELSYSDIR)/priv"
  

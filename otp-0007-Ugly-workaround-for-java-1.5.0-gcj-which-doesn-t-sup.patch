@@ -40,10 +40,10 @@ index 3456fd7..86cd411 100644
  
  
 diff --git a/lib/jinterface/java_src/com/ericsson/otp/erlang/OtpInputStream.java b/lib/jinterface/java_src/com/ericsson/otp/erlang/OtpInputStream.java
-index b9b4348..c11702c 100644
+index 9dc1728..76e380d 100644
 --- a/lib/jinterface/java_src/com/ericsson/otp/erlang/OtpInputStream.java
 +++ b/lib/jinterface/java_src/com/ericsson/otp/erlang/OtpInputStream.java
-@@ -1074,17 +1074,8 @@ public class OtpInputStream extends ByteArrayInputStream {
+@@ -1112,17 +1112,8 @@ public class OtpInputStream extends ByteArrayInputStream {
  	case OtpExternal.nilTag:
  	    return "";
  	case OtpExternal.listTag: // List when unicode +

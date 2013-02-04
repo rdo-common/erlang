@@ -33,7 +33,7 @@ index 08fd23e..5606cfc 100644
  XML_REF6_FILES = os_mon_app.xml 
  
 diff --git a/lib/os_mon/src/Makefile b/lib/os_mon/src/Makefile
-index 864d7a0..79a4076 100644
+index cd2dade..4e78cf8 100644
 --- a/lib/os_mon/src/Makefile
 +++ b/lib/os_mon/src/Makefile
 @@ -33,8 +33,13 @@ RELSYSDIR = $(RELEASE_PATH)/lib/os_mon-$(VSN)
@@ -56,10 +56,10 @@ index 864d7a0..79a4076 100644
  
  $(APP_TARGET): $(APP_SRC) ../vsn.mk
 +ifeq ($(findstring win32,$(TARGET)),win32)
- 	sed -e 's;%VSN%;$(VSN);' $< > $@
+ 	$(vsn_verbose)sed -e 's;%VSN%;$(VSN);' $< > $@
 +else
-+	sed -e 's;%VSN%;$(VSN);;s;,\s*nteventlog;;' $< > $@
++	$(vsn_verbose)sed -e 's;%VSN%;$(VSN);;s;,\s*nteventlog;;' $< > $@
 +endif
  
  $(APPUP_TARGET): $(APPUP_SRC) ../vsn.mk
- 	sed -e 's;%VSN%;$(VSN);' $< > $@
+ 	$(vsn_verbose)sed -e 's;%VSN%;$(VSN);' $< > $@

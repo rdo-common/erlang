@@ -1,0 +1,2250 @@
+Major release  : otp_src_R16A
+Build date     : 2013-01-29
+
+R16A is a major new release of Erlang/OTP.
+You can download the full source distribution from
+ 
+  http://www.erlang.org/download/otp_src_R16A.tar.gz
+  http://www.erlang.org/download/otp_src_R16A.readme (this file)
+
+Note: To unpack the TAR archive you need a GNU TAR compatible program.
+
+For installation instructions please read the README that is part of
+the distribution.
+
+The Windows binary distribution can be downloaded from
+
+  http://www.erlang.org/download/otp_win32_R16A.exe
+  http://www.erlang.org/download/otp_win64_R16A.exe
+
+
+On-line documentation can be found at http://www.erlang.org/doc/.
+You can also download the complete HTML documentation or the Unix manual files
+
+  http://www.erlang.org/download/otp_doc_html_R16A.tar.gz
+  http://www.erlang.org/download/otp_doc_man_R16A.tar.gz
+
+We also want to thank those that sent us patches, suggestions and bug reports,
+
+The OTP Team
+
+
+--- HIGHLIGHTS ----------------------------------------------------------
+
+    OTP-7786  == ssh ==
+
+	      Added User Guide for the SSH application
+
+    OTP-9892  == erts ==
+
+	      Process optimizations. The most notable:
+
+	      -- New internal process table implementation allowing for
+	      both parallel reads as well as writes. Especially read
+	      operations have become really cheap. This reduce contention
+	      in various situations. For example when, spawning processes,
+	      terminating processes, sending messages, etc.
+
+	      -- Optimizations of run queue management reducing contention.
+
+	      -- Optimizations of process state changes reducing
+	      contention.
+
+	      These changes imply changes of the characteristics the
+	      system. Most notable: changed timing in the system.
+
+    OTP-9974  == erts ==
+
+	      Non-blocking code loading. Earlier when an Erlang module was
+	      loaded, all other execution in the VM were halted while the
+	      load operation was carried out in single threaded mode. Now
+	      modules are loaded without blocking the VM. Processes may
+	      continue executing undisturbed in parallel during the entire
+	      load operation. The load operation is completed by making the
+	      loaded code visible to all processes in a consistent way with
+	      one single atomic instruction. Non-blocking code loading will
+	      improve realtime characteristics when modules are
+	      loaded/upgraded on a running SMP system.
+
+   OTP-10256  == inets ==
+
+	      httpc: The HTTP client now supports HTTPS through proxies
+
+   OTP-10336  == erts ==
+
+	      Major port improvements. The most notable:
+
+	      -- New internal port table implementation allowing for both
+	      parallel reads as well as writes. Especially read operations
+	      have become really cheap.This reduce contention in various
+	      situations. For example when, creating ports, terminating
+	      ports, etc. 
+
+	      -- Dynamic allocation of port structures. This allow for a
+	      much larger maximum amount of ports allowed as a default. The
+	      previous default of 1024 has been raised to 65536. Maximum
+	      amount of ports can be set using the +Q command line flag of
+	      erl(1). The previously used environment variable
+	      ERL_MAX_PORTS has been deprecated and scheduled for removal
+	      in OTP-R17.
+
+	      -- Major rewrite of scheduling of port tasks. Major benefits
+	      of the rewrite are reduced contention on run queue locks, and
+	      reduced amount of memory allocation operations needed. The
+	      rewrite was also necessary in order to make it possible to
+	      schedule signals from processes to ports.
+
+	      -- Improved internal thread progress functionality for easy
+	      management of unmanaged threads. This improvement was
+	      necessary for the rewrite of the port task scheduling.
+
+	      -- Rewrite of all process to port signal implementations in
+	      order to make it possible to schedule those operations. All
+	      port operations can now be scheduled which allows for reduced
+	      lock contention on the port lock as well as truly
+	      asynchronous communication with ports.
+
+	      -- Optimized lookup of port handles from drivers.
+
+	      -- Optimized driver lookup when creating ports.
+
+	      -- Preemptable erlang:ports/0 BIF.
+
+	      -- Improving responsiveness by bumping reductions for a
+	      process calling a driver callback directly.
+
+	      These changes imply changes of the characteristics of the
+	      system. The most notable:
+
+	      -- Order of signal delivery -- The previous implementation of
+	      the VM has delivered signals from processes to ports in a
+	      synchronous stricter fashion than required by the language.
+	      As of ERTS version 5.10, signals are truly asynchronously
+	      delivered. The order of signal delivery still adheres to the
+	      requirements of the language, but only to the requirements.
+	      That is, some signal sequences that previously always were
+	      delivered in one specific order may now from time to time be
+	      delivered in different orders. This may cause Erlang programs
+	      that have made false assumptions about signal delivery order
+	      to fail even though they previously succeeded. For more
+	      information about signal ordering guarantees, see the chapter
+	      on communication in the ERTS user's guide. The +n command
+	      line flag of erl(1) can be helpful when trying to find
+	      signaling order bugs in Erlang code that have been exposed by
+	      these changes.
+
+	      -- Latency of signals sent from processes to ports -- Signals
+	      from processes to ports where previously always delivered
+	      immediately. This kept latency for such communication to a
+	      minimum, but it could cause lock contention which was very
+	      expensive for the system as a whole. In order to keep this
+	      latency low also in the future, most signals from processes
+	      to ports are by default still delivered immediately as long
+	      as no conflicts occur. Such conflicts include not being able
+	      to acquire the port lock, but also include other conflicts.
+	      When a conflict occur, the signal will be scheduled for
+	      delivery at a later time. A scheduled signal delivery may
+	      cause a higher latency for this specific communication, but
+	      improves the overall performance of the system since it
+	      reduce lock contention between schedulers. The default
+	      behavior of only scheduling delivery of these signals on
+	      conflict can be changed by passing the +spp command line flag
+	      to erl(1). The behavior can also be changed on port basis
+	      using the parallelism option of the open_port/2 BIF.
+
+	      -- Execution time of the erlang:ports/0 BIF -- Since
+	      erlang:ports/0 now can be preempted, the responsiveness of
+	      the system as a whole has been improved. A call to
+	      erlang:ports/0 may, however, take a much longer time to
+	      complete than before. How much longer time heavily depends on
+	      the system load.
+
+	      -- Reduction cost of calling driver callbacks -- Calling a
+	      driver callback is quite costly. This was previously not
+	      reflected in reduction cost at all. Since the reduction cost
+	      now has increased, a process performing lots of direct driver
+	      calls will be scheduled out more frequently than before.
+
+	      Potential incompatibilities:
+
+	      -- driver_send_term() has been deprecated and has been
+	      scheduled for removal in OTP-R17. Replace usage of
+	      driver_send_term() with usage of erl_drv_send_term().
+
+	      -- driver_output_term() has been deprecated and has been
+	      scheduled for removal in OTP-R17. Replace usage of
+	      driver_output_term() with usage of erl_drv_output_term().
+
+	      -- The new function erl_drv_busy_msgq_limits() has been added
+	      in order to able to control management of port queues.
+
+	      The driver API version has been bumped to 2.1 from 2.0 due to
+	      the above changes in the driver API.
+
+   OTP-10410  == asn1 ==
+
+	      The options for the ASN.1 compiler has been drastically
+	      simplified. The backend is chosen by using ber, per, or uper.
+	      The options optimize, nif, and driver are no longer needed.
+	      The old options will still work, but will issue a warning.
+
+	      Another change is that generated encode/2 function will
+	      always return a binary (some backends used to return an
+	      iolist).
+
+   OTP-10588  == asn1 ==
+
+	      The ASN.1 compiler will now always include necessary run-time
+	      functions in the generated Erlang modules (except for
+	      asn1rt_nif which is still neeeded). If the option 'inline' is
+	      used the ASN.1 compiler will generate a warning. But if
+	      '{inline,OutputFile}' is use, the ASN.1 compiler will refuse
+	      to compile the file. (Use a .set.asn file if you need to
+	      remove the output file.)
+
+	      The 'BIT STRING' type will now be decoded as Erlang
+	      bitstrings by default. Use the new legacy_bit_string option
+	      to encode as lists of ones and zeroes. (The
+	      compact_bit_string option still works as before.)
+
+	      Open types are now always returned as binaries (when there is
+	      no information allowing them to be decoded).
+
+
+--- POTENTIAL INCOMPATIBILITIES -----------------------------------------
+
+    OTP-9881  == common_test ==
+
+	      It is now possible to let a test specification include other
+	      test specifications. Included specs can either be joined with
+	      the source spec (and all other joined specs), resulting in
+	      one single test run, or they can be executed in separate test
+	      runs. Also, a start flag/option, join_specs, has been
+	      introduced, to be used in combination with the spec option.
+	      With join_specs, Common Test can be told to either join
+	      multiple test specifications, or run them separately. Without
+	      join_specs, the latter behaviour is default. Note that this
+	      is a change compared to earlier versions of Common Test,
+	      where specifications could only be joined. More information
+	      can be found in the Running Tests chapter in the User's Guide
+	      (see the Test Specifications section).
+
+   OTP-10117  == inviso ==
+
+	      The inviso application has been removed.
+
+   OTP-10170  == erts ==
+
+	      Tuple funs (deprecated in R15B) are no longer supported.
+
+   OTP-10195  == edoc ==
+
+	      Since EDoc 0.7.7 (R14B02) separate values of union types can
+	      be annotated. However, the parser has hitherto chosen not to
+	      add the necessary parentheses due to backwards compatibility.
+
+	      From this release on code traversing the output of
+	      edoc_parser needs to take care of parentheses around separate
+	      values of union types. Examples of such code are layout
+	      modules and doclet modules.
+
+   OTP-10336  == erts ==
+
+	      Major port improvements. The most notable:
+
+	      -- New internal port table implementation allowing for both
+	      parallel reads as well as writes. Especially read operations
+	      have become really cheap.This reduce contention in various
+	      situations. For example when, creating ports, terminating
+	      ports, etc. 
+
+	      -- Dynamic allocation of port structures. This allow for a
+	      much larger maximum amount of ports allowed as a default. The
+	      previous default of 1024 has been raised to 65536. Maximum
+	      amount of ports can be set using the +Q command line flag of
+	      erl(1). The previously used environment variable
+	      ERL_MAX_PORTS has been deprecated and scheduled for removal
+	      in OTP-R17.
+
+	      -- Major rewrite of scheduling of port tasks. Major benefits
+	      of the rewrite are reduced contention on run queue locks, and
+	      reduced amount of memory allocation operations needed. The
+	      rewrite was also necessary in order to make it possible to
+	      schedule signals from processes to ports.
+
+	      -- Improved internal thread progress functionality for easy
+	      management of unmanaged threads. This improvement was
+	      necessary for the rewrite of the port task scheduling.
+
+	      -- Rewrite of all process to port signal implementations in
+	      order to make it possible to schedule those operations. All
+	      port operations can now be scheduled which allows for reduced
+	      lock contention on the port lock as well as truly
+	      asynchronous communication with ports.
+
+	      -- Optimized lookup of port handles from drivers.
+
+	      -- Optimized driver lookup when creating ports.
+
+	      -- Preemptable erlang:ports/0 BIF.
+
+	      -- Improving responsiveness by bumping reductions for a
+	      process calling a driver callback directly.
+
+	      These changes imply changes of the characteristics of the
+	      system. The most notable:
+
+	      -- Order of signal delivery -- The previous implementation of
+	      the VM has delivered signals from processes to ports in a
+	      synchronous stricter fashion than required by the language.
+	      As of ERTS version 5.10, signals are truly asynchronously
+	      delivered. The order of signal delivery still adheres to the
+	      requirements of the language, but only to the requirements.
+	      That is, some signal sequences that previously always were
+	      delivered in one specific order may now from time to time be
+	      delivered in different orders. This may cause Erlang programs
+	      that have made false assumptions about signal delivery order
+	      to fail even though they previously succeeded. For more
+	      information about signal ordering guarantees, see the chapter
+	      on communication in the ERTS user's guide. The +n command
+	      line flag of erl(1) can be helpful when trying to find
+	      signaling order bugs in Erlang code that have been exposed by
+	      these changes.
+
+	      -- Latency of signals sent from processes to ports -- Signals
+	      from processes to ports where previously always delivered
+	      immediately. This kept latency for such communication to a
+	      minimum, but it could cause lock contention which was very
+	      expensive for the system as a whole. In order to keep this
+	      latency low also in the future, most signals from processes
+	      to ports are by default still delivered immediately as long
+	      as no conflicts occur. Such conflicts include not being able
+	      to acquire the port lock, but also include other conflicts.
+	      When a conflict occur, the signal will be scheduled for
+	      delivery at a later time. A scheduled signal delivery may
+	      cause a higher latency for this specific communication, but
+	      improves the overall performance of the system since it
+	      reduce lock contention between schedulers. The default
+	      behavior of only scheduling delivery of these signals on
+	      conflict can be changed by passing the +spp command line flag
+	      to erl(1). The behavior can also be changed on port basis
+	      using the parallelism option of the open_port/2 BIF.
+
+	      -- Execution time of the erlang:ports/0 BIF -- Since
+	      erlang:ports/0 now can be preempted, the responsiveness of
+	      the system as a whole has been improved. A call to
+	      erlang:ports/0 may, however, take a much longer time to
+	      complete than before. How much longer time heavily depends on
+	      the system load.
+
+	      -- Reduction cost of calling driver callbacks -- Calling a
+	      driver callback is quite costly. This was previously not
+	      reflected in reduction cost at all. Since the reduction cost
+	      now has increased, a process performing lots of direct driver
+	      calls will be scheduled out more frequently than before.
+
+	      Potential incompatibilities:
+
+	      -- driver_send_term() has been deprecated and has been
+	      scheduled for removal in OTP-R17. Replace usage of
+	      driver_send_term() with usage of erl_drv_send_term().
+
+	      -- driver_output_term() has been deprecated and has been
+	      scheduled for removal in OTP-R17. Replace usage of
+	      driver_output_term() with usage of erl_drv_output_term().
+
+	      -- The new function erl_drv_busy_msgq_limits() has been added
+	      in order to able to control management of port queues.
+
+	      The driver API version has been bumped to 2.1 from 2.0 due to
+	      the above changes in the driver API.
+
+   OTP-10410  == asn1 ==
+
+	      The options for the ASN.1 compiler has been drastically
+	      simplified. The backend is chosen by using ber, per, or uper.
+	      The options optimize, nif, and driver are no longer needed.
+	      The old options will still work, but will issue a warning.
+
+	      Another change is that generated encode/2 function will
+	      always return a binary (some backends used to return an
+	      iolist).
+
+   OTP-10417  == kernel sasl ==
+
+	      It is no longer possible to have {Mod,Vsn} in the 'modules'
+	      list in a .app file.
+
+	      This was earlier possible, although never documented in the
+	      .app file reference manual. It was however visible in the
+	      documentation of application:load/[1,2], where the same term
+	      as in a .app file can be used as the first argument.
+
+	      The possibility has been removed since the Vsn part was never
+	      used.
+
+   OTP-10451  == ssl ==
+
+	      Remove filter mechanisms that made error messages backwards
+	      compatible with old ssl but hid information about what
+	      actually happened.
+
+	      This does not break the documented API however other reason
+	      terms may be returned, so code that matches on the reason
+	      part of {error, Reason} may fail.
+
+   OTP-10490  == stdlib ==
+
+	      If a child process fails in its start function, then the
+	      error reason was earlier only reported as an error report
+	      from the error_handler, and supervisor:start_link would only
+	      return {error,shutdown}. This has been changed so the
+	      supervisor will now return {error,{shutdown,Reason}}, where
+	      Reason identifies the failing child and its error reason.
+	      (Thanks to Tomas Pihl)
+
+   OTP-10523  == tools ==
+
+	      A new function, cover:flush(Nodes), is added which will fetch
+	      data from remote nodes without stopping cover on those nodes.
+	      This is used by test_server and common_test when it is safe
+	      to assume that the node will be terminated after the test
+	      anyway. The purpose is to avoid processes crashing when
+	      re-loading the original beam if the processes is still
+	      running old code.
+
+	      Remote nodes will now continue to count code coverage if the
+	      connection to the main node is broken. Earlier, a broken
+	      connection would cause the cover_server on the remote node to
+	      die and thus any still cover compiled modules would cause
+	      process crash when trying to insert cover data in ets tables
+	      that used to exist on the cover_server. The new functionality
+	      also involves synchronization with the main node if the nodes
+	      are reconnected.
+
+   OTP-10588  == asn1 ==
+
+	      The ASN.1 compiler will now always include necessary run-time
+	      functions in the generated Erlang modules (except for
+	      asn1rt_nif which is still neeeded). If the option 'inline' is
+	      used the ASN.1 compiler will generate a warning. But if
+	      '{inline,OutputFile}' is use, the ASN.1 compiler will refuse
+	      to compile the file. (Use a .set.asn file if you need to
+	      remove the output file.)
+
+	      The 'BIT STRING' type will now be decoded as Erlang
+	      bitstrings by default. Use the new legacy_bit_string option
+	      to encode as lists of ones and zeroes. (The
+	      compact_bit_string option still works as before.)
+
+	      Open types are now always returned as binaries (when there is
+	      no information allowing them to be decoded).
+
+   OTP-10613  == ssl ==
+
+	      Removed deprecated function ssl:pid/0, it has been pointless
+	      since R14 but has been keep for backwards compatibility.
+
+   OTP-10633  == erts ==
+
+	      Erlang specification 4.7.3 defines max tuple size to 65535
+	      elements It is now enforced to no more than 16777215 elements
+	      (arity 24 bits)
+
+	      Previous edge cases (28 bits) were not validated and could
+	      cause undefined behaviour.
+
+   OTP-10647  == erts ==
+
+	      The previous default of a maximum of 32768 simultaneous
+	      processes has been raised to 262144. This value can be
+	      changed using the the +P command line flag of erl(1). Note
+	      that the value passed now is considered as a hint, and that
+	      actual value chosen in most cases will be a power of two.
+
+--- CHARACTERISTICS IMPACT -----------------------------------------------
+
+    OTP-9892  == erts ==
+	      
+	      Process optimizations. The most notable:
+
+	      -- New internal process table implementation allowing for
+	      both parallel reads as well as writes. Especially read
+	      operations have become really cheap. This reduce contention
+	      in various situations. For example when, spawning processes,
+	      terminating processes, sending messages, etc.
+
+	      -- Optimizations of run queue management reducing contention.
+
+	      -- Optimizations of process state changes reducing
+	      contention.
+
+	      These changes imply changes of the characteristics the
+	      system. Most notable: changed timing in the system.
+
+
+    OTP-9974  == erts ==
+	      
+	      Non-blocking code loading. Earlier when an Erlang module was
+	      loaded, all other execution in the VM were halted while the
+	      load operation was carried out in single threaded mode. Now
+	      modules are loaded without blocking the VM. Processes may
+	      continue executing undisturbed in parallel during the entire
+	      load operation. The load operation is completed by making the
+	      loaded code visible to all processes in a consistent way with
+	      one single atomic instruction. Non-blocking code loading will
+	      improve realtime characteristics when modules are
+	      loaded/upgraded on a running SMP system.
+
+   OTP-10122  == erts ==
+	      
+	      In the SMP emulator, turning on and off tracing will no
+	      longer take down the system to single-scheduling.
+
+   OTP-10167  == erts ==
+	      
+	      Optimized deletion of ETS-tables which significantly improves
+	      performance when large amounts of temporary tables are used.
+
+	      This change imply changes of the characteristics the system.
+	      Most notable: changed timing in the system.
+
+   OTP-10273  == erts ==
+	      
+	      New internal header scheme for allocators
+
+	      Impact: Reduces size on object allocated in multiblock
+	      carriers by one word
+
+   OTP-10336  == erts ==
+	      
+	      Major port improvements.
+
+	      These changes imply changes of the characteristics of the
+	      system. The most notable:
+
+	      -- Order of signal delivery -- The previous implementation of
+	      the VM has delivered signals from processes to ports in a
+	      synchronous stricter fashion than required by the language.
+	      As of ERTS version 5.10, signals are truly asynchronously
+	      delivered. The order of signal delivery still adheres to the
+	      requirements of the language, but only to the requirements.
+	      That is, some signal sequences that previously always were
+	      delivered in one specific order may now from time to time be
+	      delivered in different orders. This may cause Erlang programs
+	      that have made false assumptions about signal delivery order
+	      to fail even though they previously succeeded. For more
+	      information about signal ordering guarantees, see the chapter
+	      on communication in the ERTS user's guide. The +n command
+	      line flag of erl(1) can be helpful when trying to find
+	      signaling order bugs in Erlang code that have been exposed by
+	      these changes.
+
+	      -- Latency of signals sent from processes to ports -- Signals
+	      from processes to ports where previously always delivered
+	      immediately. This kept latency for such communication to a
+	      minimum, but it could cause lock contention which was very
+	      expensive for the system as a whole. In order to keep this
+	      latency low also in the future, most signals from processes
+	      to ports are by default still delivered immediately as long
+	      as no conflicts occur. Such conflicts include not being able
+	      to acquire the port lock, but also include other conflicts.
+	      When a conflict occur, the signal will be scheduled for
+	      delivery at a later time. A scheduled signal delivery may
+	      cause a higher latency for this specific communication, but
+	      improves the overall performance of the system since it
+	      reduce lock contention between schedulers. The default
+	      behavior of only scheduling delivery of these signals on
+	      conflict can be changed by passing the +spp command line flag
+	      to erl(1). The behavior can also be changed on port basis
+	      using the parallelism option of the open_port/2 BIF.
+
+	      -- Execution time of the erlang:ports/0 BIF -- Since
+	      erlang:ports/0 now can be preempted, the responsiveness of
+	      the system as a whole has been improved. A call to
+	      erlang:ports/0 may, however, take a much longer time to
+	      complete than before. How much longer time heavily depends on
+	      the system load.
+
+	      -- Reduction cost of calling driver callbacks -- Calling a
+	      driver callback is quite costly. This was previously not
+	      reflected in reduction cost at all. Since the reduction cost
+	      now has increased, a process performing lots of direct driver
+	      calls will be scheduled out more frequently than before.
+
+   OTP-10661  == erts ==
+	      
+	      The previously (in R15) proposed scheduler wakeup strategy is
+	      now used by default. This strategy is not as quick to forget
+	      about previous overload as the previous strategy.
+
+	      This change imply changes of the characteristics the system.
+	      Most notable: When a small overload comes and then disappears
+	      repeatedly, the system will for a bit longer time be willing
+	      to wake up schedulers than before. Timing in the system will
+	      due to this also change.
+
+	      The previous strategy can still be enabled by passing the
+	      +sws legacy command line flag to erl.
+
+   OTP-10736  == erts ==
+	      
+	      The runtime system will now by default use 10 async threads
+	      if thread support has been enabled when building the runtime
+	      system.
+
+	      This will prevent long blocking file-operations from blocking
+	      scheduler threads for long periods of time, which can be
+	      harmful. Apart from file-operations, it also effects other
+	      operations scheduled on the async thread pool by user
+	      implemented drivers.
+
+	      The amount of async threads can be controlled by using the +A
+	      command line argument of erl(1). When running some offline
+	      tools you might want to disable async threads, but you are
+	      advised not to in the general case. Instead, you might want
+	      to increase the amount of async threads used.
+
+	      This change imply changes of the characteristics the system
+	      compared to the previous default. The responsiveness of the
+	      system as a whole will be improved. Operations scheduled on
+	      the async thread pool will get an increased latency. The
+	      throughput of these operations may increase, or decrease
+	      depending on the type of the operations and how they get
+	      scheduled. In the case of file operations, the throughput
+	      very much depends on how the Erlang application access files.
+	      Multiple concurrent accesses to different files have the
+	      potential of an increased throughput.
+
+   OTP-10737  == erts ==
+	      
+	      The default reader group limit has been increased to 64 from
+	      8. This limit can be set using the +rg command line argument
+	      of erl(1).
+
+	      This change of default value will reduce lock contention on
+	      ETS tables using the read_concurrency option at the expense
+	      of memory consumption when the amount of schedulers and
+	      logical processors are beween 8 and 64. For more information,
+	      see documentation of the +rg command line argument of erl(1).
+
+   OTP-10787  == erts ==
+	      
+	      Increased potential concurrency in ETS for write_concurrency
+	      option. The number of internal table locks has increased from
+	      16 to 64. This makes it four times less likely that two
+	      concurrent processes writing to the same table would collide
+	      and thereby serialized. The cost is an increased constant
+	      memory footprint for tables using write_concurrency. The
+	      memory consumption per inserted record is not affected. The
+	      increased footprint can be particularly large if
+	      write_concurrency is combined with read_concurrency.
+
+   OTP-10519  == asn1 ==
+	      
+	      The ASN.1 compiler generates faster decode functions for PER
+	      and UPER. Some minor improvements have also been made for
+	      PER/UPER encoding, and to the BER backend.
+
+   OTP-10506  == odbc ==
+	      
+	      Under Unix enable TCP_NODELAY to disable Nagel's socket
+	      algorithm. Thanks to Andy Richards
+
+	      Impact: Performance gain on Unix systems
+
+   OTP-10361  == ssl ==
+	      
+	      Support Next Protocol Negotiation in TLS, thanks to Ben
+	      Murphy for the contribution.
+
+	      Impact: Could give performance benefit if used as it saves a
+	      round trip.
+
+   OTP-10425  == ssl ==
+	      
+	      TLS 1.2 will now be the default TLS version if sufficient
+	      crypto support is available otherwise TLS 1.1 will be
+	      default.
+
+	      Impact: A default TLS connection will have higher security
+	      and hence it may be perceived as slower then before.
+
+   OTP-10710  == ssl ==
+	      
+	      Now handles cleaning of CA-certificate database correctly so
+	      that there will be no memory leek, bug was introduced in ssl-
+	      5.1 when changing implementation to increase parallel
+	      execution.
+
+	      Impact: Improved memory usage, especially if you have many
+	      different certificates and upgrade tcp-connections to
+	      TLS-connections.
+
+
+
+--- inviso --------------------------------------------------------------
+
+   OTP-10117  The inviso application has been removed.
+
+
+--- otp -----------------------------------------------------------------
+
+    OTP-9684  Most specs for built in functions now reside in their
+	      respective module instead of being coded in the erl_bif_types
+	      module of the Hipe application. This creatyes a single source
+	      for specifications and documentation, which should radically
+	      lessen the risk for differences between the docs and the
+	      actual spec seen by dialyzer.
+
+    OTP-9862  Many types and specifications that used to reside in
+	      erl_bif_types have been moved into respective module.
+
+   OTP-10616  The experimental feature "parameterized modules" (also called
+	      "abstract modules") has been removed. For applications that
+	      depends on parameterized modules, there is a parse transform
+	      that can be used to still use parameterized modules. The
+	      parse transform can be found at:
+	      github.com/erlang/pmod_transform
+
+   OTP-10726  Implement ./otp_build configure --enable-silent-rules
+
+	      With silent rules, the output of make is less verbose and
+	      compilation warnings are easier to spot. Silent rules are
+	      disabled by default and can be disabled or enabled at will by
+	      make V=0 and make V=1. (Thanks to Anthony Ramine)
+
+
+--- appmon-2.1.14.2 -----------------------------------------------------
+
+   OTP-10784  Misc build updates
+
+   OTP-10786  The backend module appmon_info.erl is moved from appmon
+	      application to runtime_tools. This allows appmon to be run
+	      from a remote erlang node towards a target node which does
+	      not have appmon (and its dependencies) installed, as long as
+	      runtime_tools is installed there.
+
+
+--- asn1-2.0 ------------------------------------------------------------
+
+   OTP-10410  The options for the ASN.1 compiler has been drastically
+	      simplified. The backend is chosen by using ber, per, or uper.
+	      The options optimize, nif, and driver are no longer needed.
+	      The old options will still work, but will issue a warning.
+
+	      Another change is that generated encode/2 function will
+	      always return a binary (some backends used to return an
+	      iolist).
+
+   OTP-10519  The ASN.1 compiler generates faster decode functions for PER
+	      and UPER. Some minor improvements have also been made for
+	      PER/UPER encoding, and to the BER backend.
+
+   OTP-10588  The ASN.1 compiler will now always include necessary run-time
+	      functions in the generated Erlang modules (except for
+	      asn1rt_nif which is still needed). If the option 'inline' is
+	      used the ASN.1 compiler will generate a warning. But if
+	      '{inline,OutputFile}' is use, the ASN.1 compiler will refuse
+	      to compile the file. (Use a .set.asn file if you need to
+	      remove the output file.)
+
+	      The 'BIT STRING' type will now be decoded as Erlang
+	      bitstrings by default. Use the new legacy_bit_string option
+	      to encode as lists of ones and zeroes. (The
+	      compact_bit_string option still works as before.)
+
+	      Open types are now always returned as binaries (when there is
+	      no information allowing them to be decoded).
+
+   OTP-10664  Encoding SEQUENCEs with multiple extension addition groups
+	      with optional values could fail (depending both on the
+	      specification and whether all values were provided).
+
+
+--- common_test-1.6.3.1 -------------------------------------------------
+
+   OTP-10589  The following corrections/changes are done in the cth_surefire 
+              hook: Earlier there would always be a 'properties' element 
+              under the 'testsuites' element. This would exist even if 
+              there were no 'property' element inside it. This has been 
+              changed so if there are no 'property' elements to display, 
+              then there will not be a 'properties' element either. The 
+              XML file will now (unless other is specified) be stored 
+              in the top log directory. Earlier, the default directory 
+              would be the current working directory for the erlang node, 
+              which would mostly, but not always, be the top log directory. 
+              The 'hostname' attribute in the 'testsuite' element would 
+              earlier never have the correct value. This has been corrected. 
+              The 'errors' attribute in the 'testsuite' element would 
+              earlier display the number of failed testcases. This has 
+              been changed and will now always have the value 0, while 
+              the 'failures' attribute will show the number of failed 
+              testcases. A new attribute 'skipped' is added to the 'testsuite' 
+              element. This will display the number of skipped testcases. 
+              These would earlier be included in the number of failed 
+              test cases. The total number of tests displayed by the 'tests' 
+              attribute in the 'testsuite' element would earlier include 
+              init/end_per_suite and init/end_per_group. This is no longer 
+              the case. The 'tests' attribute will now only count "real" 
+              test cases. Earlier, auto skipped test cases would have 
+              no value in the 'log' attribute. This is now corrected. 
+              A new attributes 'log' is added to the 'testsuite' element. 
+              A new option named 'url_base' is added for this hook. If 
+              this option is used, a new attribute named 'url' will be 
+              added to the 'testcase' and 'testsuite' elements.
+
+
+--- common_test-1.7 -----------------------------------------------------
+
+    OTP-9769  Severe errors detected by test_server (e.g. if log files
+	      directories cannot be created) will now be reported to
+	      common_test and noted in the common_test logs.
+
+    OTP-9870  The earlier undocumented cross cover feature for accumulating
+	      cover data over multiple tests has now been fixed and
+	      documented.
+
+    OTP-9881  It is now possible to let a test specification include other
+	      test specifications. Included specs can either be joined with
+	      the source spec (and all other joined specs), resulting in
+	      one single test run, or they can be executed in separate test
+	      runs. Also, a start flag/option, join_specs, has been
+	      introduced, to be used in combination with the spec option.
+	      With join_specs, Common Test can be told to either join
+	      multiple test specifications, or run them separately. Without
+	      join_specs, the latter behaviour is default. Note that this
+	      is a change compared to earlier versions of Common Test,
+	      where specifications could only be joined. More information
+	      can be found in the Running Tests chapter in the User's Guide
+	      (see the Test Specifications section).
+
+   OTP-10040  If a busy test case generated lots of error messages,
+	      cth_log_redirect:post_end_per_testcase would crash with a
+	      timeout while waiting for the error logger to finish handling
+	      all error reports. The default timer was 5 seconds. This has
+	      now been extended to 5 minutes.
+
+   OTP-10070  When a test case failed because of a timetrap time out, the
+	      Config data for the case was lost in the following call to
+	      end_per_testcase/2, and also in calls to the CT Hook function
+	      post_end_per_testcase/4. This problem has been solved and the
+	      Config data is now correctly passed to the above functions
+	      after a timetrap timeout failure.
+
+   OTP-10088  Some calls to deprecated and removed functions in snmp are
+	      removed from ct_snmp.
+
+   OTP-10101  In test_server, the same process would supervise the
+	      currently running test case and be group leader (and IO
+	      server) for the test case. Furthermore, when running parallel
+	      test cases, new temporary supervisor/group leader processes
+	      were spawned and the process that was group leader for
+	      sequential test cases would not be active. That would lead to
+	      several problems:
+
+	      * Processes started by init_per_suite will inherit the group
+	      leader of the init_per_suite process (and that group leader
+	      would not process IO requests when parallel test cases was
+	      running). If later a parallel test case caused such a
+	      processto print using (for example) io:format/2, the calling
+	      would hang.
+
+	      * Similarly, if a process was spawned from a parallel test
+	      case, it would inherit the temporary group leader for that
+	      parallel test case. If that spawned process later - when the
+	      group of parallel tests have finished - attempted to print
+	      something, its group leader would be dead and there would be
+	      badarg exception.
+
+	      Those problems have been solved by having group leaders
+	      separate from the processes that supervises the test cases,
+	      and keeping temporary group leader process for parallel test
+	      cases alive until no more process in the system use them as
+	      group leaders.
+
+	      Also, a new unexpected_io.log log file (reachable from the
+	      summary page of each test suite) has been introduced. All
+	      unexpected IO will be printed into it(for example, IO to a
+	      group leader for a parallel test case that has finished).
+
+   OTP-10432  Some bugfixes in ct_snmp:
+
+	      -- ct_snmp will now use the value of the 'agent_vsns' config
+	      variable when setting the 'variables' parameter to snmp
+	      application agent configuration. Earlier this had to be done
+	      separately - i.e. the supported versions had to be specified
+	      twice.
+
+	      -- Snmp application failed to write notify.conf since ct_snmp
+	      gave the notify type as a string instead of an atom. This has
+	      been corrected.
+
+   OTP-10434  Some bugfixes in ct_snmp:
+
+	      -- Functions register_users/2, register_agents/2 and
+	      register_usm_users/2, and the corresponding unregister_*/1
+	      functions were not executable. These are corrected/rewritten.
+
+	      -- Function update_usm_users/2 is removed, and an unregister
+	      function is added instead. Update can now be done with
+	      unregister_usm_users and then register_usm_users.
+
+	      -- Functions unregister_*/2 are added, so specific
+	      users/agents/usm users can be unregistered.
+
+	      -- Function unload_mibs/1 is added for completeness.
+
+	      -- Overriding configuration files did not work, since the
+	      files were written in priv_dir instead of in the
+	      configuration dir (priv_dir/conf). This has been corrected.
+
+	      -- Arguments to register_usm_users/2 were faulty documented.
+	      This has been corrected.
+
+   OTP-10469  The ct_slave:start/3 function now supports an
+	      {env,[{Var,Value}]} option to extend environment for the
+	      slave node.
+
+   OTP-10601  Faulty exported specs in common test has been corrected to
+	      ct_netconfc:hook_options/0 and inet:hostname/0
+
+   OTP-10646  The netconf client in common_test did not adjust the window
+	      after receiving data. Due to this, the client stopped
+	      receiving data after a while. This has been corrected.
+
+   OTP-10665  Some examples overflowing the width of PDF pages have been
+	      corrected.
+
+   OTP-10783  Update common test modules to handle unicode
+
+	      -- Use UTF-8 encoding for all HTML files, except the HTML
+	      version of the test suite generated with erl2html2:convert,
+	      which will have the same encoding as the original test suite
+	      (.erl) file.
+
+	      -- Encode link targets in HTML files with
+	      test_server_ctrl:uri_encode/1.
+
+	      -- Use unicode modifier 't' with ~s when appropriate.
+
+	      -- Use unicode:characters_to_list and
+	      unicode:characters_to_binary for conversion between binaries
+	      and strings instead of binary_to_list and list_to_binary.
+
+
+--- compiler-4.9 --------------------------------------------------------
+
+   OTP-10193  The compiler optimizations have been polished, so that the
+	      code quality will be slightly better in some cases.
+
+   OTP-10302  Support for Unicode has been implemented.
+
+   OTP-10630  Where necessary a comment stating encoding has been added to
+	      Erlang files. The comment is meant to be removed in
+	      Erlang/OTP R17B when UTF-8 becomes the default encoding.
+
+   OTP-10690  Fix some wrong warnings triggered by the option
+	      inline_list_funcs. Thanks to Anthony Ramine.
+
+   OTP-10706  Forbid local fun variables in Core Erlang guards. Thanks to
+	      Anthony Ramine.
+
+   OTP-10724  Binary syntax matches could cause an internal consistency
+	      error in in the compiler. (Thanks to Viktor Sovietov for
+	      reporting this bug.)
+
+
+--- cosEvent-2.1.13 -----------------------------------------------------
+
+   OTP-10784  Misc build updates
+
+
+--- cosEventDomain-1.1.13 -----------------------------------------------
+
+   OTP-10784  Misc build updates
+
+
+--- cosFileTransfer-1.1.14 ----------------------------------------------
+
+   OTP-10784  Misc build updates
+
+
+--- cosNotification-1.1.19 ----------------------------------------------
+
+   OTP-10784  Misc build updates
+
+
+--- cosProperty-1.1.16 --------------------------------------------------
+
+   OTP-10784  Misc build updates
+
+
+--- cosTime-1.1.13 ------------------------------------------------------
+
+   OTP-10784  Misc build updates
+
+
+--- cosTransactions-1.2.13 ----------------------------------------------
+
+   OTP-10784  Misc build updates
+
+
+--- crypto-2.3 ----------------------------------------------------------
+
+   OTP-10596  Enable runtime upgrade of crypto including the OpenSSL
+	      library used by crypto.
+
+   OTP-10640  Improve documentation and tests for hmac functions in crypto.
+	      Thanks to Daniel White
+
+   OTP-10667  Added ripemd160 support to crypto. Thanks to Michael Loftis
+
+
+--- debugger-3.2.9 ------------------------------------------------------
+
+   OTP-10302  Support for Unicode has been implemented.
+
+   OTP-10621  Fix Debugger settings dialog due to changed behavior in
+	      wxFileDialog (Thanks to Håkan Mattsson)
+
+   OTP-10630  Where necessary a comment stating encoding has been added to
+	      Erlang files. The comment is meant to be removed in
+	      Erlang/OTP R17B when UTF-8 becomes the default encoding.
+
+   OTP-10679  Integer lists and utf-8 binaries in variables are now
+	      displayed as strings.
+
+
+--- dialyzer-2.5.4 ------------------------------------------------------
+
+   OTP-10302  Support for Unicode has been implemented.
+
+   OTP-10433  Dialyzer no longer outputs warnings for unused anonymous
+	      functions ("funs"). Warnings are still output for unused
+	      functions.
+
+   OTP-10630  Where necessary a comment stating encoding has been added to
+	      Erlang files. The comment is meant to be removed in
+	      Erlang/OTP R17B when UTF-8 becomes the default encoding.
+
+   OTP-10665  Some examples overflowing the width of PDF pages have been
+	      corrected.
+
+   OTP-10681  Fix precision of record creation violation warnings. Thanks
+	      to Stavros Aronis
+
+   OTP-10740  Report spec discrepancy on mismatching lists. Thanks to
+	      Stavros Aronis.
+
+   OTP-10772  Properly support functions with arbitrary arity in type
+	      specs. Thanks to Stavros Aronis.
+
+
+--- diameter-1.4 --------------------------------------------------------
+
+   OTP-10442  Add registered server names to the app file.
+
+   OTP-10609  Fix #diameter_header{} handling broken by OTP-10445.
+
+	      The fault caused the the header of a [Header | Avps] request
+	      to be ignored if both end_to_end_id and hop_by_hop_id were
+	      undefined.
+
+   OTP-10614  Fix error handling for handle_request callback.
+
+	      A callback that returned a #diameter_packet{} would fail if
+	      the incoming request had decode errors.
+
+   OTP-10618  Fix timing of service start event.
+
+	      The event did not necessarily precede other events as
+	      documented.
+
+   OTP-10619  Fix setting of header T flag at peer failover.
+
+	      The flag is now set in the diameter_header record passed to a
+	      prepare_retransmit callback.
+
+   OTP-10628  Fix sending of CER/CEA timeout event at capx_timeout.
+
+	      The event was not sent as documented.
+
+   OTP-10655  Fix improper setting of Application-ID in the Diameter header
+	      of an answer message whose E flag is set.
+
+	      The value should be that of the request in question. The
+	      fault caused it always to be 0.
+
+   OTP-10693  Fix faulty handling of AVP length errors.
+
+	      An incorrect AVP length but no other errors caused an
+	      incoming request to fail.
+
+
+--- edoc-0.7.11 ---------------------------------------------------------
+
+   OTP-10195  Since EDoc 0.7.7 (R14B02) separate values of union types can
+	      be annotated. However, the parser has hitherto chosen not to
+	      add the necessary parentheses due to backwards compatibility.
+
+	      From this release on code traversing the output of
+	      edoc_parser needs to take care of parentheses around separate
+	      values of union types. Examples of such code are layout
+	      modules and doclet modules.
+
+   OTP-10302  Support for Unicode has been implemented.
+
+   OTP-10630  Where necessary a comment stating encoding has been added to
+	      Erlang files. The comment is meant to be removed in
+	      Erlang/OTP R17B when UTF-8 becomes the default encoding.
+
+
+--- eldap-1.0.1 ---------------------------------------------------------
+
+   OTP-10403  Fixed various dialyzer warnings
+
+   OTP-10728  Configure the SSL options fully in eldap.
+
+
+--- erl_docgen-0.3.4 ----------------------------------------------------
+
+   OTP-10302  Support for Unicode has been implemented.
+
+   OTP-10630  Where necessary a comment stating encoding has been added to
+	      Erlang files. The comment is meant to be removed in
+	      Erlang/OTP R17B when UTF-8 becomes the default encoding.
+
+   OTP-10665  Some examples overflowing the width of PDF pages have been
+	      corrected.
+
+   OTP-10725  Correct a PDF indentation bug for tagged lists in tagged
+	      lists and added some missing tags to the DTD.
+
+
+--- erl_interface-3.7.10 ------------------------------------------------
+
+   OTP-10630  Where necessary a comment stating encoding has been added to
+	      Erlang files. The comment is meant to be removed in
+	      Erlang/OTP R17B when UTF-8 becomes the default encoding.
+
+   OTP-10753  Limited support for unicode atoms in the external format and
+	      in the internal representation of the vm. This is a
+	      preparative feature in order to support communication with
+	      future releases of Erlang/OTP that may create unicode atoms.
+
+
+--- erts-5.9.3.1 --------------------------------------------------------
+
+   OTP-10602  Create an erl_crash.dump if no heart exists and no ERL_CRASH_DUMP_SECONDS 
+              is set (behaviour changed). Don't create an erl_crash.dump 
+              if heart do exists and no ERL_CRASH_DUMP_SECONDS is set 
+              (behaviour not changed). This changes the behaviour back 
+              to the R15B02 default considering if a beam was running 
+              with no heart.
+
+
+--- erts-5.10 -----------------------------------------------------------
+
+    OTP-8928  A boolean socket option 'ipv6_v6only' for IPv6 sockets has
+	      been added. The default value of the option is OS dependent,
+	      so applications aiming to be portable should consider using
+	      {ipv6_v6only,true} when creating an inet6
+	      listening/destination socket, and if neccesary also create an
+	      inet socket on the same port for IPv4 traffic. See the
+	      documentation.
+
+    OTP-9861  It is now allowed to define stubs for BIFs, to allow type
+	      specs to be written for BIFs. For example, if there is BIF
+	      called lists:member/2, a dummy definition of lists:member/2
+	      is now allowed.
+
+    OTP-9892  Process optimizations. The most notable:
+
+	      -- New internal process table implementation allowing for
+	      both parallel reads as well as writes. Especially read
+	      operations have become really cheap. This reduce contention
+	      in various situations. For example when, spawning processes,
+	      terminating processes, sending messages, etc.
+
+	      -- Optimizations of run queue management reducing contention.
+
+	      -- Optimizations of process state changes reducing
+	      contention.
+
+	      These changes imply changes of the characteristics the
+	      system. Most notable: changed timing in the system.
+
+    OTP-9974  Non-blocking code loading. Earlier when an Erlang module was
+	      loaded, all other execution in the VM were halted while the
+	      load operation was carried out in single threaded mode. Now
+	      modules are loaded without blocking the VM. Processes may
+	      continue executing undisturbed in parallel during the entire
+	      load operation. The load operation is completed by making the
+	      loaded code visible to all processes in a consistent way with
+	      one single atomic instruction. Non-blocking code loading will
+	      improve realtime characteristics when modules are
+	      loaded/upgraded on a running SMP system.
+
+   OTP-10122  In the SMP emulator, turning on and off tracing will no
+	      longer take down the system to single-scheduling.
+
+   OTP-10146  Remove VxWorks support
+
+   OTP-10156  Added a general framework for executing benchmarks of
+	      Erlang/OTP. Benchmarks for the Erlang VM and mnesia have been
+	      incorporated in the framework. 
+
+	      For details about how to add more benchmarks see
+	      $ERL_TOP/HOWTO/BENCHMARKS.md in the source distribution.
+
+   OTP-10167  Optimized deletion of ETS-tables which significantly improves
+	      performance when large amounts of temporary tables are used.
+
+	      This change imply changes of the characteristics the system.
+	      Most notable: changed timing in the system.
+
+   OTP-10170  Tuple funs (deprecated in R15B) are no longer supported.
+
+   OTP-10273  New internal header scheme for allocators
+
+	      Impact: Reduces size on object allocated in multiblock
+	      carriers by one word
+
+   OTP-10336  Major port improvements. The most notable:
+
+	      -- New internal port table implementation allowing for both
+	      parallel reads as well as writes. Especially read operations
+	      have become really cheap.This reduce contention in various
+	      situations. For example when, creating ports, terminating
+	      ports, etc. 
+
+	      -- Dynamic allocation of port structures. This allow for a
+	      much larger maximum amount of ports allowed as a default. The
+	      previous default of 1024 has been raised to 65536. Maximum
+	      amount of ports can be set using the +Q command line flag of
+	      erl(1). The previously used environment variable
+	      ERL_MAX_PORTS has been deprecated and scheduled for removal
+	      in OTP-R17.
+
+	      -- Major rewrite of scheduling of port tasks. Major benefits
+	      of the rewrite are reduced contention on run queue locks, and
+	      reduced amount of memory allocation operations needed. The
+	      rewrite was also necessary in order to make it possible to
+	      schedule signals from processes to ports.
+
+	      -- Improved internal thread progress functionality for easy
+	      management of unmanaged threads. This improvement was
+	      necessary for the rewrite of the port task scheduling.
+
+	      -- Rewrite of all process to port signal implementations in
+	      order to make it possible to schedule those operations. All
+	      port operations can now be scheduled which allows for reduced
+	      lock contention on the port lock as well as truly
+	      asynchronous communication with ports.
+
+	      -- Optimized lookup of port handles from drivers.
+
+	      -- Optimized driver lookup when creating ports.
+
+	      -- Preemptable erlang:ports/0 BIF.
+
+	      -- Improving responsiveness by bumping reductions for a
+	      process calling a driver callback directly.
+
+	      These changes imply changes of the characteristics of the
+	      system. The most notable:
+
+	      -- Order of signal delivery -- The previous implementation of
+	      the VM has delivered signals from processes to ports in a
+	      synchronous stricter fashion than required by the language.
+	      As of ERTS version 5.10, signals are truly asynchronously
+	      delivered. The order of signal delivery still adheres to the
+	      requirements of the language, but only to the requirements.
+	      That is, some signal sequences that previously always were
+	      delivered in one specific order may now from time to time be
+	      delivered in different orders. This may cause Erlang programs
+	      that have made false assumptions about signal delivery order
+	      to fail even though they previously succeeded. For more
+	      information about signal ordering guarantees, see the chapter
+	      on communication in the ERTS user's guide. The +n command
+	      line flag of erl(1) can be helpful when trying to find
+	      signaling order bugs in Erlang code that have been exposed by
+	      these changes.
+
+	      -- Latency of signals sent from processes to ports -- Signals
+	      from processes to ports where previously always delivered
+	      immediately. This kept latency for such communication to a
+	      minimum, but it could cause lock contention which was very
+	      expensive for the system as a whole. In order to keep this
+	      latency low also in the future, most signals from processes
+	      to ports are by default still delivered immediately as long
+	      as no conflicts occur. Such conflicts include not being able
+	      to acquire the port lock, but also include other conflicts.
+	      When a conflict occur, the signal will be scheduled for
+	      delivery at a later time. A scheduled signal delivery may
+	      cause a higher latency for this specific communication, but
+	      improves the overall performance of the system since it
+	      reduce lock contention between schedulers. The default
+	      behavior of only scheduling delivery of these signals on
+	      conflict can be changed by passing the +spp command line flag
+	      to erl(1). The behavior can also be changed on port basis
+	      using the parallelism option of the open_port/2 BIF.
+
+	      -- Execution time of the erlang:ports/0 BIF -- Since
+	      erlang:ports/0 now can be preempted, the responsiveness of
+	      the system as a whole has been improved. A call to
+	      erlang:ports/0 may, however, take a much longer time to
+	      complete than before. How much longer time heavily depends on
+	      the system load.
+
+	      -- Reduction cost of calling driver callbacks -- Calling a
+	      driver callback is quite costly. This was previously not
+	      reflected in reduction cost at all. Since the reduction cost
+	      now has increased, a process performing lots of direct driver
+	      calls will be scheduled out more frequently than before.
+
+	      Potential incompatibilities:
+
+	      -- driver_send_term() has been deprecated and has been
+	      scheduled for removal in OTP-R17. Replace usage of
+	      driver_send_term() with usage of erl_drv_send_term().
+
+	      -- driver_output_term() has been deprecated and has been
+	      scheduled for removal in OTP-R17. Replace usage of
+	      driver_output_term() with usage of erl_drv_output_term().
+
+	      -- The new function erl_drv_busy_msgq_limits() has been added
+	      in order to able to control management of port queues.
+
+	      The driver API version has been bumped to 2.1 from 2.0 due to
+	      the above changes in the driver API.
+
+   OTP-10348  The experimental support for packages has been removed.
+
+   OTP-10491  Set new peeled off SCTP socket to nonblocking socket (Thanks
+	      to Jonas Falkevik)
+
+   OTP-10522  Wrong parameters when setting seq_trace-tokens from within a
+	      trace-pattern could crash the VM. This is now corrected.
+
+   OTP-10611  Fix various typos (thanks to Tuncer Ayaz)
+
+   OTP-10633  Erlang specification 4.7.3 defines max tuple size to 65535
+	      elements It is now enforced to no more than 16777215 elements
+	      (arity 24 bits)
+
+	      Previous edge cases (28 bits) were not validated and could
+	      cause undefined behaviour.
+
+   OTP-10643  Add insert_element/3 and delete_element/2
+
+   OTP-10647  The previous default of a maximum of 32768 simultaneous
+	      processes has been raised to 262144. This value can be
+	      changed using the the +P command line flag of erl(1). Note
+	      that the value passed now is considered as a hint, and that
+	      actual value chosen in most cases will be a power of two.
+
+   OTP-10661  The previously (in R15) proposed scheduler wakeup strategy is
+	      now used by default. This strategy is not as quick to forget
+	      about previous overload as the previous strategy.
+
+	      This change imply changes of the characteristics the system.
+	      Most notable: When a small overload comes and then disappears
+	      repeatedly, the system will for a bit longer time be willing
+	      to wake up schedulers than before. Timing in the system will
+	      due to this also change.
+
+	      The previous strategy can still be enabled by passing the
+	      +sws legacy command line flag to erl.
+
+   OTP-10668  The +stbt command line argument of erl was added. This
+	      argument can be used for trying to set scheduler bind type.
+	      Upon failure unbound schedulers will be used.
+
+   OTP-10677  Fix fd leak when using async thread pool
+
+	      When using the async thread pool, if an erlang process asks
+	      to open a file and it gets shutdown/killed while the
+	      file:open/2 call hasn't returned, it's possible to leak a
+	      file descriptor against the target file. This has now been
+	      fixed. (Thanks to Filipe David Manana)
+
+   OTP-10678  Support ANSI in console
+
+	      Unix platforms will no longer filter control sequences to the
+	      ttsl driver thus enabling ANSI and colors in console. (Thanks
+	      to Pedram Nimreezi)
+
+   OTP-10680  Add file:allocate/3 operation
+
+	      This operation allows pre-allocation of space for files. It
+	      succeeds only on systems that support such operation. (Thanks
+	      to Filipe David Manana)
+
+   OTP-10683  Treat -Wreturn-type warnings as error when using GCC (Thanks
+	      to Tuncer Ayaz)
+
+   OTP-10699  Use sys/types.h instead of string.h to pull ssize_t
+	      definition to erl_driver.h. This fixes build issue on NetBSD.
+	      (Thanks to Yamamoto Takashi).
+
+   OTP-10702  Arguments given with the -run or -s flags to erl are now
+	      translated according to the file name encoding mode of the
+	      runtime system.
+
+   OTP-10726  Implement ./otp_build configure --enable-silent-rules
+
+	      With silent rules, the output of make is less verbose and
+	      compilation warnings are easier to spot. Silent rules are
+	      disabled by default and can be disabled or enabled at will by
+	      make V=0 and make V=1. (Thanks to Anthony Ramine)
+
+   OTP-10727  Use share flags for all file operations on Windows. Thanks to
+	      Filipe David Borba Manana.
+
+   OTP-10733  Make/fakefop adjustments. Thanks to Tuncer Ayaz and Sebastian
+	      Rasmussen.
+
+   OTP-10736  The runtime system will now by default use 10 async threads
+	      if thread support has been enabled when building the runtime
+	      system.
+
+	      This will prevent long blocking file-operations from blocking
+	      scheduler threads for long periods of time, which can be
+	      harmful. Apart from file-operations, it also effects other
+	      operations scheduled on the async thread pool by user
+	      implemented drivers.
+
+	      The amount of async threads can be controlled by using the +A
+	      command line argument of erl(1). When running some offline
+	      tools you might want to disable async threads, but you are
+	      advised not to in the general case. Instead, you might want
+	      to increase the amount of async threads used.
+
+	      This change imply changes of the characteristics the system
+	      compared to the previous default. The responsiveness of the
+	      system as a whole will be improved. Operations scheduled on
+	      the async thread pool will get an increased latency. The
+	      throughput of these operations may increase, or decrease
+	      depending on the type of the operations and how they get
+	      scheduled. In the case of file operations, the throughput
+	      very much depends on how the Erlang application access files.
+	      Multiple concurrent accesses to different files have the
+	      potential of an increased throughput.
+
+   OTP-10737  The default reader group limit has been increased to 64 from
+	      8. This limit can be set using the +rg command line argument
+	      of erl(1).
+
+	      This change of default value will reduce lock contention on
+	      ETS tables using the read_concurrency option at the expense
+	      of memory consumption when the amount of schedulers and
+	      logical processors are beween 8 and 64. For more information,
+	      see documentation of the +rg command line argument of erl(1).
+
+   OTP-10746  The octet counters in the gen_tcp/inet interface could behave
+	      in unexpected ways on 64bit platforms. The behaviour is now
+	      as expected.
+
+   OTP-10747  Certain linux kernels, most notably in redhat and CentOS
+	      distribution, had a bug in writev which generated an infinite
+	      loop in the tcp code of the VM. The bug is now worked around.
+
+   OTP-10748  A process that got killed (got an exit signal) while
+	      operating on a compresseed file, could cause a segmentation
+	      fault in the VM. This is now corrected. Thanks to Filipe
+	      David Manana for identifying the problem and submitting a
+	      solution.
+
+   OTP-10751  Windows previously used three digit exponent in formatting
+	      which caused difference between platforms, as can be seen by
+	      float_to_list/1. This has now been fixed.
+
+   OTP-10752  New BIF float_to_list/2 which solves a problem of
+	      float_to_list/1 that doesn't allow specifying the number of
+	      digits after the decimal point when formatting floats (Thanks
+	      to Serge Aleynikov).
+
+   OTP-10753  Limited support for unicode atoms in the external format and
+	      in the internal representation of the vm. This is a
+	      preparative feature in order to support communication with
+	      future releases of Erlang/OTP that may create unicode atoms.
+
+   OTP-10787  Increased potential concurrency in ETS for write_concurrency
+	      option. The number of internal table locks has increased from
+	      16 to 64. This makes it four times less likely that two
+	      concurrent processes writing to the same table would collide
+	      and thereby serialized. The cost is an increased constant
+	      memory footprint for tables using write_concurrency. The
+	      memory consumption per inserted record is not affected. The
+	      increased footprint can be particularly large if
+	      write_concurrency is combined with read_concurrency.
+
+
+--- et-1.4.4.3 ----------------------------------------------------------
+
+   OTP-10630  Where necessary a comment stating encoding has been added to
+	      Erlang files. The comment is meant to be removed in
+	      Erlang/OTP R17B when UTF-8 becomes the default encoding.
+
+
+--- eunit-2.2.4 ---------------------------------------------------------
+
+   OTP-10630  Where necessary a comment stating encoding has been added to
+	      Erlang files. The comment is meant to be removed in
+	      Erlang/OTP R17B when UTF-8 becomes the default encoding.
+
+
+--- gs-1.5.15.2 ---------------------------------------------------------
+
+   OTP-10630  Where necessary a comment stating encoding has been added to
+	      Erlang files. The comment is meant to be removed in
+	      Erlang/OTP R17B when UTF-8 becomes the default encoding.
+
+
+--- hipe-3.10 -----------------------------------------------------------
+
+   OTP-10302  Support for Unicode has been implemented.
+
+   OTP-10624  The type ascii_string() in the base64 module has been
+	      corrected. The type file:file_info() has been cleaned up. The
+	      type file:fd() has been made opaque in the documentation.
+
+   OTP-10630  Where necessary a comment stating encoding has been added to
+	      Erlang files. The comment is meant to be removed in
+	      Erlang/OTP R17B when UTF-8 becomes the default encoding.
+
+   OTP-10705  Update .gitignore (lib/hipe/boot_ebin). Thanks to Tuncer
+	      Ayaz.
+
+
+--- ic-4.3 --------------------------------------------------------------
+
+   OTP-10784  Misc build updates
+
+   OTP-10785  Adapt ic for changes in erl_interface and jinterface due to
+	      utf8 atom support. This change makes ic dependent on
+	      erl_interface-3.7.10 (R16) or later in order to build.
+
+
+--- inets-5.9.3 ---------------------------------------------------------
+
+   OTP-10256  httpc: The HTTP client now supports HTTPS through proxies
+
+   OTP-10665  Some examples overflowing the width of PDF pages have been
+	      corrected.
+
+   OTP-10765  Fix autoredirect for POST requests responding 303. Thanks to
+	      Hans Svensson.
+
+
+--- jinterface-1.5.7 ----------------------------------------------------
+
+   OTP-10505  fix reading compressed binary terms from Java (Thanks to Nico
+	      Kruber)
+
+   OTP-10579  OtpEpmd.lokupNames() no longer hangs when badly configured
+	      (Thanks to Vlad Dumitrescu)
+
+   OTP-10630  Where necessary a comment stating encoding has been added to
+	      Erlang files. The comment is meant to be removed in
+	      Erlang/OTP R17B when UTF-8 becomes the default encoding.
+
+   OTP-10753  Limited support for unicode atoms in the external format and
+	      in the internal representation of the vm. This is a
+	      preparative feature in order to support communication with
+	      future releases of Erlang/OTP that may create unicode atoms.
+
+
+--- kernel-2.16 ---------------------------------------------------------
+
+    OTP-8067  Inet exported functionality
+
+	      inet:parse_ipv4_address/1, inet:parse_ipv4strict_address/1,
+	      inet:parse_ipv6_address/1, inet:parse_ipv6strict_address/1,
+	      inet:parse_address/1 and inet:parse_strict_address is now
+	      exported from the inet module.
+
+    OTP-8928  A boolean socket option 'ipv6_v6only' for IPv6 sockets has
+	      been added. The default value of the option is OS dependent,
+	      so applications aiming to be portable should consider using
+	      {ipv6_v6only,true} when creating an inet6
+	      listening/destination socket, and if neccesary also create an
+	      inet socket on the same port for IPv4 traffic. See the
+	      documentation.
+
+   OTP-10302  Support for Unicode has been implemented.
+
+   OTP-10417  It is no longer possible to have {Mod,Vsn} in the 'modules'
+	      list in a .app file.
+
+	      This was earlier possible, although never documented in the
+	      .app file reference manual. It was however visible in the
+	      documentation of application:load/[1,2], where the same term
+	      as in a .app file can be used as the first argument.
+
+	      The possibility has been removed since the Vsn part was never
+	      used.
+
+   OTP-10419  The documentation for global:register_name/3 has been updated
+	      to mention that the use of {Module,Function} as the method
+	      argument (resolve function) is deprecated.
+
+   OTP-10473  The contract of erl_ddll:format_error/1 has been corrected.
+	      (Thanks to Joseph Wayne Norton.)
+
+   OTP-10549  Fixed bug where sendfile on oracle solaris would return an
+	      error when a partial send was done.
+
+   OTP-10617  The error_handler module will now call
+	      '$handle_undefined_function'/2 if an attempt is made to call
+	      a non-existing function in a module that exists. See the
+	      documentation for error_handler module for details.
+
+   OTP-10620  Change printout of application crash message on startup to
+	      formated strings (Thanks to Serge Aleynikov)
+
+   OTP-10624  The type ascii_string() in the base64 module has been
+	      corrected. The type file:file_info() has been cleaned up. The
+	      type file:fd() has been made opaque in the documentation.
+
+   OTP-10630  Where necessary a comment stating encoding has been added to
+	      Erlang files. The comment is meant to be removed in
+	      Erlang/OTP R17B when UTF-8 becomes the default encoding.
+
+   OTP-10662  Do not return wrong terms unnecessarily. (Thanks to Kostis
+	      Sagonas.)
+
+   OTP-10665  Some examples overflowing the width of PDF pages have been
+	      corrected.
+
+   OTP-10680  Add file:allocate/3 operation
+
+	      This operation allows pre-allocation of space for files. It
+	      succeeds only on systems that support such operation. (Thanks
+	      to Filipe David Manana)
+
+   OTP-10694  Add application:get_key/3. The new function provides a
+	      default value for a configuration parameter. Thanks to Serge
+	      Aleynikov.
+
+   OTP-10739  Add search to Erlang shell's history. Thanks to Fred Herbert.
+
+
+--- megaco-3.16.0.3 -----------------------------------------------------
+
+   OTP-10630  Where necessary a comment stating encoding has been added to
+	      Erlang files. The comment is meant to be removed in
+	      Erlang/OTP R17B when UTF-8 becomes the default encoding.
+
+
+--- mnesia-4.8 ----------------------------------------------------------
+
+   OTP-10156  Added a general framework for executing benchmarks of
+	      Erlang/OTP. Benchmarks for the Erlang VM and mnesia have been
+	      incorporated in the framework. 
+
+	      For details about how to add more benchmarks see
+	      $ERL_TOP/HOWTO/BENCHMARKS.md in the source distribution.
+
+   OTP-10630  Where necessary a comment stating encoding has been added to
+	      Erlang files. The comment is meant to be removed in
+	      Erlang/OTP R17B when UTF-8 becomes the default encoding.
+
+   OTP-10636  Use chained send_after instead of send_interval, to make
+	      decrease the number of messages sent after a sleep (Thanks to
+	      James Wheare)
+
+   OTP-10639  Fix format of mnesia overload message (Thanks to Ahmed Omar)
+
+   OTP-10729  Remove support for the query keyword and query expressions.
+	      Thanks to Loïc Hoguin.
+
+
+--- observer-1.3 --------------------------------------------------------
+
+   OTP-10630  Where necessary a comment stating encoding has been added to
+	      Erlang files. The comment is meant to be removed in
+	      Erlang/OTP R17B when UTF-8 becomes the default encoding.
+
+
+--- odbc-2.10.14 --------------------------------------------------------
+
+   OTP-10506  Under Unix enable TCP_NODELAY to disable Nagel's socket
+	      algorithm. Thanks to Andy Richards
+
+	      Impact: Performance gain on Unix systems
+
+   OTP-10603  Added extended_errors option to ODBC
+
+	      When enabled, this option alters the return code of ODBC
+	      operations that produce errors to include the ODBC error code
+	      as well as the native error code, in addition to the ODBC
+	      reason field which is returned by default. Thanks to Bernard
+	      Duggan.
+
+   OTP-10630  Where necessary a comment stating encoding has been added to
+	      Erlang files. The comment is meant to be removed in
+	      Erlang/OTP R17B when UTF-8 becomes the default encoding.
+
+   OTP-10665  Some examples overflowing the width of PDF pages have been
+	      corrected.
+
+   OTP-10735  Fix aotocommit for Oracle ODBC driver in Linux. Thanks to
+	      Danil Onishchenko.
+
+
+--- orber-3.6.25 --------------------------------------------------------
+
+   OTP-10665  Some examples overflowing the width of PDF pages have been
+	      corrected.
+
+
+--- os_mon-2.2.11 -------------------------------------------------------
+
+   OTP-10448  Removed deprecated function calls to snmp
+
+
+--- otp_mibs-1.0.8 ------------------------------------------------------
+
+   OTP-10784  Misc build updates
+
+
+--- parsetools-2.0.8 ----------------------------------------------------
+
+   OTP-10302  Support for Unicode has been implemented.
+
+   OTP-10660  The file esyntax.yrl has been removed.
+
+
+--- percept-0.8.8 -------------------------------------------------------
+
+   OTP-10784  Misc build updates
+
+
+--- pman-2.7.1.3 --------------------------------------------------------
+
+   OTP-10784  Misc build updates
+
+
+--- public_key-0.18 -----------------------------------------------------
+
+    OTP-7045  public_key now supports CRL validation and documents the
+	      function public_key:pkix_path_validation/3
+
+   OTP-10665  Some examples overflowing the width of PDF pages have been
+	      corrected.
+
+   OTP-10670  Fix subjectPublicKeyInfo type comment in public_key. Thanks
+	      to Ryosuke Nakai.
+
+   OTP-10723  Fixed typo's in public_key spec.
+
+   OTP-10767  Corrected PKCS-10 documentation and added some PKCS-9 support
+	      that is fairly commonly used by PKCS-10. Full support for
+	      PKCS-9 will be added later.
+
+
+--- reltool-0.6.2 -------------------------------------------------------
+
+   OTP-10012  -- If incl_cond was set to derived on module level, then
+	      reltool_server would crash with a case_clause. This has been
+	      corrected. incl_cond on module level now overwrites mod_cond
+	      on app or sys level as described in the documentation.
+
+	      -- If a rel spec in the reltool config does not contain all
+	      applications that are listed as {applications,Applications}
+	      in a .app file, then these applications are autmatically
+	      added when creating the .rel file. For
+	      'included_applications', the behaviour was not the same. I.e.
+	      if a rel spec in the reltool config did not contain all
+	      applications that are listed as
+	      {included_applications,InclApplications} in a .app file, then
+	      reltool would fail with reason "Undefined applications" when
+	      creating the .rel file. This has been corrected, so both
+	      applications and included_applications are now automatically
+	      added if not already in the rel spec.
+
+	      -- The rel specification now dictates the order in which
+	      included and used applications (specified in the .app file as
+	      included_applications and applications respectively) are
+	      loaded/started by the boot file. If the applications are not
+	      specified in the rel spec, then the order from the .app file
+	      is used. This was a bug earlier reported on systools, and is
+	      now also implemented in reltool. 
+
+	      -- Instead of only looking at the directory name, reltool now
+	      first looks for a .app file in order to figure out the name
+	      of an application.
+
+   OTP-10665  Some examples overflowing the width of PDF pages have been
+	      corrected.
+
+
+--- runtime_tools-1.8.10 ------------------------------------------------
+
+   OTP-10155  User Guides for the dynamic tracing tools dtrace and
+	      systemtap have been added to the documentation.
+
+   OTP-10630  Where necessary a comment stating encoding has been added to
+	      Erlang files. The comment is meant to be removed in
+	      Erlang/OTP R17B when UTF-8 becomes the default encoding.
+
+   OTP-10635  Fix Table Viewer refresh crash on no more existing ets tables
+	      (Thanks to Peti Gömori)
+
+   OTP-10665  Some examples overflowing the width of PDF pages have been
+	      corrected.
+
+   OTP-10786  The backend module appmon_info.erl is moved from appmon
+	      application to runtime_tools. This allows appmon to be run
+	      from a remote erlang node towards a target node which does
+	      not have appmon (and its dependencies) installed, as long as
+	      runtime_tools is installed there.
+
+
+--- sasl-2.3 ------------------------------------------------------------
+
+   OTP-10394  release_handler_SUITE:otp_9864 deleted parts of the
+	      release_handler_SUITE_data directory so the test suite could
+	      not be executed twice without re-installation. This has been
+	      corrected.
+
+   OTP-10417  It is no longer possible to have {Mod,Vsn} in the 'modules'
+	      list in a .app file.
+
+	      This was earlier possible, although never documented in the
+	      .app file reference manual. It was however visible in the
+	      documentation of application:load/[1,2], where the same term
+	      as in a .app file can be used as the first argument.
+
+	      The possibility has been removed since the Vsn part was never
+	      used.
+
+   OTP-10463  release_handler:upgrade_script and
+	      release_handler:downgrade_script could not read appup files
+	      with regexps. This has been corrected. (Thanks to Ulf Wiger)
+
+   OTP-10630  Where necessary a comment stating encoding has been added to
+	      Erlang files. The comment is meant to be removed in
+	      Erlang/OTP R17B when UTF-8 becomes the default encoding.
+
+
+--- snmp-4.23 -----------------------------------------------------------
+
+   OTP-10027  [manager] Remove deprecated functions.
+
+   OTP-10610  Fix typo in snmpm doc (Thanks to Luca Favatella)
+
+   OTP-10630  Where necessary a comment stating encoding has been added to
+	      Erlang files. The comment is meant to be removed in
+	      Erlang/OTP R17B when UTF-8 becomes the default encoding.
+
+   OTP-10671  Polish return values of snmpm_user_default according to
+	      snmpm_user doc.
+
+   OTP-10672  Remove runtime warning in snmpa_agent because of tuple fun
+	      usage.
+
+   OTP-10673  SNMP manager performance optimization
+
+
+--- ssh-2.1.2 -----------------------------------------------------------
+
+   OTP-10657  Fixed various syntax errors in SSH appup file
+
+
+--- ssh-2.1.3 -----------------------------------------------------------
+
+    OTP-6406  SSH_FX_FILE_IS_A_DIRECTORY message for sftp implemented
+
+    OTP-7785  SSH Rekeying fixed
+
+    OTP-7786  Added User Guide for the SSH application
+
+    OTP-7792  Documentation regarding failfun, connectfun and disconnectfun
+	      provided
+
+    OTP-9478  It is now possible to send an empty binary using
+	      ssh_connection:send/3, this corner case previously caused
+	      ssh_connection:send to hang.
+
+   OTP-10456  Fix typo in keyboard-interactive string. Thanks to Daniel
+	      Goertzen
+
+   OTP-10467  ssh_connectino:send/3 will not return until all data has been
+	      sent. Previously it could return too early, resulting in
+	      things such premature close of the connection. Also improved
+	      error handling of closed SSH channels.
+
+   OTP-10475  Fixed ssh_cli.erl crashes because #state.buf is yet
+	      'undefined'.
+
+	      Fixed Client terminateing connections due to channel_request
+	      message response is sent to the wrong id.
+
+	      Affected SSH clients: - all clients based on
+	      SSH-2.0-TrileadSSH2Java_213 (problem #1) - SSH Term Pro
+	      (problem #2)
+
+	      Thanks to Stefan Zegenhagen
+
+   OTP-10514  SSH connection timer implementation
+
+	      New option, {idle_time, integer()}, sets a timeout on
+	      connection when no channels are active, defaults to infinity
+
+   OTP-10665  Some examples overflowing the width of PDF pages have been
+	      corrected.
+
+   OTP-10731  Fixed internal error on when client and server can not agree
+	      o which authmethod to use.
+
+
+--- ssl-5.1.2 -----------------------------------------------------------
+
+   OTP-10600  ssl:ssl_accept/2 timeout is no longer ignored
+
+
+--- ssl-5.2 -------------------------------------------------------------
+
+   OTP-10361  Support Next Protocol Negotiation in TLS, thanks to Ben
+	      Murphy for the contribution.
+
+	      Impact: Could give performance benefit if used as it saves a
+	      round trip.
+
+   OTP-10425  TLS 1.2 will now be the default TLS version if sufficient
+	      crypto support is available otherwise TLS 1.1 will be
+	      default.
+
+	      Impact: A default TLS connection will have higher security
+	      and hence it may be perceived as slower then before.
+
+   OTP-10447  It is now possible to call controlling_process on a listen
+	      socket, same as in gen_tcp.
+
+   OTP-10451  Remove filter mechanisms that made error messages backwards
+	      compatible with old ssl but hid information about what
+	      actually happened.
+
+	      This does not break the documented API however other reason
+	      terms may be returned, so code that matches on the reason
+	      part of {error, Reason} may fail.
+
+   OTP-10586  SSL: TLS 1.2, advertise sha224 support, thanks to Andreas
+	      Schultz.
+
+   OTP-10594  Added missing dependencies to Makefile
+
+   OTP-10595  If an ssl server is restarted with new options and a client
+	      tries to reuse a session the server must make sure that it
+	      complies to the new options before agreeing to reuse it.
+
+   OTP-10613  Removed deprecated function ssl:pid/0, it has been pointless
+	      since R14 but has been keep for backwards compatibility.
+
+   OTP-10709  Refactor to simplify addition of key exchange methods, thanks
+	      to Andreas Schultz.
+
+   OTP-10710  Now handles cleaning of CA-certificate database correctly so
+	      that there will be no memory leek, bug was introduced in ssl-
+	      5.1 when changing implementation to increase parallel
+	      execution.
+
+	      Impact: Improved memory usage, especially if you have many
+	      different certificates and upgrade tcp-connections to
+	      TLS-connections.
+
+
+--- stdlib-1.19 ---------------------------------------------------------
+
+    OTP-6874  Wildcards such as "some/path/*" passed to filelib:wildcard/2
+	      would fail to match any file. (Thanks to Samuel Rivas for
+	      reporting this bug.)
+
+    OTP-9803  Fixed error handling in proc_lib:start which could hang if
+	      the spawned process died in init.
+
+   OTP-10097  Dets tables are no longer fixed while traversing with a bound
+	      key (when only the objects with the right key are matched).
+	      This optimization affects the functions match/2,
+	      match_object/2, select/2, match_delete/2, and
+	      select_delete/2.
+
+   OTP-10302  Support for Unicode has been implemented.
+
+   OTP-10431  Allow ** in filelib:wildcard
+
+	      Two adjacent * used as a single pattern will match all files
+	      and zero or more directories and subdirectories. (Thanks to
+	      José Valim)
+
+   OTP-10436  The linter now warns for opaque types that are not exported,
+	      as well as for under-specified opaque types.
+
+   OTP-10455  Add the \gN and \g{N} syntax for back references in
+	      re:replace/3,4 to allow use with numeric replacement strings.
+	      (Thanks to Vance Shipley)
+
+   OTP-10472  Export ets:match_pattern/0 type (Thanks to Joseph Wayne
+	      Norton)
+
+   OTP-10474  The type file:name() has been substituted for the type
+	      file:filename() in the following functions in the filename
+	      module: absname/2, absname_join/2, join/1,2, and split/1.
+
+   OTP-10490  If a child process fails in its start function, then the
+	      error reason was earlier only reported as an error report
+	      from the error_handler, and supervisor:start_link would only
+	      return {error,shutdown}. This has been changed so the
+	      supervisor will now return {error,{shutdown,Reason}}, where
+	      Reason identifies the failing child and its error reason.
+	      (Thanks to Tomas Pihl)
+
+   OTP-10504  Fix printing the empty binary at depth 1 with ~W (Thanks to
+	      Andrew Thompson)
+
+   OTP-10624  The type ascii_string() in the base64 module has been
+	      corrected. The type file:file_info() has been cleaned up. The
+	      type file:fd() has been made opaque in the documentation.
+
+   OTP-10630  Where necessary a comment stating encoding has been added to
+	      Erlang files. The comment is meant to be removed in
+	      Erlang/OTP R17B when UTF-8 becomes the default encoding.
+
+   OTP-10658  The contracts and types of the modules erl_scan and sys have
+	      been corrected and improved. (Thanks to Kostis Sagonas.)
+
+   OTP-10659  The Erlang shell now skips the rest of the line when it
+	      encounters an Erlang scanner error.
+
+   OTP-10663  Clean up some specs in the proplists module. (Thanks to
+	      Kostis Sagonas.)
+
+   OTP-10665  Some examples overflowing the width of PDF pages have been
+	      corrected.
+
+   OTP-10691  Enable escript to accept emulator arguments when script file
+	      has no shebang. Thanks to Magnus Henoch
+
+   OTP-10722  Fix bug in queue:out/1, queue:out_r/1 that makes it O(N^2) in
+	      worst case. Thanks to Aleksandr Erofeev.
+
+   OTP-10742  There are new functions in the epp module which read the
+	      character encoding from files. See epp(3) for more
+	      information.
+
+   OTP-10745  The functions in io_lib have been adjusted for Unicode. The
+	      existing functions write_string() and so on now take Unicode
+	      strings, while the old behavior has been taken over by new
+	      functions write_latin1_string() and so on. There are also new
+	      functions to write Unicode strings as Latin-1 strings, mainly
+	      targetted towards the Erlang pretty printer (erl_pp).
+
+   OTP-10749  The new functions proc_lib:format/2 and erl_parse:abstract/2
+	      accept an encoding as second argument.
+
+   OTP-10787  Increased potential concurrency in ETS for write_concurrency
+	      option. The number of internal table locks has increased from
+	      16 to 64. This makes it four times less likely that two
+	      concurrent processes writing to the same table would collide
+	      and thereby serialized. The cost is an increased constant
+	      memory footprint for tables using write_concurrency. The
+	      memory consumption per inserted record is not affected. The
+	      increased footprint can be particularly large if
+	      write_concurrency is combined with read_concurrency.
+
+
+--- syntax_tools-1.6.10 -------------------------------------------------
+
+   OTP-10302  Support for Unicode has been implemented.
+
+
+--- test_server-3.6 -----------------------------------------------------
+
+    OTP-9710  Line numbering of erlang files that were not correctly
+	      indented could be wrong after coverting to html with
+	      erl2html2:convert/[2,3] (the source code pointed to from the
+	      test case). This has been corrected.
+
+	      Also, there are now link targets for each line and not only
+	      for each 10th line, and link targets for functions now
+	      include the arity and not only the function name (e.g. func/1
+	      has a link target "func-1").
+
+    OTP-9769  Severe errors detected by test_server (e.g. if log files
+	      directories cannot be created) will now be reported to
+	      common_test and noted in the common_test logs.
+
+    OTP-9870  The earlier undocumented cross cover feature for accumulating
+	      cover data over multiple tests has now been fixed and
+	      documented.
+
+    OTP-9956  If the test suite itself was included in code coverage
+	      analysis, then the test_server would not manage to set
+	      data_dir correctly for the test. This has been corrected.
+
+   OTP-10046  Any call to test_server:break/1 should cancel all active
+	      timetramps. However, in some cases Suite:end_per_testcase/2
+	      is executed on a different process than the test case itself,
+	      and if test_server:break/1 was called from there, the
+	      timetraps were not cancelled. This has been corrected.
+
+   OTP-10070  When a test case failed because of a timetrap time out, the
+	      Config data for the case was lost in the following call to
+	      end_per_testcase/2, and also in calls to the CT Hook function
+	      post_end_per_testcase/4. This problem has been solved and the
+	      Config data is now correctly passed to the above functions
+	      after a timetrap timeout failure.
+
+   OTP-10101  In test_server, the same process would supervise the
+	      currently running test case and be group leader (and IO
+	      server) for the test case. Furthermore, when running parallel
+	      test cases, new temporary supervisor/group leader processes
+	      were spawned and the process that was group leader for
+	      sequential test cases would not be active. That would lead to
+	      several problems:
+
+	      * Processes started by init_per_suite will inherit the group
+	      leader of the init_per_suite process (and that group leader
+	      would not process IO requests when parallel test cases was
+	      running). If later a parallel test case caused such a
+	      processto print using (for example) io:format/2, the calling
+	      would hang.
+
+	      * Similarly, if a process was spawned from a parallel test
+	      case, it would inherit the temporary group leader for that
+	      parallel test case. If that spawned process later - when the
+	      group of parallel tests have finished - attempted to print
+	      something, its group leader would be dead and there would be
+	      badarg exception.
+
+	      Those problems have been solved by having group leaders
+	      separate from the processes that supervises the test cases,
+	      and keeping temporary group leader process for parallel test
+	      cases alive until no more process in the system use them as
+	      group leaders.
+
+	      Also, a new unexpected_io.log log file (reachable from the
+	      summary page of each test suite) has been introduced. All
+	      unexpected IO will be printed into it(for example, IO to a
+	      group leader for a parallel test case that has finished).
+
+   OTP-10156  Added a general framework for executing benchmarks of
+	      Erlang/OTP. Benchmarks for the Erlang VM and mnesia have been
+	      incorporated in the framework. 
+
+	      For details about how to add more benchmarks see
+	      $ERL_TOP/HOWTO/BENCHMARKS.md in the source distribution.
+
+   OTP-10480  The stability of common_test and test_server when running
+	      test cases in parallel has been improved.
+
+   OTP-10783  Update common test modules to handle unicode
+
+	      -- Use UTF-8 encoding for all HTML files, except the HTML
+	      version of the test suite generated with erl2html2:convert,
+	      which will have the same encoding as the original test suite
+	      (.erl) file.
+
+	      -- Encode link targets in HTML files with
+	      test_server_ctrl:uri_encode/1.
+
+	      -- Use unicode modifier 't' with ~s when appropriate.
+
+	      -- Use unicode:characters_to_list and
+	      unicode:characters_to_binary for conversion between binaries
+	      and strings instead of binary_to_list and list_to_binary.
+
+
+--- toolbar-1.4.2.3 -----------------------------------------------------
+
+   OTP-10784  Misc build updates
+
+
+--- tools-2.6.9 ---------------------------------------------------------
+
+   OTP-10302  Support for Unicode has been implemented.
+
+   OTP-10465  Make erlang-mode more compatible with package.el (Thanks to
+	      Gleb Peregud)
+
+   OTP-10523  A new function, cover:flush(Nodes), is added which will fetch
+	      data from remote nodes without stopping cover on those nodes.
+	      This is used by test_server and common_test when it is safe
+	      to assume that the node will be terminated after the test
+	      anyway. The purpose is to avoid processes crashing when
+	      re-loading the original beam if the processes is still
+	      running old code.
+
+	      Remote nodes will now continue to count code coverage if the
+	      connection to the main node is broken. Earlier, a broken
+	      connection would cause the cover_server on the remote node to
+	      die and thus any still cover compiled modules would cause
+	      process crash when trying to insert cover data in ets tables
+	      that used to exist on the cover_server. The new functionality
+	      also involves synchronization with the main node if the nodes
+	      are reconnected.
+
+   OTP-10611  Fix various typos (thanks to Tuncer Ayaz)
+
+   OTP-10630  Where necessary a comment stating encoding has been added to
+	      Erlang files. The comment is meant to be removed in
+	      Erlang/OTP R17B when UTF-8 becomes the default encoding.
+
+   OTP-10637  Add separate face for exported functions (Thanks to Thomas
+	      Järvstrand)
+
+   OTP-10766  Fix syntax highlighting of $\' in Emacs mode. Thanks to
+	      Magnus Henoch.
+
+   OTP-10774  The BIF highlighting in the emacs mode has been updated to
+	      correspond with the correct BIFs.
+
+
+--- tv-2.1.4.10 ---------------------------------------------------------
+
+   OTP-10784  Misc build updates
+
+
+--- typer-0.9.5 ---------------------------------------------------------
+
+   OTP-10784  Misc build updates
+
+
+--- webtool-0.8.9.2 -----------------------------------------------------
+
+   OTP-10784  Misc build updates
+
+
+--- wx-1.0 --------------------------------------------------------------
+
+   OTP-10407  The wx application now compiles and is usable with the
+	      unstable development branch of wxWidgets-2.9. Some functions
+	      are currently not available in wxWidgets-2.9 and their erlang
+	      counterparts are marked as deprecated. They will generate an
+	      error if called when linked against wxWidgets-2.9 libraries.
+	      This means that wx can now be built on 64bit MacOsX, but keep
+	      in mind that wxWidgets-2.9 is still a development branch and
+	      needs (a lot) more work before it becomes stable.
+
+   OTP-10585  Add {silent_start, boolean()} option to wx:new/1 in order to
+	      be able to suppress error messages during startup of wx.
+	      (Thanks to Håkan Mattsson)
+
+   OTP-10743  Fix wxTreeCtrl:getBoundingRect/2 and wxTreeCtrl:hitTest/1.
+	      wxTreeCtrl:hitTest now returns a tuple not bug compatible
+	      with previous releases but needed.
+
+
+--- xmerl-1.3.3 ---------------------------------------------------------
+
+   OTP-10630  Where necessary a comment stating encoding has been added to
+	      Erlang files. The comment is meant to be removed in
+	      Erlang/OTP R17B when UTF-8 becomes the default encoding.
+
+   OTP-10665  Some examples overflowing the width of PDF pages have been
+	      corrected.
+

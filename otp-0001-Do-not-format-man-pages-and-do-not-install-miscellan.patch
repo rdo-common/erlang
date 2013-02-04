@@ -10,10 +10,10 @@ Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
  2 files changed, 14 deletions(-)
 
 diff --git a/erts/etc/common/Makefile.in b/erts/etc/common/Makefile.in
-index 83fe97d..f77b485 100644
+index 5c1ce51..5a07855 100644
 --- a/erts/etc/common/Makefile.in
 +++ b/erts/etc/common/Makefile.in
-@@ -568,10 +568,6 @@ endif
+@@ -474,10 +474,6 @@ endif
  ifneq ($(INSTALL_TOP_BIN),)
  	$(INSTALL_PROGRAM) $(INSTALL_TOP_BIN) "$(RELEASE_PATH)"
  endif
