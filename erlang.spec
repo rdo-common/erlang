@@ -582,7 +582,6 @@ from media conversion.
 %package mnesia
 Summary:	A heavy duty real-time distributed database
 Group:		Development/Languages
-#Error:erlang(megaco_flex_scanner:scan/2)
 Requires: %{name}-erts%{?_isa} = %{version}-%{release}
 Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
 Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
