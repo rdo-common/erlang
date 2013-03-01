@@ -1,11 +1,11 @@
-Major release  : otp_src_R16A
-Build date     : 2013-01-29
+Major release  : otp_src_R16B
+Build date     : 2013-02-25
 
-R16A is a major new release of Erlang/OTP.
+R16B is a major new release of Erlang/OTP.
 You can download the full source distribution from
  
-  http://www.erlang.org/download/otp_src_R16A.tar.gz
-  http://www.erlang.org/download/otp_src_R16A.readme (this file)
+  http://www.erlang.org/download/otp_src_R16B.tar.gz
+  http://www.erlang.org/download/otp_src_R16B.readme (this file)
 
 Note: To unpack the TAR archive you need a GNU TAR compatible program.
 
@@ -14,15 +14,15 @@ the distribution.
 
 The Windows binary distribution can be downloaded from
 
-  http://www.erlang.org/download/otp_win32_R16A.exe
-  http://www.erlang.org/download/otp_win64_R16A.exe
+  http://www.erlang.org/download/otp_win32_R16B.exe
+  http://www.erlang.org/download/otp_win64_R16B.exe
 
 
 On-line documentation can be found at http://www.erlang.org/doc/.
 You can also download the complete HTML documentation or the Unix manual files
 
-  http://www.erlang.org/download/otp_doc_html_R16A.tar.gz
-  http://www.erlang.org/download/otp_doc_man_R16A.tar.gz
+  http://www.erlang.org/download/otp_doc_html_R16B.tar.gz
+  http://www.erlang.org/download/otp_doc_man_R16B.tar.gz
 
 We also want to thank those that sent us patches, suggestions and bug reports,
 
@@ -210,8 +210,11 @@ The OTP Team
 	      Open types are now always returned as binaries (when there is
 	      no information allowing them to be decoded).
 
-
 --- POTENTIAL INCOMPATIBILITIES -----------------------------------------
+
+    OTP-9052  == common_test ==
+
+	      Removed depricated run_test program, use ct_run instead.
 
     OTP-9881  == common_test ==
 
@@ -233,7 +236,7 @@ The OTP Team
 
 	      The inviso application has been removed.
 
-   OTP-10170  == erts ==
+   OTP-10170  == erts pman ==
 
 	      Tuple funs (deprecated in R15B) are no longer supported.
 
@@ -462,6 +465,30 @@ The OTP Team
 	      that the value passed now is considered as a hint, and that
 	      actual value chosen in most cases will be a power of two.
 
+   OTP-10812  == stdlib ==
+
+	      filelib:wildcard("some/relative/path/*.beam", Path) would
+	      fail to match any file. That is, filelib:wildcard/2 would not
+	      work if the first component of the pattern did not contain
+	      any wildcard characters. (A previous attempt to fix the
+	      problem in R15B02 seems to have made matters worse.)
+
+	      (Thanks to Samuel Rivas and Tuncer Ayaz.)
+
+	      There is also an incompatible change to the Path argument. It
+	      is no longer allowed to be a binary.
+
+   OTP-10872  == erts ==
+
+	      As of ERTS-5.10/OTP-R16A node names passed in the EPMD
+	      protocol are required to be encoded in UTF-8. Since EPMD
+	      previously accepted latin1 encoded node names this is an
+	      incompatibility. However, since Erlang nodes always have
+	      required characters in node names to be 7-bit ASCII
+	      characters (and still do require this), this incompatibility
+	      should not effect anyone using EPMD as an Erlang Port Mapper
+	      Daemon.
+
 --- CHARACTERISTICS IMPACT -----------------------------------------------
 
     OTP-9892  == erts ==
@@ -681,8 +708,6 @@ The OTP Team
 	      different certificates and upgrade tcp-connections to
 	      TLS-connections.
 
-
-
 --- inviso --------------------------------------------------------------
 
    OTP-10117  The inviso application has been removed.
@@ -743,7 +768,7 @@ The OTP Team
 
    OTP-10588  The ASN.1 compiler will now always include necessary run-time
 	      functions in the generated Erlang modules (except for
-	      asn1rt_nif which is still needed). If the option 'inline' is
+	      asn1rt_nif which is still neeeded). If the option 'inline' is
 	      used the ASN.1 compiler will generate a warning. But if
 	      '{inline,OutputFile}' is use, the ASN.1 compiler will refuse
 	      to compile the file. (Use a .set.asn file if you need to
@@ -762,37 +787,10 @@ The OTP Team
 	      specification and whether all values were provided).
 
 
---- common_test-1.6.3.1 -------------------------------------------------
+--- asn1-2.0.1 ----------------------------------------------------------
 
-   OTP-10589  The following corrections/changes are done in the cth_surefire 
-              hook: Earlier there would always be a 'properties' element 
-              under the 'testsuites' element. This would exist even if 
-              there were no 'property' element inside it. This has been 
-              changed so if there are no 'property' elements to display, 
-              then there will not be a 'properties' element either. The 
-              XML file will now (unless other is specified) be stored 
-              in the top log directory. Earlier, the default directory 
-              would be the current working directory for the erlang node, 
-              which would mostly, but not always, be the top log directory. 
-              The 'hostname' attribute in the 'testsuite' element would 
-              earlier never have the correct value. This has been corrected. 
-              The 'errors' attribute in the 'testsuite' element would 
-              earlier display the number of failed testcases. This has 
-              been changed and will now always have the value 0, while 
-              the 'failures' attribute will show the number of failed 
-              testcases. A new attribute 'skipped' is added to the 'testsuite' 
-              element. This will display the number of skipped testcases. 
-              These would earlier be included in the number of failed 
-              test cases. The total number of tests displayed by the 'tests' 
-              attribute in the 'testsuite' element would earlier include 
-              init/end_per_suite and init/end_per_group. This is no longer 
-              the case. The 'tests' attribute will now only count "real" 
-              test cases. Earlier, auto skipped test cases would have 
-              no value in the 'log' attribute. This is now corrected. 
-              A new attributes 'log' is added to the 'testsuite' element. 
-              A new option named 'url_base' is added for this hook. If 
-              this option is used, a new attribute named 'url' will be 
-              added to the 'testcase' and 'testsuite' elements.
+   OTP-10853  Fixed broken table constraints within a SET OF or SEQUENCE OF
+	      for the BER backend.
 
 
 --- common_test-1.7 -----------------------------------------------------
@@ -933,6 +931,26 @@ The OTP Team
 	      and strings instead of binary_to_list and list_to_binary.
 
 
+--- common_test-1.7.1 ---------------------------------------------------
+
+    OTP-9052  Removed depricated run_test program, use ct_run instead.
+
+   OTP-10634  If an event handler installed in the CT Master event manager
+	      took too long to respond during the termination phase, CT
+	      Master crashed because of a timeout after 5 secs. This would
+	      leave the system in a bad state. The problem has been solved
+	      by means of a 30 min timeout value and if CT Master gets a
+	      timeout after that time, it now kills the event manager and
+	      shuts down properly.
+
+   OTP-10826  Printing with any of the ct printout functions from an event
+	      handler installed by Common Test, would cause a deadlock.
+	      This problem has been solved.
+
+   OTP-10832  Using the force_stop flag/option to interrupt a test run
+	      caused a crash in Common Test. This problem has been solved.
+
+
 --- compiler-4.9 --------------------------------------------------------
 
    OTP-10193  The compiler optimizations have been polished, so that the
@@ -953,6 +971,25 @@ The OTP Team
    OTP-10724  Binary syntax matches could cause an internal consistency
 	      error in in the compiler. (Thanks to Viktor Sovietov for
 	      reporting this bug.)
+
+
+--- compiler-4.9.1 ------------------------------------------------------
+
+   OTP-10788  Integers in expression that will give a floating point result
+	      (such as "X / 2" will now be converted to floating point at
+	      compile-time. (Suggested by Richard O'Keefe.)
+
+	      Identical floating points constans in a module will now be
+	      coalesced to one entry in the constant pool.
+
+   OTP-10794  The compiler would crash attempting to compile expressions
+	      such as "element(2, not_tuple)".
+
+   OTP-10818  Forbid multiple values in Core Erlang sequence arguments.
+	      Thanks to José Valim and Anthony Ramine.
+
+   OTP-10825  An unsafe optimization would cause the compiler to crash with
+	      an internal error for certain complex code sequences.
 
 
 --- cosEvent-2.1.13 -----------------------------------------------------
@@ -1016,6 +1053,14 @@ The OTP Team
 	      displayed as strings.
 
 
+--- debugger-3.2.10 -----------------------------------------------------
+
+   OTP-10884  The +pc flag to erl can be used to set the range of
+	      characters considered printable. This affects how the shell
+	      and io:format("~tp",...) functionality does heuristic string
+	      detection. More can be read in STDLIB users guide.
+
+
 --- dialyzer-2.5.4 ------------------------------------------------------
 
    OTP-10302  Support for Unicode has been implemented.
@@ -1039,6 +1084,16 @@ The OTP Team
 
    OTP-10772  Properly support functions with arbitrary arity in type
 	      specs. Thanks to Stavros Aronis.
+
+
+--- dialyzer-2.6 --------------------------------------------------------
+
+   OTP-10820  Miscellaneous updates due to Unicode support.
+
+   OTP-10861  User defined types with same name and different arity and
+	      documentation inconsistencies. Thanks Stavros Aronis.
+
+   OTP-10865  Native code compilation changes. Thanks to Kostis Sagonas.
 
 
 --- diameter-1.4 --------------------------------------------------------
@@ -1082,6 +1137,51 @@ The OTP Team
 	      incoming request to fail.
 
 
+--- diameter-1.4.1 ------------------------------------------------------
+
+   OTP-10686  Add application_opt() request_errors to make the handling of
+	      incoming requests containing decode errors configurable.
+
+	      The value 'callback' ensures that a handle_request callback
+	      takes place for all such requests, the default being for
+	      diameter to answer 3xxx series errors itself.
+
+   OTP-10687  Add transport_opt() length_errors.
+
+	      The value determines how messages received over the transport
+	      interface with an incorrect Message Length are dealt with.
+
+   OTP-10688  Add commentary on RFC 6733 to Standards Compliance chapter of
+	      the User's Guide.
+
+   OTP-10692  Fix erroneous watchdog transition from DOWN to INITIAL.
+
+	      This transition took place when a peer connection was
+	      reestablished following a failed capabilities exchange. RFC
+	      3539 requires DOWN to transition into REOPEN.
+
+   OTP-10759  Allow a 5xxx result code in an answer-message on peer
+	      connections using the RFC 6733 common dictionary.
+
+	      RFC 6733 allows this while RFC 3588 does not. A
+	      handle_request callback can return {answer_message,
+	      3000..3999|5000..5999} in the simplest case.
+
+   OTP-10760  Add dictionaries for RFC 6733.
+
+	      Both the common and accounting dictionaries differ from their
+	      RFC 3588 counterparts, which is reflected in generated record
+	      definitions. Application configuration on a service or
+	      transport determines the dictionary that will be used on a
+	      given peer connection.
+
+   OTP-10761  Allow a handle_request callback to control diameter's setting
+	      of Result-Code and Failed-AVP.
+
+	      Setting errors = false in a returned #diameter_packet{}
+	      disables the setting.
+
+
 --- edoc-0.7.11 ---------------------------------------------------------
 
    OTP-10195  Since EDoc 0.7.7 (R14B02) separate values of union types can
@@ -1098,6 +1198,15 @@ The OTP Team
    OTP-10630  Where necessary a comment stating encoding has been added to
 	      Erlang files. The comment is meant to be removed in
 	      Erlang/OTP R17B when UTF-8 becomes the default encoding.
+
+
+--- edoc-0.7.12 ---------------------------------------------------------
+
+   OTP-10820  Miscellaneous updates due to Unicode support.
+
+   OTP-10866  EDoc sometimes failed to associate a comment with the
+	      preceding type declaration. This bug has been fixed. (Thanks
+	      to Serge Aleynikov for reporting the bug.)
 
 
 --- eldap-1.0.1 ---------------------------------------------------------
@@ -1134,14 +1243,12 @@ The OTP Team
 	      future releases of Erlang/OTP that may create unicode atoms.
 
 
---- erts-5.9.3.1 --------------------------------------------------------
+--- erl_interface-3.7.11 ------------------------------------------------
 
-   OTP-10602  Create an erl_crash.dump if no heart exists and no ERL_CRASH_DUMP_SECONDS 
-              is set (behaviour changed). Don't create an erl_crash.dump 
-              if heart do exists and no ERL_CRASH_DUMP_SECONDS is set 
-              (behaviour not changed). This changes the behaviour back 
-              to the R15B02 default considering if a beam was running 
-              with no heart.
+   OTP-10885  Revert the structs erlang_pid, erlang_port and erlang_ref as
+	      they were before R16A (without node_org_enc) in order to be
+	      backward compatible with user code that accesses the fields
+	      of these structs.
 
 
 --- erts-5.10 -----------------------------------------------------------
@@ -1482,6 +1589,198 @@ The OTP Team
 	      write_concurrency is combined with read_concurrency.
 
 
+--- erts-5.10.1 ---------------------------------------------------------
+
+   OTP-10170  Tuple funs (deprecated in R15B) are no longer supported.
+
+   OTP-10300  Added four new bifs, erlang:binary_to_integer/1,2,
+	      erlang:integer_to_binary/1, erlang:binary_to_float/1 and
+	      erlang:float_to_binary/1,2. These bifs work similarly to how
+	      their list counterparts work, except they operate on
+	      binaries. In most cases converting from and to binaries is
+	      faster than converting from and to lists. 
+
+	      These bifs are auto-imported into erlang source files and can
+	      therefore be used without the erlang prefix.
+
+   OTP-10348  The experimental support for packages has been removed.
+
+   OTP-10802  Threads created internally in the runtime system by vanilla,
+	      fd, and spawn drivers on Windows systems could make thread
+	      unsafe calls to driver_select().
+
+   OTP-10803  Threads created internally in the runtime system by the
+	      vanilla, fd, and spawn drivers on Windows systems could make
+	      unsafe memory accesses to driver data after port had
+	      terminated.
+
+   OTP-10807  The runtime system could crash when flushing data to standard
+	      out or standard error on Windows.
+
+   OTP-10809  Bugs due to the port optimizations introduced in
+	      erts-5.10/OTP-R16A have been fixed:
+
+	      -- Memory leak when terminating ports
+
+	      -- Memory leak when reaching the system limit of maximum
+	      amount of concurrently existing ports
+
+	      -- Crashs due to missing, or late test of bad port handle
+
+	      -- The newly introduced driver API function
+	      erl_drv_busy_msgq_limits() could not be used by dynamically
+	      linked in drivers on Windows
+
+   OTP-10810  The driver API function erl_drv_consume_timeslice(), and the
+	      NIF API function enif_consume_timeslice() have been
+	      introduced.
+
+	      These functions are provided in order to better support
+	      co-operative scheduling, improve system responsiveness, and
+	      to make it easier to prevent misbehaviors of the VM due to a
+	      process or port monopolizing a scheduler thread. They can be
+	      used when dividing lengthy work into a number of repeated
+	      calls without the need to use threads.
+
+   OTP-10824  Fix {packet,httph} header capitalization for unrecognized
+	      header fields longer than 20 charachters such as
+	      Sec-Websocket-Version. The limit is simply raised from 20 to
+	      50 characters with the hope that valid headers longer than 50
+	      are not used.
+
+   OTP-10834  The list_to_integer/2 bif has been optimized when used with
+	      bases other than 10.
+
+   OTP-10837  Fix rounding issues in float_to_list/1,2. Thanks to Serge
+	      Aleynikov
+
+   OTP-10838  The git commit sha of the HEAD commit is now added to the
+	      Erlang shell when compiling a non-released Erlang version.
+
+   OTP-10840  Change caching policy for memory segment allocator. For
+	      instance, prefer sbc segments over mbc segments, caching
+	      policy is time-arrow aware, evicting older cached segments to
+	      store newer segments. 
+
+	      The default number of cachable segment has been increased
+	      from five to ten segments. This can be modified, same as
+	      before, with the command line option +MMmcs 5
+
+	      Impact: Increased speed for processing on larger objects,
+	      e.g. binaries. Slight increase of mapped and resident memory.
+	      Tune your system with memory options to erl for best
+	      performance.
+
+   OTP-10841  Fix memory leak in file driver introduced in R16A.
+
+   OTP-10848  Updated config.sub and config.guess to latest version from
+	      gnu.org
+
+   OTP-10849  Add an xcomp file for Blue Gene/Q. Thanks to Kostis Sagonas.
+
+   OTP-10850  Cleanup of documentation of the type language. Thanks to
+	      Kostis Sagonas.
+
+   OTP-10851  Change the return value of hipe_bifs:remove_refs_from/1.
+	      Thanks to Kostis Sagonas.
+
+   OTP-10854  A bug in an ERTS internal queue implementation could cause
+	      the loss of a wake up signal to a consumer thread. This has
+	      now been fixed.
+
+	      The effect of this bug, when triggered, was often only a
+	      small or even no delay of certain operations. This since,
+	      threads often are woken due to other unrelated reasons.
+	      However, if the consumer thread was not woken due to other
+	      reasons when the bug was triggered, these operations could be
+	      left hanging, potentially for ever. Such effects seems to
+	      have been very rare, but we have on at least one occasion
+	      gotten a report about such an issue.
+
+	      Operations potentially effected by this bug:
+
+	      -- Inspection of memory allocation status -- The Erlang
+	      process calling erlang:memory/[0,1], or
+	      erlang:system_info({allocator|allocator_sizes, _}) could
+	      potentially hang waiting for responses from involved threads.
+
+	      -- Async thread pool jobs -- An async thread pool job request
+	      and/or reply could potentially be left hanging. In OTP this
+	      only effected file operations, but user implemented drivers
+	      using the async thread pool were also effected. In the file
+	      operation case, this would typically translate into an Erlang
+	      process potentially hanging on the file operation.
+
+	      -- Shutting down the runtime system -- Due to the issue with
+	      the async thread pool mentioned above, flushing of I/O while
+	      terminating the runtime system could also potentially hang.
+
+	      -- ETS memory deallocation -- Scheduled jobs handling
+	      deallocation of the main structure of an ETS table could
+	      potentially hang. This more or less only translates into
+	      minor memory leaks.
+
+	      -- Shutting down distribution -- The distribution shutdown
+	      phase used when manually shutting down the distribution,
+	      i.e., when calling net_kernel:stop(), could potentially hang.
+
+   OTP-10858  OS X Snow Leopard now only uses write, as writev does not
+	      work properly on very large files.
+
+   OTP-10859  Fixed a bug where line oriented file I/O using read_ahead was
+	      very slow for files with very large difference in line
+	      length.
+
+   OTP-10860  In erts-5.10 (R16A) faulty hashvalues were produced for
+	      non-ASCII atoms (characters in byte-range 128..255). This has
+	      now been fixed and hashvalues conforms to previous OTP
+	      releases.
+
+   OTP-10872  As of ERTS-5.10/OTP-R16A node names passed in the EPMD
+	      protocol are required to be encoded in UTF-8. Since EPMD
+	      previously accepted latin1 encoded node names this is an
+	      incompatibility. However, since Erlang nodes always have
+	      required characters in node names to be 7-bit ASCII
+	      characters (and still do require this), this incompatibility
+	      should not effect anyone using EPMD as an Erlang Port Mapper
+	      Daemon.
+
+   OTP-10875  Fixes of memory accesses that might be thread unsafe when the
+	      runtime system has been linked against third-party libraries
+	      for atomic memory operations during the build. Most builds
+	      are uneffected by this bug. If triggered, the runtime system
+	      will most likely crash more or less immediately.
+
+   OTP-10881  Fixed a bug where it was longer possible to give the +sws
+	      proposal flag to non-smp emulators.
+
+   OTP-10884  The +pc flag to erl can be used to set the range of
+	      characters considered printable. This affects how the shell
+	      and io:format("~tp",...) functionality does heuristic string
+	      detection. More can be read in STDLIB users guide.
+
+   OTP-10887  Fix a number of type cast errors related to formatted
+	      printing on Win64 that can potentially cause problem when the
+	      Erlang VM exceeds 4 GB of ram. (Thanks to Blaine Whittle for
+	      the original patch)
+
+   OTP-10890  Faulty type to bytes read for ReadFile on Windows. This could
+	      cause windows systems to misbehave. The correct type is now
+	      used.
+
+   OTP-10892  Change default max ports for Windows to 8192. Having a too
+	      large value caused Windows to not be able to recover
+	      properly. If you want to use another value, pass +Q Value to
+	      erl or werl.
+
+   OTP-10895  The effect of the deprecated environment variable
+	      ERL_MAX_PORTS had been removed premeturely. It has now been
+	      readded. Note that this is still scheduled to be released in
+	      R17B.
+
+   OTP-10896  Fix rare crash on halfword vm during code loading.
+
+
 --- et-1.4.4.3 ----------------------------------------------------------
 
    OTP-10630  Where necessary a comment stating encoding has been added to
@@ -1519,6 +1818,17 @@ The OTP Team
 	      Ayaz.
 
 
+--- hipe-3.10.1 ---------------------------------------------------------
+
+   OTP-10867  Bug fixed in hipe to where it did not allow unicode code
+	      points 16#FFFE and 16#FFFF in bit syntax in natively compiled
+	      modules.
+
+   OTP-10897  Fix bug in hipe compiled code related to the handling of
+	      is_number/1. (Thanks to Sebastian Egner and Johannes Weißl
+	      for minimal test code and Kostis for quick patch)
+
+
 --- ic-4.3 --------------------------------------------------------------
 
    OTP-10784  Misc build updates
@@ -1526,6 +1836,14 @@ The OTP Team
    OTP-10785  Adapt ic for changes in erl_interface and jinterface due to
 	      utf8 atom support. This change makes ic dependent on
 	      erl_interface-3.7.10 (R16) or later in order to build.
+
+
+--- ic-4.3.1 ------------------------------------------------------------
+
+   OTP-10885  Revert the structs erlang_pid, erlang_port and erlang_ref as
+	      they were before R16A (without node_org_enc) in order to be
+	      backward compatible with user code that accesses the fields
+	      of these structs.
 
 
 --- inets-5.9.3 ---------------------------------------------------------
@@ -1537,6 +1855,24 @@ The OTP Team
 
    OTP-10765  Fix autoredirect for POST requests responding 303. Thanks to
 	      Hans Svensson.
+
+
+--- inets-5.9.4 ---------------------------------------------------------
+
+   OTP-10844  httpd: The modules option now defaults to the documented
+	      value.
+
+   OTP-10845  httpc: Fixed persistent connection implementation that was
+	      broken by a patch to R13. The patch made persisten
+	      connections behaved the same way as pipelining.
+
+   OTP-10846  httpd: Simplified configuration of ssl in httpd, this also
+	      enables all ssl options to be configured. The old and limited
+	      way is no longer documented but will be supported for
+	      backwards comatibility for some time.
+
+   OTP-10886  Handle correctly the "No files found or file unavailable"
+	      error code. Thanks to Serge Aleynikov
 
 
 --- jinterface-1.5.7 ----------------------------------------------------
@@ -1555,6 +1891,18 @@ The OTP Team
 	      in the internal representation of the vm. This is a
 	      preparative feature in order to support communication with
 	      future releases of Erlang/OTP that may create unicode atoms.
+
+
+--- jinterface-1.5.8 ----------------------------------------------------
+
+   OTP-10819  Fixed a bug in OtpErlangTuple constructor. Thanks to Vlad
+	      Dumitrescu.
+
+   OTP-10821  Fixed finding cookie file on windows. Thanks to Vlad
+	      Dumitrescu
+
+   OTP-10822  Don't compress external binary format if this increases the
+	      size. Thanks to Nico Kruber.
 
 
 --- kernel-2.16 ---------------------------------------------------------
@@ -1632,6 +1980,37 @@ The OTP Team
    OTP-10739  Add search to Erlang shell's history. Thanks to Fred Herbert.
 
 
+--- kernel-2.16.1 -------------------------------------------------------
+
+   OTP-10754  A bug that could cause a crash with wrong reason has been
+	      corrected in the application_controller module.
+
+   OTP-10797  Slightly nicer error message when node start fails due to
+	      duplicate name. Thanks to Magnus Henoch.
+
+   OTP-10820  Miscellaneous updates due to Unicode support.
+
+   OTP-10823  Add a new function code:get_mode() can be used to detect how
+	      the code servers behaves. Thanks to Vlad Dumitrescu
+
+   OTP-10839  Fix type of error Reason on gen_tcp:send/2. Thanks to Sean
+	      Cribbs.
+
+   OTP-10852  file:list_dir_all/1 and file:read_link_all/1 that can handle
+	      raw file names have been added. See the User Guide for STDLIB
+	      for information about raw file names.
+
+   OTP-10870  Fix code:is_module_native/1 that sometimes in R16A returned
+	      false for hipe compiled modules containing BIFs such as
+	      lists.
+
+   OTP-10879  Respect {exit_on_close,false} option on tcp socket in
+	      non-passive mode when receiving fails (due to an ill-formed
+	      packet for example) by only doing a half close and still
+	      allow sending on the socket. (Thanks to Anthony Molinaro and
+	      Steve Vinoski for reporting the problem)
+
+
 --- megaco-3.16.0.3 -----------------------------------------------------
 
    OTP-10630  Where necessary a comment stating encoding has been added to
@@ -1695,6 +2074,13 @@ The OTP Team
 	      Danil Onishchenko.
 
 
+--- odbc-2.10.15 --------------------------------------------------------
+
+   OTP-10798  Fixed calling odbc:param_query/3 and odbc:param_query/4 with
+	      unparameterized query string and empty parameters list.
+	      Thanks to Danil Onishchenko.
+
+
 --- orber-3.6.25 --------------------------------------------------------
 
    OTP-10665  Some examples overflowing the width of PDF pages have been
@@ -1718,6 +2104,11 @@ The OTP Team
    OTP-10660  The file esyntax.yrl has been removed.
 
 
+--- parsetools-2.0.9 ----------------------------------------------------
+
+   OTP-10820  Miscellaneous updates due to Unicode support.
+
+
 --- percept-0.8.8 -------------------------------------------------------
 
    OTP-10784  Misc build updates
@@ -1726,6 +2117,11 @@ The OTP Team
 --- pman-2.7.1.3 --------------------------------------------------------
 
    OTP-10784  Misc build updates
+
+
+--- pman-2.7.1.4 --------------------------------------------------------
+
+   OTP-10170  Tuple funs (deprecated in R15B) are no longer supported.
 
 
 --- public_key-0.18 -----------------------------------------------------
@@ -1782,6 +2178,11 @@ The OTP Team
 	      corrected.
 
 
+--- reltool-0.6.3 -------------------------------------------------------
+
+   OTP-10781  Some updates are made to reltool for handling unicode.
+
+
 --- runtime_tools-1.8.10 ------------------------------------------------
 
    OTP-10155  User Guides for the dynamic tracing tools dtrace and
@@ -1831,6 +2232,12 @@ The OTP Team
 	      Erlang/OTP R17B when UTF-8 becomes the default encoding.
 
 
+--- sasl-2.3.1 ----------------------------------------------------------
+
+   OTP-10782  Some updates are made to systools and release_handler for
+	      handling of unicode.
+
+
 --- snmp-4.23 -----------------------------------------------------------
 
    OTP-10027  [manager] Remove deprecated functions.
@@ -1848,11 +2255,6 @@ The OTP Team
 	      usage.
 
    OTP-10673  SNMP manager performance optimization
-
-
---- ssh-2.1.2 -----------------------------------------------------------
-
-   OTP-10657  Fixed various syntax errors in SSH appup file
 
 
 --- ssh-2.1.3 -----------------------------------------------------------
@@ -1902,9 +2304,13 @@ The OTP Team
 	      o which authmethod to use.
 
 
---- ssl-5.1.2 -----------------------------------------------------------
+--- ssh-2.1.4 -----------------------------------------------------------
 
-   OTP-10600  ssl:ssl_accept/2 timeout is no longer ignored
+   OTP-10553  Better quality on the error messages for when key exchange
+	      failed.
+
+   OTP-10862  Fix link to documentation for ssh:connect/3,4. Thanks to
+	      Martin Hässler.
 
 
 --- ssl-5.2 -------------------------------------------------------------
@@ -1956,6 +2362,19 @@ The OTP Team
 	      Impact: Improved memory usage, especially if you have many
 	      different certificates and upgrade tcp-connections to
 	      TLS-connections.
+
+
+--- ssl-5.2.1 -----------------------------------------------------------
+
+   OTP-10847  Transport callback handling is changed so that gen_tcp is
+	      treated as a special case where inet will be called directly
+	      for functions such as setopts, as gen_tcp does not have its
+	      own setopts. This will enable users to use the transport
+	      callback for other customizations such as websockets.
+
+   OTP-10864  Follow up to OTP-10451 solved in ssl-5.2 R16A. Make sure
+	      format_error return good strings. Replace confusing legacy
+	      atoms with more descriptive atoms.
 
 
 --- stdlib-1.19 ---------------------------------------------------------
@@ -2057,9 +2476,49 @@ The OTP Team
 	      write_concurrency is combined with read_concurrency.
 
 
+--- stdlib-1.19.1 -------------------------------------------------------
+
+   OTP-10622  Bugs related to Unicode have been fixed in the erl_eval
+	      module.
+
+   OTP-10755  The new STDLIB application variable shell_strings can be used
+	      for determining how the Erlang shell outputs lists of
+	      integers. The new function shell:strings/1 toggles the value
+	      of the variable.
+
+	      The control sequence modifier l can be used for turning off
+	      the string recognition of ~p and ~P.
+
+   OTP-10812  filelib:wildcard("some/relative/path/*.beam", Path) would
+	      fail to match any file. That is, filelib:wildcard/2 would not
+	      work if the first component of the pattern did not contain
+	      any wildcard characters. (A previous attempt to fix the
+	      problem in R15B02 seems to have made matters worse.)
+
+	      (Thanks to Samuel Rivas and Tuncer Ayaz.)
+
+	      There is also an incompatible change to the Path argument. It
+	      is no longer allowed to be a binary.
+
+   OTP-10820  Miscellaneous updates due to Unicode support.
+
+   OTP-10836  Extend ~ts to handle binaries with characters coded in
+	      ISO-latin-1
+
+   OTP-10884  The +pc flag to erl can be used to set the range of
+	      characters considered printable. This affects how the shell
+	      and io:format("~tp",...) functionality does heuristic string
+	      detection. More can be read in STDLIB users guide.
+
+
 --- syntax_tools-1.6.10 -------------------------------------------------
 
    OTP-10302  Support for Unicode has been implemented.
+
+
+--- syntax_tools-1.6.11 -------------------------------------------------
+
+   OTP-10820  Miscellaneous updates due to Unicode support.
 
 
 --- test_server-3.6 -----------------------------------------------------
@@ -2159,6 +2618,50 @@ The OTP Team
 	      and strings instead of binary_to_list and list_to_binary.
 
 
+--- test_server-3.6.1 ---------------------------------------------------
+
+   OTP-10780  The unicode update of test_server for R16A introduced a few
+	      potential errors when logging to files. Sometimes ~tp or ~ts
+	      was used for formatting also when writing to files that were
+	      not opened with the {encoding,utf8} option. If then the
+	      argument contained unicode characters above 255, the file
+	      descriptor would crash. This has been corrected by the
+	      following modifications:
+
+	      -- Since the 'unexpected_io' log file is used only when the
+	      test case HTML file is not available (e.g. between test
+	      cases), this file is now also a HTML file and as other
+	      test_server HTML logs it is always UTF-8 encoded
+
+	      -- Since it is possible to change which information is going
+	      to which log file (with test_server_ctrl:set_levels/3), we do
+	      not have full control over which information is written to
+	      which file. This means that any printout could be written to
+	      the 'major' log file (suite.log), which was earlier encoded
+	      as latin1. To avoid crashing this file descriptor due to
+	      unicode strings, the 'major' log file is now also encoded in
+	      UTF-8 (possible incopatibility).
+
+	      -- The cross_cover.info file is no longer a text file which
+	      can be read with file:consult/1, instead it is written as a
+	      pure binary file using term_to_binary when writing and
+	      binary_to_term when reading.
+
+	      -- The encoding of the file named 'last_name', which only
+	      content is the path to the last run.<timestamp> directory, is
+	      now dependent on the file name mode of the VM. If file names
+	      are expected to be unicode, then the 'last_name' file is
+	      UTF-8 encoded, else it is latin1 encoded.
+
+	      Also, ~tp has been changed back to ~p unless it is somehow
+	      likely that the argument includes strings. It is not obvious
+	      that this is the correct thing to do, but some decission had
+	      to be taken...
+
+   OTP-10832  Using the force_stop flag/option to interrupt a test run
+	      caused a crash in Common Test. This problem has been solved.
+
+
 --- toolbar-1.4.2.3 -----------------------------------------------------
 
    OTP-10784  Misc build updates
@@ -2204,6 +2707,12 @@ The OTP Team
 	      correspond with the correct BIFs.
 
 
+--- tools-2.6.10 --------------------------------------------------------
+
+   OTP-10778  Fix a bug in cover when used with no_auto_import. Thanks to
+	      José Valim.
+
+
 --- tv-2.1.4.10 ---------------------------------------------------------
 
    OTP-10784  Misc build updates
@@ -2247,4 +2756,5 @@ The OTP Team
 
    OTP-10665  Some examples overflowing the width of PDF pages have been
 	      corrected.
+
 

@@ -25,10 +25,10 @@ index 5c1ce51..5a07855 100644
  	$(INSTALL_DIR) "$(RELEASE_PATH)/build_erl_ose"
  	cd $(OSEETC) && $(TAR) erl_ose_$(SYSTEM_VSN).tar $(INSTALL_ERL_OSE)
 diff --git a/erts/etc/unix/Install.src b/erts/etc/unix/Install.src
-index 2dcd070..0bf82f1 100644
+index 0f33258..01fde22 100644
 --- a/erts/etc/unix/Install.src
 +++ b/erts/etc/unix/Install.src
-@@ -143,14 +143,4 @@ cp -p ../releases/%I_SYSTEM_VSN%/start_*.boot .
+@@ -140,14 +140,4 @@ cp -p ../releases/%I_SYSTEM_VSN%/start_*.boot .
  cp -p $Name.boot start.boot
  cp -p ../releases/%I_SYSTEM_VSN%/$Name.script start.script
  

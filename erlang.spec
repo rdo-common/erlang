@@ -1,4 +1,4 @@
-%global upstream_ver R16A
+%global upstream_ver R16B
 # Do NOT change %%{upstream_rel} unless UPSTREAM has actually changed it!
 #%global upstream_rel 03
 %global upstream_rel %{nil}
@@ -31,12 +31,13 @@ Summary:	General-purpose programming language and runtime environment
 Group:		Development/Languages
 License:	ERPL
 URL:		http://www.erlang.org
-Source0:	http://www.erlang.org/download/otp_src_%{upstream_ver}%{upstream_rel}_RELEASE_CANDIDATE.tar.gz
+Source0:	http://www.erlang.org/download/otp_src_%{upstream_ver}%{upstream_rel}.tar.gz
 %if %{use_prebuilt_docs}
-Source1:	http://erlang.org/download/otp_doc_html_%{upstream_ver}%{upstream_rel}_RELEASE_CANDIDATE.tar.gz
-Source2:	http://erlang.org/download/otp_doc_man_%{upstream_ver}%{upstream_rel}_RELEASE_CANDIDATE.tar.gz
+Source1:	http://erlang.org/download/otp_doc_html_%{upstream_ver}%{upstream_rel}.tar.gz
+Source2:	http://erlang.org/download/otp_doc_man_%{upstream_ver}%{upstream_rel}.tar.gz
 %endif
-Source4:	http://www.erlang.org/download/otp_src_%{upstream_ver}%{upstream_rel}_RELEASE_CANDIDATE.readme
+Source4:	http://www.erlang.org/download/otp_src_%{upstream_ver}%{upstream_rel}.readme
+Source999:	otp-get-patches.sh
 
 
 # For the source of the Fedora specific patches, see the respective
@@ -175,8 +176,8 @@ Requires: %{name}-erts%{?_isa} = %{version}-%{release}
 Requires: %{name}-gs%{?_isa} = %{version}-%{release}
 Requires: %{name}-inets%{?_isa} = %{version}-%{release}
 Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
-Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Requires: %{name}-runtime_tools%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description appmon
@@ -420,10 +421,10 @@ Erlang LDAP library.
 %package erl_docgen
 Summary:	A utility used to generate erlang HTML documentation
 Group:		Development/Languages
-Requires:	%{name}-edoc%{?_isa} = %{version}-%{release}
-Requires:	%{name}-erts%{?_isa} = %{version}-%{release}
-Requires:	%{name}-stdlib%{?_isa} = %{version}-%{release}
-Requires:	%{name}-xmerl%{?_isa} = %{version}-%{release}
+Requires: %{name}-edoc%{?_isa} = %{version}-%{release}
+Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
+Requires: %{name}-xmerl%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
 
 %description erl_docgen
@@ -457,6 +458,8 @@ Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
 Requires: %{name}-runtime_tools%{?_isa} = %{version}-%{release}
 Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Requires: %{name}-wx%{?_isa} = %{version}-%{release}
+Provides: erlang(erl_drv_version) = 2.1
+Provides: erlang(erl_nif_version) = 2.4
 Obsoletes:	%{name} < R13B-04.5
 
 %description et
@@ -718,7 +721,6 @@ Requires: %{name}-erts%{?_isa} = %{version}-%{release}
 Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
 Requires: %{name}-sasl%{?_isa} = %{version}-%{release}
 Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
-Requires: %{name}-syntax_tools%{?_isa} = %{version}-%{release}
 Requires: %{name}-tools%{?_isa} = %{version}-%{release}
 Requires: %{name}-wx%{?_isa} = %{version}-%{release}
 Obsoletes:	%{name} < R13B-04.5
@@ -1004,9 +1006,9 @@ rm -f lib/ssl/examples/certs/etc/erlangCA/index.txt.old
 
 %build
 %ifarch sparcv9 sparc64
-CFLAGS="$RPM_OPT_FLAGS -mcpu=ultrasparc -fno-strict-aliasing" %configure --enable-shared-zlib
+CFLAGS="$RPM_OPT_FLAGS -mcpu=ultrasparc -fno-strict-aliasing" %configure --enable-shared-zlib --enable-sctp
 %else
-CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing" %configure --enable-shared-zlib
+CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing" %configure --enable-shared-zlib --enable-sctp
 %endif
 
 # Remove pre-built BEAM files
@@ -1458,7 +1460,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/erlc
 %{_bindir}/escript
 %{_bindir}/run_erl
-%{_bindir}/run_test
 %{_bindir}/to_erl
 %{_libdir}/erlang/bin/ct_run
 %{_libdir}/erlang/bin/epmd
@@ -1466,7 +1467,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/bin/erlc
 %{_libdir}/erlang/bin/escript
 %{_libdir}/erlang/bin/run_erl
-%{_libdir}/erlang/bin/run_test
 %{_libdir}/erlang/bin/start
 %{_libdir}/erlang/bin/start.boot
 %{_libdir}/erlang/bin/start.script
@@ -2307,6 +2307,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Feb 28 2013 Peter Lemenkov <lemenkov@gmail.com> - R16B-0.1
+- Ver. R16B
+- Enabled SCTP (see rhbz #908530)
+
 * Sun Feb 03 2013 Peter Lemenkov <lemenkov@gmail.com> - R16A-0.1
 - Ver. R16A
 
