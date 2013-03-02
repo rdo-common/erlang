@@ -25,7 +25,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel_for_rpm}.1%{?dist}
+Release:	%{upstream_rel_for_rpm}.2%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -444,6 +444,8 @@ Summary:	Functionality necessary to run the Erlang System itself
 Group:		Development/Languages
 Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
 Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
+Provides: erlang(erl_drv_version) = 2.1
+Provides: erlang(erl_nif_version) = 2.4
 Obsoletes:	%{name} < R13B-04.5
 
 %description erts
@@ -458,8 +460,6 @@ Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
 Requires: %{name}-runtime_tools%{?_isa} = %{version}-%{release}
 Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Requires: %{name}-wx%{?_isa} = %{version}-%{release}
-Provides: erlang(erl_drv_version) = 2.1
-Provides: erlang(erl_nif_version) = 2.4
 Obsoletes:	%{name} < R13B-04.5
 
 %description et
@@ -2307,6 +2307,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Mar 02 2013 Peter Lemenkov <lemenkov@gmail.com> - R16B-0.2
+- Fixed erts provides
+
 * Thu Feb 28 2013 Peter Lemenkov <lemenkov@gmail.com> - R16B-0.1
 - Ver. R16B
 - Enabled SCTP (see rhbz #908530)
