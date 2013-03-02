@@ -25,7 +25,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel_for_rpm}.2%{?dist}
+Release:	%{upstream_rel_for_rpm}.3%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -82,6 +82,7 @@ Patch7: otp-0007-Ugly-workaround-for-java-1.5.0-gcj-which-doesn-t-sup.patch
 # BuildRoot not strictly needed since F10, but keep it for spec file robustness
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
+BuildRequires:	lksctp-tools-devel
 BuildRequires:	ncurses-devel
 BuildRequires:	openssl-devel
 BuildRequires:	zlib-devel
@@ -2307,6 +2308,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Mar 02 2013 Peter Lemenkov <lemenkov@gmail.com> - R16B-0.3
+- Add neccessary BuildRequires for SCTP
+
 * Sat Mar 02 2013 Peter Lemenkov <lemenkov@gmail.com> - R16B-0.2
 - Fixed erts provides
 
