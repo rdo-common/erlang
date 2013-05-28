@@ -25,7 +25,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel_for_rpm}.3%{?dist}
+Release:	%{upstream_rel_for_rpm}.4%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -445,6 +445,7 @@ Summary:	Functionality necessary to run the Erlang System itself
 Group:		Development/Languages
 Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
 Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
+Requires: lksctp-tools
 Provides: erlang(erl_drv_version) = 2.1
 Provides: erlang(erl_nif_version) = 2.4
 Obsoletes:	%{name} < R13B-04.5
@@ -2308,6 +2309,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Mar 11 2013 Peter Lemenkov <lemenkov@gmail.com> - R16B-0.4
+- Add Requires for SCTP (dlopened library)
+
 * Sat Mar 02 2013 Peter Lemenkov <lemenkov@gmail.com> - R16B-0.3
 - Add neccessary BuildRequires for SCTP
 
