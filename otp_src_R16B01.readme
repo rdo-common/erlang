@@ -1,0 +1,1210 @@
+Bug fix release : otp_src_R16B01
+Build date      : 2013-06-18
+
+This is R16B01, the first maintenance release for the R16B major release.
+
+You can find the README file for the release at
+
+  http://www.erlang.org/download/otp_src_R16B01.readme (this file)
+
+The source distribution and binary distributions for Windows can be
+downloaded from
+
+  http://www.erlang.org/download/otp_src_R16B01.tar.gz
+  http://www.erlang.org/download/otp_win32_R16B01.exe
+  http://www.erlang.org/download/otp_win64_R16B01.exe
+
+Note: To unpack the TAR archive you need a GNU TAR compatible program.
+
+For installation instructions please read the README file that is part
+of the distribution.
+
+The on-line documentation can be found at: http://www.erlang.org/doc/
+You can also download the complete HTML documentation or the Unix manual files
+
+  http://www.erlang.org/download/otp_doc_html_R16B01.tar.gz
+  http://www.erlang.org/download/otp_doc_man_R16B01.tar.gz
+
+We also want to thank those that sent us patches, suggestions and bug reports,
+
+The OTP Team
+
+
+--- HIGHLIGHTS ----------------------------------------------------------
+
+   OTP-10279  == erts ==
+
+	      Support for migration of memory carriers between memory
+	      allocator instances has been introduced.
+
+	      By default this feature is not enabled and do not effect the
+	      characteristics of the system. When enabled it has the
+	      following impact on the characteristics of the system:
+
+	      -- Reduced memory footprint when the memory load is unevenly
+	      distributed between scheduler specific allocator instances.
+
+	      -- Depending on the default allocaton strategy used on a
+	      specific allocator there might or might not be a slight
+	      performance loss.
+
+	      -- When enabled on the fix_alloc allocator, a different
+	      strategy for management of fix blocks will be used.
+
+	      -- The information returned from
+	      erlang:system_info({allocator, A}), and
+	      erlang:system_info({allocator_sizes, A}) will be slightly
+	      different when this feature has been enabled. An mbcs_pool
+	      tuple will be present giving information about abandoned
+	      carriers, and in the fix_alloc case no fix_types tuple will
+	      be present.
+
+	      For more information, see the documentation of the +M<S>acul
+	      command line argument.
+
+   OTP-11009  == ssl public_key crypto common_test dialyzer ssh stdlib snmp
+	      inets ==
+
+	      Integrate elliptic curve contribution from Andreas Schultz 
+
+	      In order to be able to support elliptic curve cipher suites
+	      in SSL/TLS, additions to handle elliptic curve infrastructure
+	      has been added to public_key and crypto.
+
+	      This also has resulted in a rewrite of the crypto API to gain
+	      consistency and remove unnecessary overhead. All OTP
+	      applications using crypto has been updated to use the new
+	      API.
+
+	      Impact: Elliptic curve cryptography (ECC) offers equivalent
+	      security with smaller key sizes than other public key
+	      algorithms. Smaller key sizes result in savings for power,
+	      memory, bandwidth, and computational cost that make ECC
+	      especially attractive for constrained environments.
+
+   OTP-11159  == erts ==
+
+	      Lift static limitation (FD_SETSIZE) for file descriptors on
+	      Mac OS X. (Thanks to Anthony Ramine)
+
+
+--- otp -----------------------------------------------------------------
+
+   OTP-11117  Properly ignore os_mon and otp_mibs generated includes
+
+
+--- asn1-2.0.1.1 --------------------------------------------------------
+
+   OTP-10916  The generated decoder for the 'per' and 'uper' backends 
+              did not correctly decode ENUMERATEDs with a single value. 
+              The generated encoder for the 'per' and 'uper' backends 
+              generated an empty binary for a top-level type that did 
+              not need to be encoded (such as an ENUMERATED with a single 
+              value). The correct result should be a binary containing 
+              a 0 byte.
+
+
+--- asn1-2.0.1.2 --------------------------------------------------------
+
+   OTP-10995  When an object set is an actual parameter, the extension 
+              marker for the object set could get lost (which would cause 
+              the decoding of unknown values to fail).
+
+
+--- asn1-2.0.2 ----------------------------------------------------------
+
+   OTP-11016  Postscript files no longer needed for the generation of PDF
+	      files have been removed.
+
+   OTP-11111  Fix some Makefile rules that didn't support silent rules.
+	      Thanks to Anthony Ramine.
+
+   OTP-11134  PER/UPER: A semi-constrained INTEGER with a non-zero lower
+	      bound would be incorrectly decoded. This bug was introduced
+	      in R16.
+
+	      PER/UPER: Given INTEGER (10..MAX, ...), attempting to decode
+	      any integer below 10 would cause the encoder to enter an
+	      infinite loop.
+
+	      PER/UPER: For a type with an extensible SIZE constraint,
+	      sizes outside of the root range were incorrectly encoded.
+
+	      Given a constraint such as (SIZE (5, ...)), encoding a size
+	      less than 5 would fail (PER/UPER). Similarly, for BER
+	      decoding would fail.
+
+	      PER: The encoder did not align a known multiplier string
+	      (such as IA5String) of length 16 bits (exactly) to an octet
+	      boundary.
+
+	      In rare circumstances, DEFAULT values for the UPER backend
+	      could be wrongly encoded.
+
+   OTP-11153  UPER: The compiler would crash when compiling an ENUMERATED
+	      having more than 63 extended values.
+
+	      PER/UPER: A SEQUENCE with more 64 extended values could not
+	      be decoded.
+
+   OTP-11154  When decoding a SEQUENCE defined inline inside a an extension
+	      addition group, the record named generated by the decoding
+	      code would not match the name in the generated .hrl file.
+
+
+--- common_test-1.7.2 ---------------------------------------------------
+
+   OTP-10126  A design flaw in the generic connection handling in Common
+	      Test made it impossible to implement a connection handler
+	      that could map multiple connection names (i.e. configuration
+	      variable aliases) to single connection pids. This problem has
+	      been solved.
+
+   OTP-10494  If it could not be decided which test case a certain log
+	      printout belonged to, the common test framework log was
+	      earlier used. Such printouts are now instead sent to
+	      unexpected_io.log.html in test_server so that there is only
+	      one place to look for "missing" printouts.
+
+   OTP-10648  If a telnet connection is hanging, then a call to
+	      ct_telnet:close/1 will time out after 5 seconds and the
+	      connection process is brutally killed. In some cases the
+	      connection would not be unregistered and attempts at opening
+	      a new connection with the same name would make common_test
+	      try to reuse the same connection since it believed that it
+	      was still alive. This has been corrected - a killed
+	      connection is now always unregistered.
+
+   OTP-10855  Test performance has been improved by means of a cache for
+	      the top level HTML index logs (all_runs.html and index.html,
+	      in the logdir directory). This solves problems with slow
+	      start up times and test execution times increasing with the
+	      number of ct_run directories stored in logdir. The cached
+	      index entries are stored in RAM during test execution and are
+	      saved to file in logdir (for faster start up times) whenever
+	      a test run finishes.
+
+   OTP-10856  The '-force_stop' flag to use with time-limited repeats of
+	      test runs can now be used with a new 'skip_rest' option which
+	      causes the rest of the test cases in the ongoing test job to
+	      be skipped when the time limit is reached. E.g. 'ct_run -spec
+	      xxx -duration 010000 -force_stop skip_rest'
+
+   OTP-10857  Testing of the test specification functionality has been
+	      improved and a couple of minor bugs have been discovered and
+	      corrected.
+
+   OTP-10902  Make cover smarter about finding source from beam.
+
+	      In particular, search using the source path in module_info if
+	      the current heuristic fails.
+
+   OTP-10920  Add a variant of ct_slave:start/2 that starts a node with
+	      specified options on the local host.
+
+   OTP-11009  Integrate elliptic curve contribution from Andreas Schultz 
+
+	      In order to be able to support elliptic curve cipher suites
+	      in SSL/TLS, additions to handle elliptic curve infrastructure
+	      has been added to public_key and crypto.
+
+	      This also has resulted in a rewrite of the crypto API to gain
+	      consistency and remove unnecessary overhead. All OTP
+	      applications using crypto has been updated to use the new
+	      API.
+
+	      Impact: Elliptic curve cryptography (ECC) offers equivalent
+	      security with smaller key sizes than other public key
+	      algorithms. Smaller key sizes result in savings for power,
+	      memory, bandwidth, and computational cost that make ECC
+	      especially attractive for constrained environments.
+
+   OTP-11016  Postscript files no longer needed for the generation of PDF
+	      files have been removed.
+
+   OTP-11044  A link is added from the red error printout in a test case
+	      log (for a failed test case) to the full error description at
+	      the end of the log. The reason for this is that the error
+	      description in the red field is sometimes truncated at 50
+	      characters in order to keep the log as short and easy to read
+	      as possible.
+
+   OTP-11046  Links to the top level index files in some HTML footers had
+	      disappeared. This error has been corrected. Also, a problem
+	      with the suite overview log file not being closed properly
+	      has been solved.
+
+   OTP-11052  Common Test would, in case of timetrap error, print a warning
+	      in the log if end_per_testcase wasn't implemented in the
+	      suite, even though it's an optional function. This printout
+	      has been removed.
+
+   OTP-11095  A new option 'no_prompt_check' is added to
+	      ct_telnet:expect/3. If this option is used, ct_telnet will
+	      not wait for a prompt or a newline before attempting to match
+	      the given pattern.
+
+
+--- compiler-4.9.2 ------------------------------------------------------
+
+   OTP-10939  Compiling functions with complex boolean operations in guards
+	      could be very slow. (Thanks to Magnus Muller for reporting
+	      this issue.)
+
+   OTP-11005  Fix optimization of some binary comprehensions. Thanks to
+	      Anthony Ramine.
+
+   OTP-11069  Use a set to store ref registers in beam_receive. Thanks to
+	      Anthony Ramine.
+
+   OTP-11119  Certain guard expressions used in a receive statement could
+	      cause the compiler to crash.
+
+   OTP-11129  Fix renaming of bs_put_string instructions. Thanks to Anthony
+	      Ramine.
+
+
+--- cosEvent-2.1.14 -----------------------------------------------------
+
+   OTP-11016  Postscript files no longer needed for the generation of PDF
+	      files have been removed.
+
+
+--- cosFileTransfer-1.1.15 ----------------------------------------------
+
+   OTP-11016  Postscript files no longer needed for the generation of PDF
+	      files have been removed.
+
+
+--- cosNotification-1.1.20 ----------------------------------------------
+
+   OTP-11016  Postscript files no longer needed for the generation of PDF
+	      files have been removed.
+
+
+--- crypto-3.0 ----------------------------------------------------------
+
+   OTP-11009  Integrate elliptic curve contribution from Andreas Schultz 
+
+	      In order to be able to support elliptic curve cipher suites
+	      in SSL/TLS, additions to handle elliptic curve infrastructure
+	      has been added to public_key and crypto.
+
+	      This also has resulted in a rewrite of the crypto API to gain
+	      consistency and remove unnecessary overhead. All OTP
+	      applications using crypto has been updated to use the new
+	      API.
+
+	      Impact: Elliptic curve cryptography (ECC) offers equivalent
+	      security with smaller key sizes than other public key
+	      algorithms. Smaller key sizes result in savings for power,
+	      memory, bandwidth, and computational cost that make ECC
+	      especially attractive for constrained environments.
+
+   OTP-11058  Fixed a spelling mistake in crypto docs. Thanks to Klaus
+	      Trainer
+
+
+--- debugger-3.2.11 -----------------------------------------------------
+
+   OTP-10899  A new checkbox has been added. When it is checked, the range
+	      set by the erl flag +pc is used for determining when to print
+	      lists of integers as strings. When it is unchecked, integer
+	      lists are never printed as strings.
+
+	      A minor incompatibility: settings saved by Erlang R16B01 or
+	      later cannot be read by Erlang R16B or earlier.
+
+   OTP-11041  Erlang source files with non-ASCII characters are now encoded
+	      in UTF-8 (instead of latin1).
+
+
+--- dialyzer-2.6.1 ------------------------------------------------------
+
+   OTP-10918  Include module, function and arity in Dialyzer's "overlapping
+	      domain" warnings. Thanks to Magnus Henoch.
+
+   OTP-10996  Improve Dialyzer output for scan errors. Thanks to Magnus
+	      Henoch.
+
+   OTP-11009  Integrate elliptic curve contribution from Andreas Schultz 
+
+	      In order to be able to support elliptic curve cipher suites
+	      in SSL/TLS, additions to handle elliptic curve infrastructure
+	      has been added to public_key and crypto.
+
+	      This also has resulted in a rewrite of the crypto API to gain
+	      consistency and remove unnecessary overhead. All OTP
+	      applications using crypto has been updated to use the new
+	      API.
+
+	      Impact: Elliptic curve cryptography (ECC) offers equivalent
+	      security with smaller key sizes than other public key
+	      algorithms. Smaller key sizes result in savings for power,
+	      memory, bandwidth, and computational cost that make ECC
+	      especially attractive for constrained environments.
+
+   OTP-11027  Bitstring type inference and duplicate module error message
+	      fixes. Thanks to Stavros Aronis.
+
+   OTP-11041  Erlang source files with non-ASCII characters are now encoded
+	      in UTF-8 (instead of latin1).
+
+   OTP-11057  A bug that made it impossible to do any analyses from the GUI
+	      has been fixed.
+
+
+--- diameter-1.4.1.1 ----------------------------------------------------
+
+   OTP-10898  Add transport_opt() watchdog_config to allow non-standard 
+              behaviour of the watchdog state machine. This can be useful 
+              during test but should not be used on nodes that must conform 
+              to RFC 3539. 
+
+   OTP-10942  Fix broken Vendor-Specific-Application-Id configuration. 
+              RFC 6733 changed the definition of this Grouped AVP, changing 
+              the arity of Vendor-Id from 1* to 1. A component Vendor-Id 
+              can now be either list- or integer-valued in service and 
+              transport configuration, allowing it to be used with both 
+              RFC 3588 and RFC 6733 dictionaries.
+
+
+--- diameter-1.4.2 ------------------------------------------------------
+
+    OTP-9610  Allow peer connections to be shared between Erlang nodes for
+	      the purpose of sending outgoing requests.
+
+	      A diameter_app(3) pick_peer/4 callback gets a list of remote
+	      candidates as argument, allowing a callback on one node to
+	      select a transport connection established on another node.
+	      The service_opt() share_peers controls the extent to which
+	      local connections are shared with remote nodes. The
+	      service_opt() use_shared_peers controls the extent to which
+	      connections shared from remote nodes are utilized on the
+	      local node.
+
+   OTP-10893  Allow listening diameter_{tcp,sctp} transports to be
+	      configured with remote addresses.
+
+	      Option 'accept' allows remote addresses to be configured as
+	      tuples or regular expressions. Remote addresses are matched
+	      against the configured values at connection establishment,
+	      any non-matching address causing the connection to be
+	      aborted.
+
+   OTP-10972  Detect more transport_opt() configuration errors at
+	      diameter:add_transport/2.
+
+	      Many errors would previously not be detected until transport
+	      start, diameter:add_transport/2 returning 'ok' but transport
+	      connections failing to be established. An error tuple is now
+	      returned.
+
+   OTP-10986  Make explicit local address configuration optional in
+	      diameter_tcp:start/3.
+
+	      The default address (as determined by gen_tcp) is now used
+	      when a local address is not explicitly configured.
+
+   OTP-11007  Fix handling of 5014 (INVALID_AVP_LENGTH) errors.
+
+	      This was in some cases reported as 3009 (INVALID_AVP_BITS).
+
+	      Note that the correction is partially implemented in modules
+	      generated by diameterc(1): a dictionary file must be
+	      recompiled for the correction to apply to any messages it
+	      defines.
+
+   OTP-11014  Fix faulty capitalization in release notes.
+
+	      Diameter = the protocol.<br/> diameter = the Erlang
+	      application.
+
+   OTP-11017  Improve handling of unrecognized service options.
+
+	      Such options were silently ignored by
+	      diameter:start_service/2. An error tuple is now returned.
+
+   OTP-11019  Fix watchdog memory leak.
+
+	      Entries were not removed from a service-specific ets table,
+	      causing them to be orphaned at connection reestablishment for
+	      listening transports, and diameter:remove_transport/2 for
+	      both listening and connecting transports.
+
+	      The fault was introduced by OTP-10692 in diameter-1.4.1
+	      (R16B).
+
+   OTP-11026  Fix decode failure on AVP Length < 8.
+
+	      The failure caused the message in question to be discarded.
+
+   OTP-11045  Respect Host-IP-Address configuration.
+
+	      Addresses returned from a transport module were always used
+	      to populate Host-IP-Address AVP's in an outgoing CER/CEA,
+	      which precluded the sending of a VIP address. Transport
+	      addresses are now only used if Host-IP-Address is
+	      unspecified.
+
+   OTP-11050  Don't send default Inband-Security-Id in CER/CEA.
+
+	      RFC 6733 recommends against the use of Inband-Security-Id.
+	      Only send a value that differs from the default,
+	      NO_INBAND_SECURITY = 0.
+
+   OTP-11051  Fix mkdir race.
+
+	      Install could fail if examples/code and examples/dict were
+	      created in parallel. Noticed on FreeBSD.
+
+   OTP-11060  Make spawn options for request processes configurable.
+
+   OTP-11087  Fix recognition of 5001 on mandatory AVP's.
+
+	      An AVP setting the M-bit was not regarded as erroneous if it
+	      was defined in the dictionary in question and its container
+	      (message or Grouped AVP) had an 'AVP' field. It's now
+	      regarded as a 5001 error (AVP_UNSUPPORTED), as in the case
+	      that the AVP is not defined.
+
+	      Note that the correction is partially implemented in modules
+	      generated by diameterc(1): a dictionary file must be
+	      recompiled for the correction to apply to any messages it
+	      defines.
+
+   OTP-11092  Fix setting of Failed-AVP on handle_request {answer_message,
+	      5xxx} return.
+
+	      Failed-AVP was never in the outgoing answer-message. It is
+	      now set with the AVP from the first entry with the specified
+	      Result-Code in the errors field of the incoming
+	      diameter_packet, if found.
+
+   OTP-11115  Fix watchdog function_clause
+
+	      A listening transport on a service that allowed multiple
+	      connections to the same peer could result in a
+	      function_clause error in module diameter_watchdog. The
+	      resulting crash was harmless but unseemly.
+
+	      Thanks to Aleksander Nycz.
+
+   OTP-11127  Fix population of Failed-AVP.
+
+	      In cases in which diameter populated this AVP, many values
+	      were sent instead of one as suggested by RFC 6733. This was
+	      partially corrected by OTP-11007.
+
+   OTP-11165  Fix list-valued Vendor-Specific-Application-Id config
+
+	      R16B (specifically, OTP-10760) broke the handling of such
+	      configuration, resulting in a function clause error if the
+	      list was not of length 3, and faulty interpretation of the
+	      list's contents otherwise. Only record-valued configuration
+	      was properly interpreted.
+
+
+--- erl_interface-3.7.12 ------------------------------------------------
+
+   OTP-10913  Superfluous trailing comma in enum erlang_char_encoding 
+              causing compile error for g++ with --pedantic option.
+
+
+--- erl_interface-3.7.13 ------------------------------------------------
+
+   OTP-11167  A guard was added to check if file descriptor is valid before
+	      closing it.
+
+
+--- erts-5.10.1.1 -------------------------------------------------------
+
+   OTP-10926  The BIF is_process_alive/1 could prematurely return false 
+              while the process being inspected was terminating. This 
+              bug was introduced in ERTS-5.10. 
+
+   OTP-10932  Fix a problem in erlang:delete_element/2 where the call 
+              could corrupt one word of stack if the heap and stack met 
+              during call. 
+
+   OTP-10994  Scheduler threads will now by default be less eager requesting 
+              wakeup due to certain cleanup operations. This can also 
+              be controlled using the +swct command line argument of erl(1). 
+
+   OTP-11000  The +sws&lt;value&gt; and +swt&lt;value&gt; system flags 
+              failed if no white space were passed between the parameter 
+              and value parts of the flags. Upon failure, the runtime 
+              system refused to start.
+
+
+--- erts-5.10.1.2 -------------------------------------------------------
+
+   OTP-11022  A bug in the implementation of offline schedulers has been 
+              fixed. The bug was introduced in OTP-R16A/ERTS-5.10, and 
+              caused work-stealing between schedulers to fail. This in 
+              turn, caused work to accumulate in some run-queues. The 
+              bug was only triggered when there were offline schedulers 
+              in the system, i.e., when the amount of online schedulers 
+              was less than the total amount of schedulers. The effect 
+              of the bug got more severe the larger amount of offline 
+              schedulers the system had.
+
+
+--- erts-5.10.2 ---------------------------------------------------------
+
+   OTP-10271  Replaced the lock protecting gathering of garbage collection
+	      statistics with a lock-free solution.
+
+   OTP-10279  Support for migration of memory carriers between memory
+	      allocator instances has been introduced.
+
+	      By default this feature is not enabled and do not effect the
+	      characteristics of the system. When enabled it has the
+	      following impact on the characteristics of the system:
+
+	      -- Reduced memory footprint when the memory load is unevenly
+	      distributed between scheduler specific allocator instances.
+
+	      -- Depending on the default allocaton strategy used on a
+	      specific allocator there might or might not be a slight
+	      performance loss.
+
+	      -- When enabled on the fix_alloc allocator, a different
+	      strategy for management of fix blocks will be used.
+
+	      -- The information returned from
+	      erlang:system_info({allocator, A}), and
+	      erlang:system_info({allocator_sizes, A}) will be slightly
+	      different when this feature has been enabled. An mbcs_pool
+	      tuple will be present giving information about abandoned
+	      carriers, and in the fix_alloc case no fix_types tuple will
+	      be present.
+
+	      For more information, see the documentation of the +M<S>acul
+	      command line argument.
+
+   OTP-10497  A bug in prim_inet has been corrected. If the port owner was
+	      killed at a bad time while closing the socket port the port
+	      could become orphaned hence causing port and socket leaking.
+	      Reported by Fred Herbert, Dmitry Belyaev and others.
+
+   OTP-10941  Compilation fixes for NetBSD. Thanks to YAMAMOTO Takashi.
+
+   OTP-10984  Fixed a race condition when using delayed_write when writing
+	      to a file which would cause the same data to be written
+	      multiple times.
+
+   OTP-10997  Fix small memory leak from tracing with option meta.
+
+   OTP-11002  Correct typo in erlsrv usage. Thanks to Bryan Hunter
+
+   OTP-11003  ct_run: delete unused function. Thanks to Tuncer Ayaz.
+
+   OTP-11008  Change specs for spawn_opt to use the process_level() type
+	      declaration instead of re-defining it in various places.
+	      Thanks to Kostis Sagonas.
+
+   OTP-11012  Corrections to run_erl/to_erl handshake behaviour.
+
+   OTP-11016  Postscript files no longer needed for the generation of PDF
+	      files have been removed.
+
+   OTP-11024  Fix typo in type: erlang:process_info_item(). Thanks to
+	      Andrew Tunnell-Jones.
+
+   OTP-11041  Erlang source files with non-ASCII characters are now encoded
+	      in UTF-8 (instead of latin1).
+
+   OTP-11064  Fix src/dest overlap issue in ttsl driver. Thanks to Steve
+	      Vinoski.
+
+   OTP-11074  Optimization of simultaneous inet_db operations on the same
+	      socket by using a lock free implementation.
+
+	      Impact on the characteristics of the system: Improved
+	      performance.
+
+   OTP-11075  The high_msgq_watermark and low_msgq_watermark inet socket
+	      options introduced in OTP-R16A could only be set on TCP
+	      sockets. These options are now generic and can be set on all
+	      types of sockets.
+
+   OTP-11076  When sending to a port using erlang:send(Port, Msg,
+	      [nosuspend]), the send operation was performed synchronously.
+	      This bug has now been fixed.
+
+   OTP-11077  A new better algorithm for management of the process, and
+	      port tables has been introduced.
+
+	      Impact on the characteristics of the system:
+
+	      -- The new algorithm ensures that both insert and delete
+	      operations can be made in O(1) time complexity. Previously
+	      used algorithm either caused insert or delete to be O(N).
+
+	      -- The new algorithm will also ensure that reuse of
+	      identifiers will be less frequent than when the old algorithm
+	      was used.
+
+	      -- Previously used algorithm ensured that the latest created
+	      identifier compared as the largest when comparing two
+	      identifiers of the same type that had been created on the
+	      same node as long as no identifiers had been reused. Since
+	      identifiers can be reused quite fast, one has never been able
+	      to rely on this property. Due to the introduction of this new
+	      algorithm this property will not hold even if no identifiers
+	      has been reused yet. This could be considered as an
+	      incompatibility.
+
+	      Due to the above mensioned potential incompatibility, it will
+	      still be possible to enable the old algorithm for some time.
+	      The command line argument +P legacy will enable the old
+	      algorithm on the process table, and +Q legacy will do the
+	      same for the port table. These command line arguments are
+	      however deprecated as of their introduction and have been
+	      scheduled for removal in OTP-R18.
+
+   OTP-11080  When converting a faulty binary to a list with
+	      unicode:characters_to_list, the error return value could
+	      contain a faulty "rest", i.e. the io_list of characters that
+	      could not be converted was wrong. This happened only if input
+	      was a sub binary and conversion was from utf8. This is now
+	      corrected.
+
+   OTP-11084  Runtime system could crash when reporting stale
+	      driver_select().
+
+   OTP-11085  Fix lock order violation for memory instrumentation (+Mim,
+	      +Mis, +Mit).
+
+   OTP-11086  Fixed some compilation warnings on miscellaneous platforms.
+	      Thanks to Anthony Ramine.
+
+   OTP-11088  Support wide characters in the shell through wcwidth().
+	      Thanks to Anthony Ramine. Reported by Loïc Hoguin.
+
+   OTP-11096  Fixed issue when flushing i/o during shutdown on windows
+	      where the Erlang VM would sometime hang due to a race
+	      condition.
+
+   OTP-11097  Fixed issue where repeated calls to erlang:nodes() could
+	      cause unnecessary contention in the dist_table lock.
+
+   OTP-11098  Added total used memory for each process in erlang crash
+	      dumps.
+
+   OTP-11106  Properly guard WIDE_TAG use with HAVE_WCWIDTH in ttsl_drv.
+	      Thanks to Anthony Ramine
+
+   OTP-11111  Fix some Makefile rules that didn't support silent rules.
+	      Thanks to Anthony Ramine.
+
+   OTP-11125  Added support for hipe on Raspberry Pi (armv6l). Thanks to
+	      Klaus Alfert.
+
+   OTP-11137  Fix receive support in erl_eval with a BEAM module. Thanks to
+	      Anthony Ramine.
+
+   OTP-11146  erlang:now() could suddenly jump ~24 days into the future on
+	      Windows. This is now corrected. Thanks to Garret Smith for
+	      reporting and testing fixes.
+
+   OTP-11158  Remove 'query' from the list of reserved words in docs.
+	      Thanks to Matthias Endler and Loïc Hoguin.
+
+   OTP-11159  Lift static limitation (FD_SETSIZE) for file descriptors on
+	      Mac OS X. (Thanks to Anthony Ramine)
+
+   OTP-11163  erlang:term_to_binary will now cost an appropriate amount of
+	      reductions and will interrupt (yield) for reschedule if the
+	      term is big. This avoids too long schedules when
+	      term_to_binary is used. 
+
+	      Impact: Programs running term_to_binary on large terms will
+	      run more smothly, but rescheduling will impact the single
+	      process performance of the BIF. Single threaded benchmarks
+	      will show degraded performance of the BIF when called with
+	      very large terms, while general system behaviour will be
+	      improved. The overhead for allowing restart and reduction
+	      counting also degrades local performance of the BIF with
+	      between 5% and 10% even for small terms.
+
+
+--- et-1.4.4.4 ----------------------------------------------------------
+
+   OTP-11039  Use erlang:demonitor(Ref, [flush]) where applicable. Thanks
+	      to Loïc Hoguin.
+
+   OTP-11078  Rename and document lists:zf/2 as lists:filtermap/2. Thanks
+	      to Anthony Ramine.
+
+
+--- hipe-3.10.2 ---------------------------------------------------------
+
+   OTP-10904  Fix the title of hipe_app documentation page. Thanks to Loïc
+	      Hoguin.
+
+   OTP-10985  Fix native code compiler crash involving bs_match_string.
+	      Thanks to Kostis Sagonas.
+
+   OTP-11031  Loosen the assumptions of code that handles escaping
+	      functions. Thanks to Kostis Sagonas
+
+
+--- ic-4.3.2 ------------------------------------------------------------
+
+   OTP-11086  Fixed some compilation warnings on miscellaneous platforms.
+	      Thanks to Anthony Ramine.
+
+
+--- inets-5.9.5 ---------------------------------------------------------
+
+   OTP-10934  Fix http_request:http_headers/1 to send content-length when
+	      length is zero. Thanks to CA Meijer.
+
+   OTP-10956  Reverted incorrect commit that broke cookie handling when
+	      using httpc-profiles.
+
+   OTP-11009  Integrate elliptic curve contribution from Andreas Schultz 
+
+	      In order to be able to support elliptic curve cipher suites
+	      in SSL/TLS, additions to handle elliptic curve infrastructure
+	      has been added to public_key and crypto.
+
+	      This also has resulted in a rewrite of the crypto API to gain
+	      consistency and remove unnecessary overhead. All OTP
+	      applications using crypto has been updated to use the new
+	      API.
+
+	      Impact: Elliptic curve cryptography (ECC) offers equivalent
+	      security with smaller key sizes than other public key
+	      algorithms. Smaller key sizes result in savings for power,
+	      memory, bandwidth, and computational cost that make ECC
+	      especially attractive for constrained environments.
+
+   OTP-11122  Fix {stream, {self, once}} in httpc to work as expected.
+	      Thanks to Masatake Daimon
+
+
+--- kernel-2.16.2 -------------------------------------------------------
+
+   OTP-10497  A bug in prim_inet has been corrected. If the port owner was
+	      killed at a bad time while closing the socket port the port
+	      could become orphaned hence causing port and socket leaking.
+	      Reported by Fred Herbert, Dmitry Belyaev and others.
+
+   OTP-10689  A few bugs regarding case sensitivity for hostname resolution
+	      while using e.g the internal lookup types 'file' and 'dns'
+	      has been corrected. When looking up hostnames ASCII letters
+	      a-z are to be regarded as the same as A-Z according to RFC
+	      4343 "Domain Name System (DNS) Case Insensitivity
+	      Clarification", and this was not always the case.
+
+   OTP-10910  Add application:ensure_started/1,2. It is equivavlent to
+	      application:start/1,2 except it returns ok for already
+	      started applications.
+
+   OTP-11040  Optimize communication with file io server. Thanks to Anthony
+	      Ramine.
+
+   OTP-11041  Erlang source files with non-ASCII characters are now encoded
+	      in UTF-8 (instead of latin1).
+
+   OTP-11074  Optimization of simultaneous inet_db operations on the same
+	      socket by using a lock free implementation.
+
+	      Impact on the characteristics of the system: Improved
+	      performance.
+
+   OTP-11075  The high_msgq_watermark and low_msgq_watermark inet socket
+	      options introduced in OTP-R16A could only be set on TCP
+	      sockets. These options are now generic and can be set on all
+	      types of sockets.
+
+   OTP-11104  Fix deep list argument error under Windows in os:cmd/1.
+	      Thanks to Aleksandr Vinokurov .
+
+
+--- megaco-3.17 ---------------------------------------------------------
+
+   OTP-10998  A buffer overrun error in the flex scanner could occur when 
+              scanning property parms.
+
+
+--- megaco-3.17.0.1 -----------------------------------------------------
+
+   OTP-11016  Postscript files no longer needed for the generation of PDF
+	      files have been removed.
+
+
+--- mnesia-4.9 ----------------------------------------------------------
+
+   OTP-11030  If mnesia:clear_table/2 was called during a table load on
+	      that table, the schema record was written to the table
+	      instead of clearing table.
+
+   OTP-11103  Optimize index creation for Mnesia set tables. Thanks to Nick
+	      Marino.
+
+
+--- observer-1.3.1 ------------------------------------------------------
+
+   OTP-10604  -- The new Memory field from a crash dump is now presented by
+	      crashdump viewer, both in the process overview and in the
+	      process detail page.
+
+	      -- A summary of blocks- and carriers sizes is added to the
+	      allocator information page in the crashdump viewer.
+
+   OTP-10894  Some bugs related to calculation of CPU/scheduler utilization
+	      in observer are corrected.
+
+	      Current function for a process is accepted to be 'undefined'
+	      when running hipe.
+
+   OTP-10929  Use "open" as default browser for crashdump viewer on Mac OS
+	      X. Thanks to Magnus Henoch.
+
+   OTP-10931  Fix observer table viewer crash on formatting improper lists.
+	      Thanks to Andrey Tsirulev
+
+   OTP-11016  Postscript files no longer needed for the generation of PDF
+	      files have been removed.
+
+   OTP-11136  Add processes state view in observer. Thanks to Eric
+	      Pailleau.
+
+
+--- odbc-2.10.16 --------------------------------------------------------
+
+   OTP-10993  Fix a 64bit related bug in odbcserver. Thanks to Satoshi
+	      Kinoshita.
+
+   OTP-11016  Postscript files no longer needed for the generation of PDF
+	      files have been removed.
+
+   OTP-11126  Fix checking for odbc in standard locations when "with-odbc"
+	      flag present. Thanks to Alexey Saltanov.
+
+
+--- orber-3.6.26 --------------------------------------------------------
+
+   OTP-10675  Fix bug in corbaloc/corbaname over ssl.
+
+
+--- orber-3.6.26.1 ------------------------------------------------------
+
+   OTP-11016  Postscript files no longer needed for the generation of PDF
+	      files have been removed.
+
+
+--- os_mon-2.2.12 -------------------------------------------------------
+
+   OTP-10941  Compilation fixes for NetBSD. Thanks to YAMAMOTO Takashi.
+
+   OTP-10945  Fixed disksup:get_disk_data for SUSv3, specifically OS X ML.
+	      Thanks to Sriram Melkote.
+
+
+--- percept-0.8.8.1 -----------------------------------------------------
+
+   OTP-11016  Postscript files no longer needed for the generation of PDF
+	      files have been removed.
+
+
+--- public_key-0.19 -----------------------------------------------------
+
+   OTP-10873  Add support for ISO oids 1.3.14.3.2.29 and 1.3.14.3.2.27 that
+	      are somtimes used instead of the PKCS defined oids
+	      1.2.840.113549.1.1.5 and 1.2.840.10040.4.3. Add function
+	      pkix_sign_types:/1 that translates oids to to algorithm atoms
+	      ex:
+
+	      > public_key:pkix_sign_types({1,3,14,3,2,29}). {sha,rsa}
+
+   OTP-11009  Integrate elliptic curve contribution from Andreas Schultz 
+
+	      In order to be able to support elliptic curve cipher suites
+	      in SSL/TLS, additions to handle elliptic curve infrastructure
+	      has been added to public_key and crypto.
+
+	      This also has resulted in a rewrite of the crypto API to gain
+	      consistency and remove unnecessary overhead. All OTP
+	      applications using crypto has been updated to use the new
+	      API.
+
+	      Impact: Elliptic curve cryptography (ECC) offers equivalent
+	      security with smaller key sizes than other public key
+	      algorithms. Smaller key sizes result in savings for power,
+	      memory, bandwidth, and computational cost that make ECC
+	      especially attractive for constrained environments.
+
+
+--- reltool-0.6.4 -------------------------------------------------------
+
+   OTP-10988  Reltool used to fail if an application was mentioned in the
+	      config file which was not found in the file system, even if
+	      the application was explicitly excluded in the config. This
+	      has been changed and will only produce a warning. If the
+	      application is not explicitly excluded it will still cause
+	      reltool to fail. Thanks to Håkan Mattsson!
+
+   OTP-11099  Fix possibly "not owner" error while file copy with reltool.
+	      Thanks to Alexey Saltanov.
+
+   OTP-11137  Fix receive support in erl_eval with a BEAM module. Thanks to
+	      Anthony Ramine.
+
+
+--- runtime_tools-1.8.11 ------------------------------------------------
+
+   OTP-10894  Some bugs related to calculation of CPU/scheduler utilization
+	      in observer are corrected.
+
+	      Current function for a process is accepted to be 'undefined'
+	      when running hipe.
+
+   OTP-11041  Erlang source files with non-ASCII characters are now encoded
+	      in UTF-8 (instead of latin1).
+
+
+--- safe-1.2.9 ----------------------------------------------------------
+
+   OTP-11083  Fix value assignment for trend parameter 
+
+   OTP-11094  Changed API for ccb augmentation
+
+
+--- sasl-2.3.2 ----------------------------------------------------------
+
+   OTP-11137  Fix receive support in erl_eval with a BEAM module. Thanks to
+	      Anthony Ramine.
+
+
+--- snmp-4.24 -----------------------------------------------------------
+
+   OTP-11004  Fix SNMP gitignore files. Thanks to Anthony Ramine.
+
+   OTP-11009  Integrate elliptic curve contribution from Andreas Schultz 
+
+	      In order to be able to support elliptic curve cipher suites
+	      in SSL/TLS, additions to handle elliptic curve infrastructure
+	      has been added to public_key and crypto.
+
+	      This also has resulted in a rewrite of the crypto API to gain
+	      consistency and remove unnecessary overhead. All OTP
+	      applications using crypto has been updated to use the new
+	      API.
+
+	      Impact: Elliptic curve cryptography (ECC) offers equivalent
+	      security with smaller key sizes than other public key
+	      algorithms. Smaller key sizes result in savings for power,
+	      memory, bandwidth, and computational cost that make ECC
+	      especially attractive for constrained environments.
+
+   OTP-11016  Postscript files no longer needed for the generation of PDF
+	      files have been removed.
+
+   OTP-11101  [snmp/agent] Introduced the mib-server data module behaviour.
+
+   OTP-11107  [snmp/agent] Introduced a documented mib-storage behaviour.
+	      This will allow users to implement alternative storage
+	      methods.
+
+
+--- ssh-2.1.6 -----------------------------------------------------------
+
+   OTP-10940  Fixed timing rekeying bug.
+
+
+--- ssh-2.1.7 -----------------------------------------------------------
+
+   OTP-10975  ssh:daemon will get feeded with an argument even if it is not
+	      a valid expression.
+
+   OTP-10983  Properly ignore everything in lib/ssh/doc/html/. Thanks to
+	      Anthony Ramine.
+
+   OTP-11009  Integrate elliptic curve contribution from Andreas Schultz 
+
+	      In order to be able to support elliptic curve cipher suites
+	      in SSL/TLS, additions to handle elliptic curve infrastructure
+	      has been added to public_key and crypto.
+
+	      This also has resulted in a rewrite of the crypto API to gain
+	      consistency and remove unnecessary overhead. All OTP
+	      applications using crypto has been updated to use the new
+	      API.
+
+	      Impact: Elliptic curve cryptography (ECC) offers equivalent
+	      security with smaller key sizes than other public key
+	      algorithms. Smaller key sizes result in savings for power,
+	      memory, bandwidth, and computational cost that make ECC
+	      especially attractive for constrained environments.
+
+
+--- ssl-5.3 -------------------------------------------------------------
+
+   OTP-10450  Add support for PSK (Pre Shared Key) and SRP (Secure Remote
+	      Password) chipher suits, thanks to Andreas Schultz.
+
+   OTP-10905  Honor the versions option to ssl:connect and ssl:listen.
+
+   OTP-10909  Next protocol negotiation with reused sessions will now
+	      succeed
+
+   OTP-10955  Fix SSL Next Protocol Negotiation documentation. Thanks to
+	      Julien Barbot.
+
+   OTP-10980  Fix ssl_connection to support reading proxy/chain
+	      certificates. Thanks to Valentin Kuznetsov.
+
+   OTP-11009  Integrate elliptic curve contribution from Andreas Schultz 
+
+	      In order to be able to support elliptic curve cipher suites
+	      in SSL/TLS, additions to handle elliptic curve infrastructure
+	      has been added to public_key and crypto.
+
+	      This also has resulted in a rewrite of the crypto API to gain
+	      consistency and remove unnecessary overhead. All OTP
+	      applications using crypto has been updated to use the new
+	      API.
+
+	      Impact: Elliptic curve cryptography (ECC) offers equivalent
+	      security with smaller key sizes than other public key
+	      algorithms. Smaller key sizes result in savings for power,
+	      memory, bandwidth, and computational cost that make ECC
+	      especially attractive for constrained environments.
+
+
+--- stdlib-1.19.2 -------------------------------------------------------
+
+   OTP-10938  Delete obsolete note about simple-one-for-one supervisor.
+	      Thanks to Magnus Henoch.
+
+   OTP-10951  When selecting encoding of a script written in Erlang
+	      (escript) the optional directive on the second line is now
+	      recognized.
+
+   OTP-10990  The Erlang scanner no longer accepts floating point numbers
+	      in the input string.
+
+   OTP-10992  The function erl_parse:abstract/2 has been documented.
+
+   OTP-11009  Integrate elliptic curve contribution from Andreas Schultz 
+
+	      In order to be able to support elliptic curve cipher suites
+	      in SSL/TLS, additions to handle elliptic curve infrastructure
+	      has been added to public_key and crypto.
+
+	      This also has resulted in a rewrite of the crypto API to gain
+	      consistency and remove unnecessary overhead. All OTP
+	      applications using crypto has been updated to use the new
+	      API.
+
+	      Impact: Elliptic curve cryptography (ECC) offers equivalent
+	      security with smaller key sizes than other public key
+	      algorithms. Smaller key sizes result in savings for power,
+	      memory, bandwidth, and computational cost that make ECC
+	      especially attractive for constrained environments.
+
+   OTP-11013  Added sys:get_state/1,2 and sys:replace_state/2,3. Thanks to
+	      Steve Vinoski.
+
+   OTP-11025  Optimizations to gen mechanism. Thanks to Loïc Hoguin.
+
+   OTP-11035  Optimizations to gen.erl. Thanks to Loïc Hoguin.
+
+   OTP-11039  Use erlang:demonitor(Ref, [flush]) where applicable. Thanks
+	      to Loïc Hoguin.
+
+   OTP-11041  Erlang source files with non-ASCII characters are now encoded
+	      in UTF-8 (instead of latin1).
+
+   OTP-11042  Fix rest_for_one and one_for_all restarting a child not
+	      terminated. Thanks to James Fish.
+
+   OTP-11053  Fix excessive CPU consumption of timer_server. Thanks to
+	      Aliaksey Kandratsenka.
+
+   OTP-11078  Rename and document lists:zf/2 as lists:filtermap/2. Thanks
+	      to Anthony Ramine.
+
+   OTP-11079  Fixed an inconsistent state in epp. Thanks to Anthony Ramine
+
+   OTP-11080  When converting a faulty binary to a list with
+	      unicode:characters_to_list, the error return value could
+	      contain a faulty "rest", i.e. the io_list of characters that
+	      could not be converted was wrong. This happened only if input
+	      was a sub binary and conversion was from utf8. This is now
+	      corrected.
+
+   OTP-11100  The type hook_function() has been corrected in erl_pp, the
+	      Erlang Pretty Printer.
+
+	      The printing of invalid forms, e.g. record field types, has
+	      also been fixed. It has been broken since R16B.
+
+	      (Thanks to Tom&#225;&#353; Janou&#353;ek.)
+
+   OTP-11108  c:ls(File) will now print File, similar to ls(1) in Unix. The
+	      error messages have also been improved. (Thanks to Bengt
+	      Kleberg.)
+
+   OTP-11137  Fix receive support in erl_eval with a BEAM module. Thanks to
+	      Anthony Ramine.
+
+   OTP-11140  Support callback attributes in erl_pp. Thanks to Anthony
+	      Ramine.
+
+   OTP-11143  Improve erl_lint performance. Thanks to José Valim.
+
+
+--- test_server-3.6.2 ---------------------------------------------------
+
+   OTP-10607  Some unused code related to remote targets is removed, and
+	      documentation is updated.
+
+   OTP-10856  The '-force_stop' flag to use with time-limited repeats of
+	      test runs can now be used with a new 'skip_rest' option which
+	      causes the rest of the test cases in the ongoing test job to
+	      be skipped when the time limit is reached. E.g. 'ct_run -spec
+	      xxx -duration 010000 -force_stop skip_rest'
+
+   OTP-10991  A bug in test_server_gl caused io requests containing invalid
+	      data (i.e. not unicode:chardata()) to hang, since no io reply
+	      was sent. This has been corrected.
+
+   OTP-11052  Common Test would, in case of timetrap error, print a warning
+	      in the log if end_per_testcase wasn't implemented in the
+	      suite, even though it's an optional function. This printout
+	      has been removed.
+
+
+--- tools-2.6.11 --------------------------------------------------------
+
+   OTP-10902  Make cover smarter about finding source from beam.
+
+	      In particular, search using the source path in module_info if
+	      the current heuristic fails.
+
+   OTP-10930  Remove Flymake dependency in erlang-pkg.el. Thanks to Magnus
+	      Henoch.
+
+   OTP-10979  When cover:stop(Node) was called on a non-existing node, a
+	      process waiting for cover data from the node would hang
+	      forever. This has been corrected.
+
+   OTP-10999  Erlang-mode: Add autoload cookies for file extension
+	      associations. Thanks to Magnus Henoch.
+
+   OTP-11016  Postscript files no longer needed for the generation of PDF
+	      files have been removed.
+
+   OTP-11028  Fix a race condition when there're several applications in
+	      apps directory. Thanks to Manuel Rubio.
+
+   OTP-11144  New option for eprof, 'set_on_spawn'. This option was
+	      previously always on and is also the default.
+
+

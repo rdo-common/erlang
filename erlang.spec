@@ -1,7 +1,7 @@
 %global upstream_ver R16B
 # Do NOT change %%{upstream_rel} unless UPSTREAM has actually changed it!
-#%global upstream_rel 03
-%global upstream_rel %{nil}
+#%global upstream_rel %{nil}
+%global upstream_rel 01
 # Use %%{nil} for %%{upstream_rel} for tracking source like otp_src_R14B.tar.gz,
 # and 01 %%{upstream_rel} for tracking source like otp_src_R14B01.tar.gz.
 
@@ -25,7 +25,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel_for_rpm}.4%{?dist}
+Release:	%{upstream_rel_for_rpm}.1%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -360,6 +360,7 @@ Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
 Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Requires: %{name}-syntax_tools%{?_isa} = %{version}-%{release}
 Requires: %{name}-wx%{?_isa} = %{version}-%{release}
+Requires: graphviz
 Obsoletes:	%{name} < R13B-04.5
 
 %description dialyzer
@@ -791,6 +792,7 @@ Secure Shell application with sftp and ssh support.
 %package ssl
 Summary:	Secure Socket Layer support
 Group:		Development/Languages
+Requires: %{name}-asn1%{?_isa} = %{version}-%{release}
 Requires: %{name}-crypto%{?_isa} = %{version}-%{release}
 Requires: %{name}-erts%{?_isa} = %{version}-%{release}
 Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
@@ -1843,6 +1845,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/snmpa_error_logger.*
 %{_libdir}/erlang/man/man3/snmpa_error_report.*
 %{_libdir}/erlang/man/man3/snmpa_local_db.*
+%{_libdir}/erlang/man/man3/snmpa_mib_data.*
+%{_libdir}/erlang/man/man3/snmpa_mib_storage.*
 %{_libdir}/erlang/man/man3/snmpa_mpd.*
 %{_libdir}/erlang/man/man3/snmpa_network_interface.*
 %{_libdir}/erlang/man/man3/snmpa_network_interface_filter.*
@@ -2309,6 +2313,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jun 19 2013 Peter Lemenkov <lemenkov@gmail.com> - R16B-01.1
+- Ver. R16B01
+- Added graphviz as a requirement for dialyzer (thanks to Matwey V. Kornilov)
+
 * Mon Mar 11 2013 Peter Lemenkov <lemenkov@gmail.com> - R16B-0.4
 - Add Requires for SCTP (dlopened library)
 

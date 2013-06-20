@@ -86,15 +86,15 @@ Signed-off-by: Hans Ulrich Niedermann <hun@n-dimensional.de>
  76 files changed, 60 insertions(+), 113 deletions(-)
 
 diff --git a/erts/preloaded/src/Makefile b/erts/preloaded/src/Makefile
-index a224b6a..e88641b 100644
+index 7a7b7fb..fcdb699 100644
 --- a/erts/preloaded/src/Makefile
 +++ b/erts/preloaded/src/Makefile
-@@ -69,8 +69,6 @@ copy:
+@@ -76,8 +76,6 @@ copy:
  include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: 
 -	$(INSTALL_DIR) "$(RELSYSDIR)/src"
--	$(INSTALL_DATA) $(ERL_FILES) "$(RELSYSDIR)/src"
+-	$(INSTALL_DATA) $(ERL_FILES) $(BEAM_FILES) $(STUBS_FILES) "$(RELSYSDIR)/src"
  	$(INSTALL_DIR) "$(RELSYSDIR)/ebin"
  	$(INSTALL_DATA) $(STATIC_TARGET_FILES) "$(RELSYSDIR)/ebin"
  
@@ -112,7 +112,7 @@ index c1620bc..02c0984 100644
  	$(INSTALL_DATA) $(TARGET_FILES) "$(RELSYSDIR)/ebin"
  
 diff --git a/lib/asn1/src/Makefile b/lib/asn1/src/Makefile
-index 9607799..dbfb40b 100644
+index 33cd3cc..72c7005 100644
 --- a/lib/asn1/src/Makefile
 +++ b/lib/asn1/src/Makefile
 @@ -156,7 +156,7 @@ release_spec: opt
@@ -288,7 +288,7 @@ index bb2edd4..6b20995 100644
  	$(INSTALL_DIR) "$(RELSYSDIR)/ebin"
  	$(INSTALL_DATA) $(INSTALL_FILES) "$(RELSYSDIR)/ebin"
 diff --git a/lib/diameter/src/Makefile b/lib/diameter/src/Makefile
-index df10c33..5c54e70 100644
+index 578bbae..647cfde 100644
 --- a/lib/diameter/src/Makefile
 +++ b/lib/diameter/src/Makefile
 @@ -242,11 +242,8 @@ release_spec: opt
@@ -413,7 +413,7 @@ index 75e156b..5e394ca 100644
  	$(INSTALL_DATA) $(TARGET_FILES) "$(RELSYSDIR)/ebin"
  
 diff --git a/lib/hipe/icode/Makefile b/lib/hipe/icode/Makefile
-index 0f2d6db..4e267f9 100644
+index 87015aa..84f870d 100644
 --- a/lib/hipe/icode/Makefile
 +++ b/lib/hipe/icode/Makefile
 @@ -119,7 +119,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
@@ -452,7 +452,7 @@ index 16166f5..0ba5845 100644
  	$(INSTALL_DATA) $(TARGET_FILES) "$(RELSYSDIR)/ebin"
  
 diff --git a/lib/hipe/rtl/Makefile b/lib/hipe/rtl/Makefile
-index 7852a21..917cdee 100644
+index 751e876..98b7911 100644
 --- a/lib/hipe/rtl/Makefile
 +++ b/lib/hipe/rtl/Makefile
 @@ -104,7 +104,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
@@ -963,10 +963,10 @@ index 93d0b54..5904bc2 100644
  	$(INSTALL_DATA) $(BEHAVIOUR_TARGET_FILES) $(TARGET_FILES) $(APP_TARGET) \
  	$(APPUP_TARGET) "$(RELSYSDIR)/ebin"
 diff --git a/lib/ssl/src/Makefile b/lib/ssl/src/Makefile
-index e61f415..74661e3 100644
+index cf9f7d5..0f80003 100644
 --- a/lib/ssl/src/Makefile
 +++ b/lib/ssl/src/Makefile
-@@ -122,7 +122,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
+@@ -129,7 +129,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt
  	$(INSTALL_DIR) "$(RELSYSDIR)/src"
