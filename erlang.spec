@@ -25,7 +25,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel_for_rpm}.1%{?dist}
+Release:	%{upstream_rel_for_rpm}.1%{?dist}.1
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -2313,6 +2313,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - R16B-01.1.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
 * Wed Jun 19 2013 Peter Lemenkov <lemenkov@gmail.com> - R16B-01.1
 - Ver. R16B01
 - Added graphviz as a requirement for dialyzer (thanks to Matwey V. Kornilov)
