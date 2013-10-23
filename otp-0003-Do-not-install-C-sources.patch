@@ -56,10 +56,10 @@ index e890927..1377654 100644
  endif
  
 diff --git a/lib/erl_interface/src/Makefile.in b/lib/erl_interface/src/Makefile.in
-index ebacc1c..388e27e 100644
+index e36b39c..fd377bb 100644
 --- a/lib/erl_interface/src/Makefile.in
 +++ b/lib/erl_interface/src/Makefile.in
-@@ -872,14 +872,14 @@ ifneq ($(EXE_TARGETS),)
+@@ -876,14 +876,14 @@ ifneq ($(EXE_TARGETS),)
  	$(INSTALL_PROGRAM) $(EXE_TARGETS) "$(RELSYSDIR)/bin"
  endif
  	$(INSTALL_DATA) $(EXTRA)        "$(RELSYSDIR)/src"
@@ -83,20 +83,22 @@ index ebacc1c..388e27e 100644
  release_docs:
  
 diff --git a/lib/ic/c_src/Makefile.in b/lib/ic/c_src/Makefile.in
-index 856823b..d000273 100644
+index 6e65f06..4120029 100644
 --- a/lib/ic/c_src/Makefile.in
 +++ b/lib/ic/c_src/Makefile.in
-@@ -146,10 +146,8 @@ $(OBJDIR)/%.o: %.c
+@@ -146,12 +146,10 @@ $(OBJDIR)/%.o: %.c
  include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt
 -	$(INSTALL_DIR) "$(RELSYSDIR)/c_src"
  	$(INSTALL_DIR) "$(RELSYSDIR)/include"
  	$(INSTALL_DIR) "$(RELSYSDIR)/priv/lib"
+ 	$(INSTALL_DIR) "$(RELEASE_PATH)/usr/include"
+ 	$(INSTALL_DIR) "$(RELEASE_PATH)/usr/lib"
 -	$(INSTALL_DATA) ic.c ic_tmo.c "$(RELSYSDIR)/c_src"
  	$(INSTALL_DATA) $(IDL_FILES) $(H_FILES) "$(RELSYSDIR)/include"
  	$(INSTALL_DATA) $(LIBRARY) "$(RELSYSDIR)/priv/lib"
- 
+ 	$(INSTALL_DATA) $(IDL_FILES) $(H_FILES) "$(RELEASE_PATH)/usr/include"
 diff --git a/lib/megaco/src/flex/Makefile.in b/lib/megaco/src/flex/Makefile.in
 index 6111cf2..bd62e8b 100644
 --- a/lib/megaco/src/flex/Makefile.in
@@ -127,10 +129,10 @@ index 6572d28..c7093ae 100644
  endif
  
 diff --git a/lib/os_mon/c_src/Makefile.in b/lib/os_mon/c_src/Makefile.in
-index 51569f6..4e4d729 100644
+index f84ccf7..05d194f 100644
 --- a/lib/os_mon/c_src/Makefile.in
 +++ b/lib/os_mon/c_src/Makefile.in
-@@ -124,8 +124,6 @@ $(OBJDIR)/memsup.o: memsup.h
+@@ -125,8 +125,6 @@ $(OBJDIR)/memsup.o: memsup.h
  include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt
