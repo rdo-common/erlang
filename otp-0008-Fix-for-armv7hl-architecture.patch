@@ -1,7 +1,6 @@
-From 98268681b57ddec0d7aad2234d271c47da538d63 Mon Sep 17 00:00:00 2001
 From: Peter Lemenkov <lemenkov@gmail.com>
 Date: Thu, 26 Sep 2013 22:01:03 +0400
-Subject: [PATCH 8/8] Fix for armv7hl architecture
+Subject: [PATCH] Fix for armv7hl architecture
 
 Taken from openSUSE:
 
@@ -24,6 +23,3 @@ index 00c7045..5b72215 100644
      tile)	ARCH=tile;;
      *)	 	ARCH=noarch;;
  esac
--- 
-1.8.3.1
-

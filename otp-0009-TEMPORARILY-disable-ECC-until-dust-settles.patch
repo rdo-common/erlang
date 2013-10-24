@@ -1,0 +1,27 @@
+From: Peter Lemenkov <lemenkov@gmail.com>
+Date: Thu, 24 Oct 2013 16:44:22 +0400
+Subject: [PATCH] TEMPORARILY disable ECC until dust settles
+
+Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
+---
+ lib/crypto/c_src/crypto.c | 7 -------
+ 1 file changed, 7 deletions(-)
+
+diff --git a/lib/crypto/c_src/crypto.c b/lib/crypto/c_src/crypto.c
+index c28ff81..1b3b6c2 100644
+--- a/lib/crypto/c_src/crypto.c
++++ b/lib/crypto/c_src/crypto.c
+@@ -74,13 +74,6 @@
+ # define HAVE_DES_ede3_cfb_encrypt
+ #endif
+ 
+-#if OPENSSL_VERSION_NUMBER >= 0x009080ffL \
+-	&& !defined(OPENSSL_NO_EC) \
+-	&& !defined(OPENSSL_NO_ECDH) \
+-	&& !defined(OPENSSL_NO_ECDSA)
+-# define HAVE_EC
+-#endif
+-
+ #if defined(HAVE_EC)
+ #include <openssl/ec.h>
+ #include <openssl/ecdh.h>
