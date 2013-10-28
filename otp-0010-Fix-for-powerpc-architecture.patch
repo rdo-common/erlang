@@ -1,0 +1,29 @@
+From: Peter Lemenkov <lemenkov@gmail.com>
+Date: Mon, 28 Oct 2013 17:11:11 +0400
+Subject: [PATCH] Fix for powerpc architecture
+
+Taken from openSUSE:
+
+* https://build.opensuse.org/package/view_file/devel:languages:erlang:Factory/erlang/erlang-ppc.patch?expand=1
+
+See also:
+
+* https://bugzilla.redhat.com/1023960
+
+Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
+---
+ erts/configure.in | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/erts/configure.in b/erts/configure.in
+index 5b72215..9f396f0 100644
+--- a/erts/configure.in
++++ b/erts/configure.in
+@@ -625,6 +625,7 @@ case $chk_arch_ in
+     x86_64)	ARCH=amd64;;
+     amd64)	ARCH=amd64;;
+     macppc)	ARCH=ppc;;
++    powerpc)	ARCH=ppc;;
+     ppc)	ARCH=ppc;;
+     ppc64)	ARCH=ppc64;;
+     "Power Macintosh")	ARCH=ppc;;
