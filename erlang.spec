@@ -20,7 +20,7 @@
 %global use_prebuilt_docs 0
 %endif
 
-%ifarch %{arm} %{ix86} x86_64 ppc
+%ifarch %{arm} %{ix86} x86_64 ppc %{power64}
 %global __with_hipe 1
 %else
 %global __with_hipe 0
@@ -30,7 +30,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel_for_rpm}.4%{?dist}
+Release:	%{upstream_rel_for_rpm}.5%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -2284,6 +2284,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Oct 28 2013 Peter Lemenkov <lemenkov@gmail.com> - R16B-02.5
+- Re-enable HiPE on ppc64, ppc64v7
+
 * Mon Oct 28 2013 Peter Lemenkov <lemenkov@gmail.com> - R16B-02.4
 - Disable HiPE on s390(x) (rhbz #1023960)
 - Fix HiPE on ppc (rhbz #1023960)
