@@ -22,15 +22,13 @@
 
 %ifarch %{arm} %{ix86} x86_64 ppc %{power64}
 %global __with_hipe 1
-%else
-%global __with_hipe 0
 %endif
 
 %global n_uvr %{name}-%{upstream_ver}-%{upstream_rel_for_rpm}
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel_for_rpm}.6%{?dist}
+Release:	%{upstream_rel_for_rpm}.7%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -2284,6 +2282,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Oct 29 2013 Peter Lemenkov <lemenkov@gmail.com> - R16B-02.7
+- Really disable HiPE on s390(x)
+
 * Tue Oct 29 2013 Peter Lemenkov <lemenkov@gmail.com> - R16B-02.6
 - Actually re-enable HiPE
 
