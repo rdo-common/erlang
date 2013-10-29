@@ -30,7 +30,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel_for_rpm}.5%{?dist}
+Release:	%{upstream_rel_for_rpm}.6%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -976,9 +976,9 @@ rm -f lib/ssl/examples/certs/etc/erlangCA/index.txt.old
 
 %build
 %ifarch sparcv9 sparc64
-CFLAGS="$RPM_OPT_FLAGS -mcpu=ultrasparc -fno-strict-aliasing" %configure --enable-shared-zlib --enable-sctp %{__with_hipe:--enable-hipe}
+CFLAGS="$RPM_OPT_FLAGS -mcpu=ultrasparc -fno-strict-aliasing" %configure --enable-shared-zlib --enable-sctp %{?__with_hipe:--enable-hipe}
 %else
-CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing" %configure --enable-shared-zlib --enable-sctp %{__with_hipe:--enable-hipe}
+CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing" %configure --enable-shared-zlib --enable-sctp %{?__with_hipe:--enable-hipe}
 %endif
 
 # Remove pre-built BEAM files
@@ -2284,6 +2284,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Oct 29 2013 Peter Lemenkov <lemenkov@gmail.com> - R16B-02.6
+- Actually re-enable HiPE
+
 * Mon Oct 28 2013 Peter Lemenkov <lemenkov@gmail.com> - R16B-02.5
 - Re-enable HiPE on ppc64, ppc64v7
 
