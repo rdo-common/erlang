@@ -1,7 +1,7 @@
 %global upstream_ver R16B
 # Do NOT change %%{upstream_rel} unless UPSTREAM has actually changed it!
 #%global upstream_rel %{nil}
-%global upstream_rel 02
+%global upstream_rel 03
 # Use %%{nil} for %%{upstream_rel} for tracking source like otp_src_R14B.tar.gz,
 # and 01 %%{upstream_rel} for tracking source like otp_src_R14B01.tar.gz.
 
@@ -28,7 +28,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel_for_rpm}.7%{?dist}
+Release:	%{upstream_rel_for_rpm}.1%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -1353,7 +1353,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/lib/diameter-*/include
 %{_libdir}/erlang/lib/diameter-*/src
 %if %{with doc}
-%{_libdir}/erlang/man/man1/diameter_compile.*
+%{_libdir}/erlang/man/man1/diameterc.*
 %{_libdir}/erlang/man/man3/diameter.*
 %{_libdir}/erlang/man/man3/diameter_app.*
 %{_libdir}/erlang/man/man3/diameter_codec.*
@@ -1434,6 +1434,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/bin/erl
 %{_libdir}/erlang/bin/erlc
 %{_libdir}/erlang/bin/escript
+%{_libdir}/erlang/bin/no_dot_erlang.boot
 %{_libdir}/erlang/bin/run_erl
 %{_libdir}/erlang/bin/start
 %{_libdir}/erlang/bin/start.boot
@@ -2282,6 +2283,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Dec 24 2013 Peter Lemenkov <lemenkov@gmail.com> - R16B-03.1
+- Ver. R16B03
+
 * Tue Oct 29 2013 Peter Lemenkov <lemenkov@gmail.com> - R16B-02.7
 - Really disable HiPE on s390(x)
 

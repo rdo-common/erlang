@@ -9,10 +9,6 @@ Fedora-Spec-Before: %if 0%{?el4}%{?el5}%{?el6}
 Fedora-Spec-Before: %ifnarch %{ix86} x86_64
 Fedora-Spec-After: %endif
 Fedora-Spec-After: %endif
----
- .../java_src/com/ericsson/otp/erlang/OtpErlangList.java    | 14 +-------------
- .../java_src/com/ericsson/otp/erlang/OtpInputStream.java   | 13 ++-----------
- 2 files changed, 3 insertions(+), 24 deletions(-)
 
 diff --git a/lib/jinterface/java_src/com/ericsson/otp/erlang/OtpErlangList.java b/lib/jinterface/java_src/com/ericsson/otp/erlang/OtpErlangList.java
 index 3456fd7..86cd411 100644

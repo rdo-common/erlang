@@ -12,17 +12,6 @@ interaction with the Erlang nodes:
 https://bugzilla.redhat.com/818419
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
----
- lib/asn1/c_src/Makefile             |  2 --
- lib/crypto/c_src/Makefile.in        |  4 ----
- lib/erl_interface/src/Makefile.in   | 16 ++++++++--------
- lib/ic/c_src/Makefile.in            |  2 --
- lib/megaco/src/flex/Makefile.in     |  2 +-
- lib/odbc/c_src/Makefile.in          |  3 ---
- lib/os_mon/c_src/Makefile.in        |  2 --
- lib/runtime_tools/c_src/Makefile.in |  2 --
- lib/tools/c_src/Makefile.in         |  2 --
- 9 files changed, 9 insertions(+), 26 deletions(-)
 
 diff --git a/lib/asn1/c_src/Makefile b/lib/asn1/c_src/Makefile
 index 7023833..8bf8eb9 100644
@@ -83,10 +72,10 @@ index e36b39c..fd377bb 100644
  release_docs:
  
 diff --git a/lib/ic/c_src/Makefile.in b/lib/ic/c_src/Makefile.in
-index 6e65f06..4120029 100644
+index ed860ab..96206ae 100644
 --- a/lib/ic/c_src/Makefile.in
 +++ b/lib/ic/c_src/Makefile.in
-@@ -146,12 +146,10 @@ $(OBJDIR)/%.o: %.c
+@@ -144,12 +144,10 @@ $(OBJDIR)/%.o: %.c
  include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt

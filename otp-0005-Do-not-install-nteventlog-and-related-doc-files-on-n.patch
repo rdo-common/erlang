@@ -4,10 +4,6 @@ Subject: [PATCH] Do not install nteventlog and related doc-files on non-win32
  systems
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
----
- lib/os_mon/doc/src/Makefile |  7 ++++++-
- lib/os_mon/src/Makefile     | 11 ++++++++++-
- 2 files changed, 16 insertions(+), 2 deletions(-)
 
 diff --git a/lib/os_mon/doc/src/Makefile b/lib/os_mon/doc/src/Makefile
 index 08fd23e..5606cfc 100644

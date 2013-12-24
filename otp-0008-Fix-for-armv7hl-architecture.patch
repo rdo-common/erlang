@@ -7,15 +7,12 @@ Taken from openSUSE:
 * https://build.opensuse.org/package/view_file/devel:languages:erlang:Factory/erlang/fix-armv7hl.patch?expand=1
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
----
- erts/configure.in | 1 +
- 1 file changed, 1 insertion(+)
 
 diff --git a/erts/configure.in b/erts/configure.in
-index 00c7045..5b72215 100644
+index bad748d..230f27a 100644
 --- a/erts/configure.in
 +++ b/erts/configure.in
-@@ -634,6 +634,7 @@ case $chk_arch_ in
+@@ -621,6 +621,7 @@ case $chk_arch_ in
      armv5tejl)	ARCH=arm;;
      armv6l) ARCH=arm;;
      armv7l)	ARCH=arm;;

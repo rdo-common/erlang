@@ -3,10 +3,6 @@ Date: Sat, 19 Jun 2010 09:25:18 +0400
 Subject: [PATCH] Do not install Java sources
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
----
- lib/ic/java_src/com/ericsson/otp/ic/Makefile             | 2 --
- lib/jinterface/java_src/com/ericsson/otp/erlang/Makefile | 2 --
- 2 files changed, 4 deletions(-)
 
 diff --git a/lib/ic/java_src/com/ericsson/otp/ic/Makefile b/lib/ic/java_src/com/ericsson/otp/ic/Makefile
 index 273614e..5b1fb57 100644

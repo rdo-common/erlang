@@ -1,0 +1,718 @@
+Bug fix release : otp_src_R16B03
+Build date      : 2013-12-09
+
+This is R16B03, the third maintenance release for the R16B major release.
+
+You can find the README file for the release at
+
+  http://www.erlang.org/download/otp_src_R16B03.readme (this file)
+
+The source distribution and binary distributions for Windows can be
+downloaded from
+
+  http://www.erlang.org/download/otp_src_R16B03.tar.gz
+  http://www.erlang.org/download/otp_win32_R16B03.exe
+  http://www.erlang.org/download/otp_win64_R16B03.exe
+
+Note: To unpack the TAR archive you need a GNU TAR compatible program.
+
+For installation instructions please read the README file that is part
+of the distribution.
+
+The on-line documentation can be found at: http://www.erlang.org/doc/
+You can also download the complete HTML documentation or the Unix manual files
+
+  http://www.erlang.org/download/otp_doc_html_R16B03.tar.gz
+  http://www.erlang.org/download/otp_doc_man_R16B03.tar.gz
+
+We also want to thank those that sent us patches, suggestions and bug reports,
+
+The OTP Team
+
+
+--- HIGHLIGHTS ----------------------------------------------------------
+
+   OTP-11149  == erts ==
+
+	      A new memory allocation feature called "super carrier" has
+	      been introduced. The super carrier feature can be used in
+	      different ways. It can for example be used for pre-allocation
+	      of all memory that the runtime system should be able to use.
+
+	      By default the super carrier is disabled. It is enabled by
+	      passing the +MMscs <size in MB> command line argument. For
+	      more information see the documentation of the +MMsco,
+	      +MMscrfsd, +MMscrpm, +MMscs, +MMusac, and, +Mlpm command line
+	      arguments in the erts_alloc(3) documentation.
+
+	      Since it is disabled by default there should be no impact on
+	      system characteristics if not used.
+
+	      This change has been marked as a potential incompatibility
+	      since the returned list when calling
+	      erlang:system_info({allocator, mseg_alloc}) now also include
+	      an {erts_mmap, _} tuple as one element in the list.
+
+
+--- otp -----------------------------------------------------------------
+
+   OTP-11323  Remove ^L characters hidden randomly in the code. Not those
+	      used in text files as delimiters. Thanks to Pierre Fenoll.
+
+   OTP-11448  Update INSTALL md, added info how to generate configure file
+	      if building from git. Thanks to Jakub Oboza.
+
+   OTP-11472  Fixed typo in gen_fsm example. Thanks to Boris M�hmer.
+
+
+--- asn1-2.0.4 ----------------------------------------------------------
+
+   OTP-11314  The new option 'no_ok_wrapper' generates M:encode/2 and
+	      M:decode/2 functions that don't wrap the return value in an
+	      {ok,...} tuple.
+
+   OTP-11319  The default value for a BIT STRING would not always be
+	      recognized, causing the encoding to be incorrect for the
+	      DER/PER/UPER encodings.
+
+   OTP-11360  The asn1 application would fail to build if the .erlang file
+	      printed something to standard output.
+
+   OTP-11411  An union of integer ranges in an INTEGER constraint could
+	      sometimes be interpreted as the intersection of the range.
+
+   OTP-11415  Extensible, multiple single value constraints (such as
+	      INTEGER (1|17, ...)) would be incorrectly encoded.
+
+   OTP-11504  The ASN.1 compiler would fail to compile a constraint with
+	      values given for for the extension part (such as INTEGER
+	      (1..10, ..., 11..20)).
+
+
+--- common_test-1.7.4 ---------------------------------------------------
+
+   OTP-10631  Return values from group and testcase info functions are now
+	      properly checked, and associated test cases are auto skipped
+	      if a return value is invalid.
+
+   OTP-11305  The way Common Test handles skipping of test cases has been
+	      updated. In previous versions, returning {skip,Reason} from a
+	      configuration function (such as init_per_suite or
+	      init_per_group), resulted in all affected test cases getting
+	      skipped with status auto_skipped. This was inappropriate,
+	      since this status is supposed to be used to inform that
+	      Common Test has taken the initiative to skip something (e.g.
+	      a test case group if init_per_group failed). Therefore, in
+	      this version of Common Test, whenever the user skips a suite,
+	      group, or individual test case (by means of a configuration
+	      function or test specification term), the affected test cases
+	      get the status user_skipped instead.
+
+	      This update has meant a few changes that may affect Common
+	      Test users in various ways:
+
+	      -- The test results and statistics will be affected, which is
+	      important to know when running regression tests and comparing
+	      results to previous test runs.
+
+	      -- Users that read or parse the textual log file suite.log
+	      will notice that an auto skipped function is now reported as
+	      auto_skipped rather than skipped as before.
+
+	      -- When require fails in an info function (such as suite/0 or
+	      group/1), all affected configuration functions and test cases
+	      are marked as auto_skipped.
+
+	      -- If Common Test detects an error in the test suite (such as
+	      e.g. an invalid all/0 function), all affected configuration
+	      functions and test cases are marked as auto_skipped.
+
+	      -- If a repeated test run session reaches a deadline with
+	      force_stop enabled, all remaining test cases are marked as
+	      auto_skipped rather than user_skipped as before.
+
+	      -- The event messages that Common Test generates during test
+	      runs have been affected by this update. For details see
+	      OTP-11524.
+
+   OTP-11401  Fix cth_log_redirect.erl to fulfill gen_event behaviour.
+	      Thanks to Roberto Aloi.
+
+   OTP-11409  Returning {skip, Reason} from a pre_end_per_group/3 user hook
+	      function would result in an exit in the Common Test
+	      cth_log_redirect hook. This problem has been solved.
+
+   OTP-11478  When the netconf server did not respond to the close-session
+	      request, the call to ct_netconfc:close_session/2 would hang
+	      forever waiting for the netconf client to terminate. This has
+	      been corrected. The client will now always terminate (and
+	      take down the connection) if the close-session request times
+	      out.
+
+   OTP-11523  The first argument of the CT hook callback function
+	      on_tc_skip/3 has been modified. When this function is called
+	      for init_per_group or end_per_group, the value of the first
+	      argument is now {init_per_group,GroupName} or
+	      {end_per_group,GroupName}.
+
+   OTP-11524  The following modifications have been made to the event
+	      messages that Common Test sends during test execution:
+
+	      -- For the tc_auto_skip event, the value of the Func element
+	      has changed from end_per_group to {end_per_group,GroupName}.
+
+	      -- When require fails in an info function, such as suite/0 or
+	      group/1, the init configuration function is now reported as
+	      auto_skipped intead of skipped, with the tc_done event.
+
+	      -- When require fails in an info function because of a
+	      configuration name already in use, the tc_done event now
+	      reports the error with a tuple (of size 2) tagged failed
+	      instead of skipped.
+
+	      Please see the Event Handling chapter in the Common Test
+	      User's Guide for reference.
+
+
+--- compiler-4.9.4 ------------------------------------------------------
+
+   OTP-11267  Lift 'after' blocks to zeroary functions. Thanks to Anthony
+	      Ramine.
+
+   OTP-11455  Typo fix ambigous -> ambiguous. Thanks to Leo Correa.
+
+
+--- crypto-3.2 ----------------------------------------------------------
+
+   OTP-11510  Fix uninitialized pointers in crypto (Thanks to Anthony
+	      Ramine)
+
+
+--- dialyzer-2.6.2 ------------------------------------------------------
+
+   OTP-11374  Fixed a dialyzer crash when using remote types in the tail
+	      position of a maybe_improper_list/2 type. Thanks to Kostis
+	      Sagonas
+
+
+--- diameter-1.4.4 ------------------------------------------------------
+
+   OTP-11367  Fix setting of End-to-End and Hop-by-Hop Identifiers in 
+              outgoing DWA. Broken by OTP-11184, which caused the identifiers 
+              to be set anew, discarding the values from the incoming 
+              DWR. 
+
+   OTP-11395  Fix handling of 5014, DIAMETER_INVALID_AVP_LENGTH. The error 
+              was detected as 5004, DIAMETER_INVALID_AVP_VALUE, for some 
+              Diameter types, in which case an AVP length that pointed 
+              past the end of a message resulted in encode failure.
+
+
+--- diameter-1.5 --------------------------------------------------------
+
+   OTP-11168  Rename reconnect_timer to connect_timer.
+
+	      The former is still accepted for backwards compatibility, but
+	      the name is misleading given the semantics of the timer.
+
+   OTP-11348  Extend diameter_make(3).
+
+	      Dictionaries can now be compiled from strings, not just
+	      filesystem paths, and results can be returned instead of
+	      written to the filesystem.
+
+   OTP-11361  Remove hardcoding of diameter_base as @prefix on dictionaries
+	      for application id 0.
+
+   OTP-11514  Fix silent make rules (Thanks to Anthony Ramine)
+
+
+--- eldap-1.0.2 ---------------------------------------------------------
+
+   OTP-11336  The ldap client eldap now supports the start_tls operation.
+	      This upgrades an existing tcp connection to encryption using
+	      tls, if the server supports it. See eldap:start_tls/2 and /3.
+
+   OTP-11354  Removed {verify,0} from ssl-options because eldap does not
+	      support peer verification. Thanks to Florian Waas for
+	      reporting.
+
+
+--- erl_interface-3.7.15 ------------------------------------------------
+
+   OTP-11517  Silence warnings (Thanks to Anthony Ramine)
+
+
+--- erts-5.10.3.1 -------------------------------------------------------
+
+   OTP-11318  Memory allocators will be able to create sys_alloc carriers 
+              as fallback, if mseg_alloc cannot create more carriers, 
+              on systems with posix_memalign() support. This is similar 
+              to how it worked in pre-R16 releases. Windows systems will 
+              create carriers using _aligned_malloc() and can by this 
+              use the new optimized allocator header scheme introduced 
+              in R16 on other platforms.
+
+
+--- erts-5.10.4 ---------------------------------------------------------
+
+   OTP-10229  New socket functions inet:socknames/1,2 and
+	      inet:peernames/1,2 have been implemented. They are useful for
+	      SCTP sockets since they return all addresses for an
+	      association. For other sockets they fall back to
+	      inet:sockname/1 and inet:peername/1, so the new functions can
+	      replace the old for any application that wants to be multi
+	      address aware yet socket type agnostic. See the
+	      documentation.
+
+   OTP-11149  A new memory allocation feature called "super carrier" has
+	      been introduced. The super carrier feature can be used in
+	      different ways. It can for example be used for pre-allocation
+	      of all memory that the runtime system should be able to use.
+
+	      By default the super carrier is disabled. It is enabled by
+	      passing the +MMscs <size in MB> command line argument. For
+	      more information see the documentation of the +MMsco,
+	      +MMscrfsd, +MMscrpm, +MMscs, +MMusac, and, +Mlpm command line
+	      arguments in the erts_alloc(3) documentation.
+
+	      Since it is disabled by default there should be no impact on
+	      system characteristics if not used.
+
+	      This change has been marked as a potential incompatibility
+	      since the returned list when calling
+	      erlang:system_info({allocator, mseg_alloc}) now also include
+	      an {erts_mmap, _} tuple as one element in the list.
+
+   OTP-11170  When normalizing paths, erl_prim_loader would always convert
+	      backslash to forward slash. This is correct on Windows, but
+	      not on other operating systems. erl_prim_loader now checks
+	      which OS is running before performing this conversion.
+
+   OTP-11349  Fixed syslog defines and defined LOG_ERR for systems without
+	      syslog.h. Thanks to Matt Lewandowsky.
+
+   OTP-11350  Check all pattern arguments passed to binary:matches/2.
+	      Thanks to Mike Sassak.
+
+   OTP-11351  Fix two small silent rules omissions. Thanks to Anthony
+	      Ramine.
+
+   OTP-11362  Added erlang:system_info(ets_limit) to provide a way to
+	      retrieve the runtime's maximum number of ETS tables. Thanks
+	      to Steve Vinoski
+
+   OTP-11371  Teach configure to detect if posix_memalign cannot align to
+	      more than the system page size. 
+
+	      For cross-compiled systems a new environment variable called
+	      erl_xcomp_posix_memalign has been introduced to indicate
+	      whether posix_memalign should be used.
+
+   OTP-11381  Fix bsr bug occurring when shifting a huge number a huge
+	      number of bits to the right. Thanks to Lars Hesel
+	      Christensen.
+
+   OTP-11410  Fix memory leak for distributed monitors
+
+   OTP-11414  Fix various typos in erts, kernel and ssh. Thanks to Martin
+	      Hässler.
+
+   OTP-11420  Crashdumps initiated by out-of-memory on process spawn could
+	      cause the beam to segfault during crashdump writing due to
+	      invalid pointers.
+
+	      The pointers are invalid since the process creation never
+	      finished. This fix removes these processes from the
+	      printouts. Reported by Richard Carlsson.
+
+   OTP-11446  Add new BIF os:unsetenv/1 which deletes an environment
+	      variable. Thanks to Martin Hässler.
+
+   OTP-11450  Crash dumps from 64-bit Erlang machines would have all memory
+	      addresses truncated to 32 bits, which could cause trouble
+	      inspecting processes message queues and stacks in the
+	      crashdump viewer.
+
+   OTP-11456  Threads other than schedulers threads could make thread
+	      unsafe accesses when support for migration of memory carriers
+	      had been enabled, i.e., when the +M<S>acul command line flag
+	      had been passed to erl. This could cause corruption of the
+	      VMs internal state.
+
+	      This bug was introduced in erts-5.10.2 when the support for
+	      migration of memory carriers was introduced.
+
+   OTP-11479  Fix bug in binary_to_term for invalid bitstrings and very
+	      large binaries (>2Gb).
+
+   OTP-11489  Introduced a new guarantee regarding exit signals from ports:
+
+	      If the process calling one of the synchronous port BIFs
+	      listed below is linked to the port identified by the first
+	      argument, and the port exits before sending the result of the
+	      port operation, the exit signal issued due to this link will
+	      be received by the processes before the BIF returns, or fail
+	      with an exception due to the port not being open.
+
+	      The synchronous port BIFs are:
+
+	      -- port_close/1
+
+	      -- port_command/2
+
+	      -- port_command/3
+
+	      -- port_connect/2
+
+	      -- port_control/3
+
+	      -- erlang:port_call/3
+
+	      -- erlang:port_info/1
+
+	      -- erlang:port_info/2
+
+	      Note that some ports under certain circumstances unlink
+	      themselves from the calling process before exiting, i.e. even
+	      though the process linked itself to the port there might be
+	      no link triggering an exit signal.
+
+	      Characteristics impact: The return or exception from the
+	      synchronous port BIF will be delayed if the port
+	      simultaneously exit due to some issue unrelated to the
+	      outstanding synchronous port BIF call. In all other cases
+	      characteristics are unchanged.
+
+   OTP-11491  Under rare circumstances a process calling inet:close/1,
+	      gen_tcp:close/1, gen_udp:close/1, or gen_sctp:close/1 could
+	      hang in the call indefinitely.
+
+   OTP-11496  Fix bug that could cause a 32-bit emulator to always crash at
+	      start (since R16B01) depending on the alignment of static
+	      data in the beam executable.
+
+   OTP-11501  Fix benign bugs regarding bitstring compare. Only a nuisance
+	      for debug and valgrind VM.
+
+   OTP-11517  Silence warnings (Thanks to Anthony Ramine)
+
+   OTP-11521  The default wordsize of the emulator (beam) is now determined
+	      by compiler default on Mac OSX (Darwin). This was previously
+	      forced to 32bits by the configure script unless otherwise
+	      specified.
+
+
+--- eunit-2.2.6 ---------------------------------------------------------
+
+   OTP-11373  Fix I/O-protocol error handling in eunit. Thanks to Yuki Ito.
+
+   OTP-11467  Do not attempt to detect lists of printable characters in
+	      format. Thanks to Roberto Aloi.
+
+   OTP-11516  Fix silent make rule (Thanks to Anthony Ramine )
+
+
+--- hipe-3.10.2.2 -------------------------------------------------------
+
+   OTP-11374  Fixed a dialyzer crash when using remote types in the tail
+	      position of a maybe_improper_list/2 type. Thanks to Kostis
+	      Sagonas
+
+
+--- ic-4.3.4 ------------------------------------------------------------
+
+   OTP-11351  Fix two small silent rules omissions. Thanks to Anthony
+	      Ramine.
+
+   OTP-11517  Silence warnings (Thanks to Anthony Ramine)
+
+
+--- inets-5.9.7 ---------------------------------------------------------
+
+   OTP-11037  The ftp client now supports ftp over tls (ftps).
+
+   OTP-11276  Fix httpd config option 'script_timeout' and fixed httpd
+	      config option 'keep_alive_timeout'. Thanks to Johannes
+	      Weissl.
+
+   OTP-11312  Make httpc:request_cancel/[1,2] asynchronous. Previously
+	      these functions tried to guarantee request answer would not
+	      reach the client, which only worked for some of the use
+	      cases. Now these functions are totally asynchronous which
+	      makes it the clients responsibility to disregard possible
+	      answers to canceled requests. 
+
+	      Also pipelining implementation has been changed to improve
+	      the utilization factor. Further investigation of possible
+	      enhancements in this area are planned for later.
+
+   OTP-11328  [httpd] Add handling of new response for mod_head (otherwise
+	      causing case_clause crash). Also updated logging: Removed
+	      logging for keep-alive connections timeout (this is a normal
+	      occurrence and not an error) and some access-log body size
+	      corrections.
+
+
+--- kernel-2.16.4 -------------------------------------------------------
+
+   OTP-10229  New socket functions inet:socknames/1,2 and
+	      inet:peernames/1,2 have been implemented. They are useful for
+	      SCTP sockets since they return all addresses for an
+	      association. For other sockets they fall back to
+	      inet:sockname/1 and inet:peername/1, so the new functions can
+	      replace the old for any application that wants to be multi
+	      address aware yet socket type agnostic. See the
+	      documentation.
+
+   OTP-11377  Fix the typespec for the inet:ifget/2 and inet:ifget/3 return
+	      value. Thanks to Ali Sabil.
+
+   OTP-11379  Add more SCTP errors as described in RFC 4960. Thanks to
+	      Artem Teslenko.
+
+   OTP-11414  Fix various typos in erts, kernel and ssh. Thanks to Martin
+	      Hässler.
+
+   OTP-11446  Add new BIF os:unsetenv/1 which deletes an environment
+	      variable. Thanks to Martin Hässler.
+
+   OTP-11471  Fix rpc multicall sample code. Thanks to Edwin Fine.
+
+   OTP-11491  Under rare circumstances a process calling inet:close/1,
+	      gen_tcp:close/1, gen_udp:close/1, or gen_sctp:close/1 could
+	      hang in the call indefinitely.
+
+
+--- mnesia-4.11 ---------------------------------------------------------
+
+   OTP-11375  Fixed a race in mnesia which could cause hanging transaction
+	      when sticky locks had been used. Thanks janchochol.
+
+   OTP-11485  Fixed dirty_update_counter which could return ok, thanks
+	      Anton Ryabkov.
+
+
+--- observer-1.3.1.2 ----------------------------------------------------
+
+   OTP-11335  The documentation for ttb:tracer/2 incorrectly stated that
+	      there was an option named 'overload', while the correct name
+	      used in the implementation is 'overload_check'.
+
+   OTP-11475  Fixed typo in observer documentation. Thanks to Dave Parfitt.
+
+
+--- odbc-2.10.18 --------------------------------------------------------
+
+   OTP-11483  Configure now also checks for the existence of the sql.h
+	      header file
+
+
+--- os_mon-2.2.14 -------------------------------------------------------
+
+   OTP-11454  Fix incorrect reporting of memory on OS X via memsup. Thanks
+	      to Christopher Meiklejohn.
+
+
+--- public_key-0.21 -----------------------------------------------------
+
+   OTP-11380  Fixed a little typo in public_key documentation. Thanks to
+	      Tomas Morstein.
+
+   OTP-11470  public_key: Workaround for incorrectly encoded utf8
+	      emailAddress. Thanks to Andrew Bennett.
+
+
+--- runtime_tools-1.8.13 ------------------------------------------------
+
+   OTP-11520  Observer did not produce correct result when ERTS internal
+	      memory allocators had been disabled.
+
+
+--- sasl-2.3.4 ----------------------------------------------------------
+
+    OTP-8479  Added a boot file which skips loading the "$HOME/.erlang"
+	      file on startup. Enable by starting erlang with "erl -boot
+	      no_dot_erlang".
+
+   OTP-11464  Don't try to add the log_mf_h handler in sasl unless
+	      configured to do so. Thanks to Richard Carlsson.
+
+   OTP-11507  Fix confusing documentation about error handlers in
+	      SASL.(Thanks to Richard Carlsson)
+
+   OTP-11529  A bug in the mechanism for upgrading core parts of Erlang/OTP
+	      (emulator, kernel, stdlib, sasl) caused a switch of paths
+	      between stdlib and sasl in the intermediate .script/.boot
+	      file. The bug was introduces along with this upgrade
+	      mechanism in R15B. It has now been corrected. (Thanks to
+	      Tobias Schlager)
+
+
+--- snmp-4.25 -----------------------------------------------------------
+
+   OTP-11307  [manager] Improved handling of unexpected/invalid return
+	      values and crashes from called snmpm_user callback functions.
+
+   OTP-11352  Enable SNMP to create missing database directories. Add
+	      {db_init_error, create_db_and_dir} option to SNMP manager and
+	      agent. This allows them to create any missing parent
+	      directories for db_dir, rather than treating any missing
+	      directories as a fatal error. The default for db_init_error,
+	      which is terminate, is unchanged.
+
+   OTP-11412  [manager] Wrong block cypher type used for AES ('aes_cbf128'
+	      instead of 'aes_cfb128') when performing AES block
+	      encrypt/decrypt.
+
+   OTP-11413  [manager] When performing the AES encryption, invalid values
+	      for the EngineBoots and EngineTime was used. The values of
+	      the local agent was used, which would have produced some
+	      values if an agent was actually running. If not it would have
+	      caused a crash.
+
+
+--- ssh-3.0 -------------------------------------------------------------
+
+   OTP-10976  Add option to disallow CLI
+
+   OTP-11296  Add sockname and user to ssh:connection_info/2
+
+   OTP-11339  The ssh cli is now faster at close and before new prompt.
+
+   OTP-11363  Ssh process structure was redesigned to better map to what is
+	      truly parallel this has solved a lot of strange timing issues
+	      that sometimes would occur, for instance a process leak could
+	      happen when a lot of connections where taken up and down in
+	      parallel in a short period of time. Also backwards compatible
+	      clauses to "original" but never supported features has been
+	      removed.
+
+	      Impact: Increases flow efficiency
+
+   OTP-11414  Fix various typos in erts, kernel and ssh. Thanks to Martin
+	      Hässler.
+
+   OTP-11449  Correct private_key type documentation in ssh_server_key_api.
+	      Thanks to Tristan Sloughter.
+
+   OTP-11490  The functions in ssh_no_io.erl did not mimic the functions in
+	      ssh_io.erl correctly, the arity was incorrect for some
+	      functions which caused ssh to fail in the wrong way.
+
+
+--- ssl-5.3.2 -----------------------------------------------------------
+
+   OTP-11370  Honors the clients advertised support of elliptic curves and
+	      no longer sends incorrect elliptic curve extension in server
+	      hello.
+
+   OTP-11376  Fix initialization of DTLS fragment reassembler, in
+	      previously contributed code, for future support of DTLS .
+	      Thanks to Andreas Schultz.
+
+   OTP-11447  Remove extraneous dev debug code left in the close function.
+	      Thanks to Ken Key.
+
+   OTP-11457  Corrected type error in client_preferred_next_protocols
+	      documentation. Thanks to Julien Barbot.
+
+   OTP-11460  Add SSL Server Name Indication (SNI) client support. Thanks
+	      to Julien Barbot.
+
+
+--- stdlib-1.19.4 -------------------------------------------------------
+
+   OTP-11398  Fix typo in gen_server.erl. Thanks to Brian L. Troutwine.
+
+   OTP-11442  Add XML marker for regexp syntax. Thanks to Håkan Mattson.
+
+   OTP-11465  Spec for atan2 should be atan2(Y, X), not atan2(X, Y). Thanks
+	      to Ary Borenszweig.
+
+
+--- syntax_tools-1.6.12 -------------------------------------------------
+
+   OTP-11506  Fix transformation of implicit funs in igor (Thanks to
+	      Anthony Ramine)
+
+
+--- test_server-3.6.4 ---------------------------------------------------
+
+   OTP-11305  The way Common Test handles skipping of test cases has been
+	      updated. In previous versions, returning {skip,Reason} from a
+	      configuration function (such as init_per_suite or
+	      init_per_group), resulted in all affected test cases getting
+	      skipped with status auto_skipped. This was inappropriate,
+	      since this status is supposed to be used to inform that
+	      Common Test has taken the initiative to skip something (e.g.
+	      a test case group if init_per_group failed). Therefore, in
+	      this version of Common Test, whenever the user skips a suite,
+	      group, or individual test case (by means of a configuration
+	      function or test specification term), the affected test cases
+	      get the status user_skipped instead.
+
+	      This update has meant a few changes that may affect Common
+	      Test users in various ways:
+
+	      -- The test results and statistics will be affected, which is
+	      important to know when running regression tests and comparing
+	      results to previous test runs.
+
+	      -- Users that read or parse the textual log file suite.log
+	      will notice that an auto skipped function is now reported as
+	      auto_skipped rather than skipped as before.
+
+	      -- When require fails in an info function (such as suite/0 or
+	      group/1), all affected configuration functions and test cases
+	      are marked as auto_skipped.
+
+	      -- If Common Test detects an error in the test suite (such as
+	      e.g. an invalid all/0 function), all affected configuration
+	      functions and test cases are marked as auto_skipped.
+
+	      -- If a repeated test run session reaches a deadline with
+	      force_stop enabled, all remaining test cases are marked as
+	      auto_skipped rather than user_skipped as before.
+
+	      -- The event messages that Common Test generates during test
+	      runs have been affected by this update. For details see
+	      OTP-11524.
+
+
+--- tools-2.6.13 --------------------------------------------------------
+
+   OTP-11394  Add iodata, nonempty_string to built-in type highlighting for
+	      emacs. Thanks to Paul Oliver.
+
+   OTP-11417  Erlang-specific compilation error regexp is added in
+	      erlang-eunit.el. This defvar was earlier in erlang.el, but
+	      was erroneously removed in R15B02, while still used by
+	      erlang-eunit.el.
+
+   OTP-11439  Take compiler options from beam in cover:compile_beam. Thanks
+	      to Péter Gömöri.
+
+   OTP-11517  Silence warnings (Thanks to Anthony Ramine)
+
+
+--- wx-1.1.1 ------------------------------------------------------------
+
+   OTP-11393  wx initialization hanged with wxWidgets-3.0 on mac. Fixed a
+	      crash with wxListBox on wxWidgets-3.0 (thanks Sergei Golovan)
+	      Fixed documentation links. Fixed event callbacks cleanup.
+
+   OTP-11505  Improve documentation (Thanks to Boris Mühmer)
+
+   OTP-11515  Fix silent make rules (Thanks to Anthony Ramine)
+
+
+--- xmerl-1.3.5 ---------------------------------------------------------
+
+   OTP-11461  Teach xmerl_xpath to resolve context namespaces in more
+	      cases. Thanks to Daniel White.
+
+   OTP-11463  Avoid serialization on code_server in xmerl:export(). Thanks
+	      to Richard Carlsson.
+
+

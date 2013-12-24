@@ -4,10 +4,6 @@ Subject: [PATCH] Do not format man-pages and do not install miscellaneous
  utilities for dealing with man-pages.
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
----
- erts/etc/common/Makefile.in |  4 ----
- erts/etc/unix/Install.src   | 10 ----------
- 2 files changed, 14 deletions(-)
 
 diff --git a/erts/etc/common/Makefile.in b/erts/etc/common/Makefile.in
 index 5c1ce51..5a07855 100644
@@ -25,13 +21,13 @@ index 5c1ce51..5a07855 100644
  	$(INSTALL_DIR) "$(RELEASE_PATH)/build_erl_ose"
  	cd $(OSEETC) && $(TAR) erl_ose_$(SYSTEM_VSN).tar $(INSTALL_ERL_OSE)
 diff --git a/erts/etc/unix/Install.src b/erts/etc/unix/Install.src
-index 0f33258..01fde22 100644
+index 8eb1db7..9e340bb 100644
 --- a/erts/etc/unix/Install.src
 +++ b/erts/etc/unix/Install.src
-@@ -140,14 +140,4 @@ cp -p ../releases/%I_SYSTEM_VSN%/start_*.boot .
+@@ -140,14 +140,5 @@ cp -p ../releases/%I_SYSTEM_VSN%/start_*.boot .
+ cp -p ../releases/%I_SYSTEM_VSN%/no_dot_erlang.boot .
  cp -p $Name.boot start.boot
  cp -p ../releases/%I_SYSTEM_VSN%/$Name.script start.script
- 
 -#
 -# Fixing the man pages
 -#
@@ -41,5 +37,5 @@ index 0f33258..01fde22 100644
 -    cd "$ERL_ROOT"
 -    ./misc/format_man_pages "$ERL_ROOT"
 -fi
--
+ 
  exit 0

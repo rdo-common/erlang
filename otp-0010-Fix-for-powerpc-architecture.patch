@@ -11,15 +11,12 @@ See also:
 * https://bugzilla.redhat.com/1023960
 
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
----
- erts/configure.in | 1 +
- 1 file changed, 1 insertion(+)
 
 diff --git a/erts/configure.in b/erts/configure.in
-index 5b72215..9f396f0 100644
+index 230f27a..9ad3671 100644
 --- a/erts/configure.in
 +++ b/erts/configure.in
-@@ -625,6 +625,7 @@ case $chk_arch_ in
+@@ -612,6 +612,7 @@ case $chk_arch_ in
      x86_64)	ARCH=amd64;;
      amd64)	ARCH=amd64;;
      macppc)	ARCH=ppc;;
