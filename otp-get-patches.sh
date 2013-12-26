@@ -42,7 +42,7 @@ tmpdir="$(mktemp -d --tmpdir="$PWD")"
 
 # Generate patch files
 pushd "$otp_dir"
-git format-patch -N -o "$tmpdir" "${otp_upstream}..${otp_fedora}" > "$tmpdir/patch-list.txt"
+git format-patch -N --no-signature --no-stat -o "$tmpdir" "${otp_upstream}..${otp_fedora}" > "$tmpdir/patch-list.txt"
 popd
 
 test -s "$tmpdir/patch-list.txt"
