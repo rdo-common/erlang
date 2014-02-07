@@ -5,6 +5,10 @@
 # Use %%{nil} for %%{upstream_rel} for tracking source like otp_src_R14B.tar.gz,
 # and 01 %%{upstream_rel} for tracking source like otp_src_R14B01.tar.gz.
 
+%global need_bootstrap_set 1
+
+%{!?need_bootstrap: %global need_bootstrap %{need_bootstrap_set}}
+
 %if 0%{upstream_rel}
 %global upstream_rel_for_rpm %{upstream_rel}
 %else
@@ -28,7 +32,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel_for_rpm}.1%{?dist}
+Release:	%{upstream_rel_for_rpm}.2%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -105,12 +109,15 @@ BuildRequires:	m4
 %else
 BuildRequires:	fop
 BuildRequires:	libxslt
+
+%if 0%{?need_bootstrap} < 1
 # Required for building docs (escript)
 BuildRequires:	erlang
 %endif
 %endif
+%endif
 
-%if 0%{?el6}%{?el7}%{?fedora}
+%if 0%{?el6}%{?fedora}
 BuildRequires:	emacs
 BuildRequires:	xemacs
 BuildRequires:	emacs-el
@@ -130,6 +137,7 @@ Requires: erlang-cosTime%{?_isa} = %{version}-%{release}
 Requires: erlang-cosTransactions%{?_isa} = %{version}-%{release}
 Requires: erlang-crypto%{?_isa} = %{version}-%{release}
 Requires: erlang-debugger%{?_isa} = %{version}-%{release}
+
 Requires: erlang-dialyzer%{?_isa} = %{version}-%{release}
 Requires: erlang-diameter%{?_isa} = %{version}-%{release}
 Requires: erlang-edoc%{?_isa} = %{version}-%{release}
@@ -530,7 +538,7 @@ Group:		Development/Languages
 Requires:	%{name}-erts%{?_isa} = %{version}-%{release}
 # FIXME see erlang-ic also
 #Requires:	jpackage-utils
-%if 0%{?fedora}
+%if 0%{?fedora}%{?el7}
 BuildRequires:	java-devel
 %else
 %ifarch %{ix86} x86_64
@@ -894,7 +902,7 @@ Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 %description xmerl
 Provides support for XML 1.0.
 
-%if 0%{?el6}%{?el7}%{?fedora}
+%if 0%{?el6}%{?fedora}
 %package -n emacs-erlang
 Summary:	Compiled elisp files for erlang-mode under GNU Emacs
 Requires:	emacs-common-erlang = %{version}-%{release}
@@ -985,7 +993,7 @@ make clean
 # GNU Emacs/XEmacs related stuff
 erlang_tools_vsn="$(sed -n 's/TOOLS_VSN = //p' lib/tools/vsn.mk)"
 
-%if 0%{?el6}%{?el7}%{?fedora}
+%if 0%{?el6}%{?fedora}
 # GNU Emacs related stuff
 cat > emacs-erlang-init.el << EOF
 (setq load-path (cons "%{_emacs_sitelispdir}/erlang" load-path))
@@ -1032,7 +1040,7 @@ make docs
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%if 0%{?el6}%{?el7}%{?fedora}
+%if 0%{?el6}%{?fedora}
 # GNU Emacs/XEmacs related stuff
 erlang_tools_vsn="$(sed -n 's/TOOLS_VSN = //p' lib/tools/vsn.mk)"
 
@@ -2261,7 +2269,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/erlang/man/man3/xmerl_xsd.*
 %endif
 
-%if 0%{?el6}%{?el7}%{?fedora}
+%if 0%{?el6}%{?fedora}
 %files -n emacs-erlang
 %dir %{_emacs_sitelispdir}/erlang
 %doc %{_emacs_sitelispdir}/erlang/README
@@ -2283,6 +2291,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Feb 7 2014 Sam Kottler <skottler@fedoraproject.org> - R16B-03.2
+- Fix macro usage for EPEL7 build and added need_bootstrap
+
 * Tue Dec 24 2013 Peter Lemenkov <lemenkov@gmail.com> - R16B-03.1
 - Ver. R16B03
 
