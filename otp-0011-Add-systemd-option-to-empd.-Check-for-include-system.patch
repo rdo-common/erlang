@@ -1,0 +1,74 @@
+From: "Matwey V. Kornilov" <matwey.kornilov@gmail.com>
+Date: Tue, 17 Dec 2013 18:16:56 +0400
+Subject: [PATCH] Add -systemd option to empd. Check for include
+ systemd/sd-daemon.h and wrap systemd code into ifdef-s.
+
+
+diff --git a/erts/configure.in b/erts/configure.in
+index 9ad3671..125e579 100644
+--- a/erts/configure.in
++++ b/erts/configure.in
+@@ -1565,6 +1565,8 @@ AC_CHECK_MEMBERS([struct ifreq.ifr_enaddr], [], [],
+ 	 #endif
+ 	])
+ 
++AC_CHECK_HEADERS(systemd/sd-daemon.h)
++
+ dnl ----------------------------------------------------------------------
+ dnl Check the availability for libdlpi
+ dnl ----------------------------------------------------------------------
+diff --git a/erts/epmd/src/epmd.c b/erts/epmd/src/epmd.c
+index 2d55b37..fc58882 100644
+--- a/erts/epmd/src/epmd.c
++++ b/erts/epmd/src/epmd.c
+@@ -175,6 +175,9 @@ int main(int argc, char** argv)
+     g->nodes.reg = g->nodes.unreg = g->nodes.unreg_tail = NULL;
+     g->nodes.unreg_count = 0;
+     g->active_conn    = 0;
++#ifdef HAVE_SYSTEMD_SD_DAEMON_H
++    g->is_systemd     = 0;
++#endif
+ 
+     for (i = 0; i < MAX_LISTEN_SOCKETS; i++)
+ 	g->listenfd[i] = -1;
+@@ -248,8 +251,12 @@ int main(int argc, char** argv)
+ 	    else
+ 		usage(g);
+ 	    epmd_cleanup_exit(g,0);
+-	}
+-	else
++#ifdef HAVE_SYSTEMD_SD_DAEMON_H
++	} else if (strcmp(argv[0], "-systemd") == 0) {
++            g->is_systemd = 1;
++            argv++; argc--;
++#endif
++	} else
+ 	    usage(g);
+     }
+     dbg_printf(g,1,"epmd running - daemon = %d",g->is_daemon);
+@@ -454,6 +461,11 @@ static void usage(EpmdVars *g)
+     fprintf(stderr, "        Forcibly unregisters a name with epmd\n");
+     fprintf(stderr, "        (only allowed if -relaxed_command_check was given when \n");
+     fprintf(stderr, "        epmd was started).\n");
++#ifdef HAVE_SYSTEMD_SD_DAEMON_H
++    fprintf(stderr, "    -systemd\n");
++    fprintf(stderr, "        Wait for socket from systemd. The option makes sense\n");
++    fprintf(stderr, "        when started from .socket unit.\n");
++#endif
+     epmd_cleanup_exit(g,1);
+ }
+ 
+diff --git a/erts/epmd/src/epmd_int.h b/erts/epmd/src/epmd_int.h
+index 656dbd1..bf1ddd8 100644
+--- a/erts/epmd/src/epmd_int.h
++++ b/erts/epmd/src/epmd_int.h
+@@ -321,6 +321,9 @@ typedef struct {
+   int listenfd[MAX_LISTEN_SOCKETS];
+   char *addresses;
+   char **argv;
++#ifdef HAVE_SYSTEMD_SD_DAEMON_H
++  int is_systemd;
++#endif
+ } EpmdVars;
+ 
+ void dbg_printf(EpmdVars*,int,const char*,...);

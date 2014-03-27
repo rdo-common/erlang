@@ -460,10 +460,10 @@ index 51167b3..a623824 100644
  	$(INSTALL_DATA) $(TARGET_FILES) "$(RELSYSDIR)/ebin"
  
 diff --git a/lib/inets/src/http_server/Makefile b/lib/inets/src/http_server/Makefile
-index 67555d5..0620f3a 100644
+index 2660d04..c873a27 100644
 --- a/lib/inets/src/http_server/Makefile
 +++ b/lib/inets/src/http_server/Makefile
-@@ -125,7 +125,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
+@@ -126,7 +126,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
  release_spec: opt
  	$(INSTALL_DIR)  "$(RELSYSDIR)/src"
  	$(INSTALL_DIR)  "$(RELSYSDIR)/src/http_server"
