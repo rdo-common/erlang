@@ -5,7 +5,7 @@
 # Use %%{nil} for %%{upstream_rel} for tracking source like otp_src_R14B.tar.gz,
 # and 01 %%{upstream_rel} for tracking source like otp_src_R14B01.tar.gz.
 
-%global need_bootstrap_set 1
+%global need_bootstrap_set 0
 
 %{!?need_bootstrap: %global need_bootstrap %{need_bootstrap_set}}
 
