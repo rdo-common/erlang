@@ -32,7 +32,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel_for_rpm}.3%{?dist}
+Release:	%{upstream_rel_for_rpm}.4%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -131,6 +131,8 @@ BuildRequires:	xemacs-packages-extra-el
 %endif
 
 %if 0%{?el7}%{?fedora}
+# for <systemd/sd-daemon.h>
+BuildRequires:	systemd-devel
 Requires(post):	systemd
 Requires(preun):systemd
 Requires(postun):systemd
@@ -1175,6 +1177,13 @@ ln -s "${jinterface_lib_dir}priv/OtpErlang.jar" "$RPM_BUILD_ROOT%{_javadir}/%{na
 install -D -p -m 0644 %{SOURCE5} %{buildroot}%{_unitdir}/epmd.service
 install -D -p -m 0644 %{SOURCE6} %{buildroot}%{_unitdir}/epmd.socket
 %endif
+
+
+%pre erts
+getent group epmd >/dev/null || groupadd -r epmd
+getent passwd epmd >/dev/null || \
+useradd -r -g epmd -d /tmp -s /sbin/nologin \
+-c "Erlang Port Mapper Daemon" epmd 2>/dev/null || :
 
 
 %clean
@@ -2316,6 +2325,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Mar 28 2014 Peter Lemenkov <lemenkov@gmail.com> - R16B-03.4
+- Create group and user for EPMD
+
 * Thu Mar 27 2014 Peter Lemenkov <lemenkov@gmail.com> - R16B-03.3
 - Ver. R16B03-1 (Bugfix release)
 - Enabled systemd support in EPMD
