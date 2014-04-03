@@ -32,7 +32,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel_for_rpm}.4%{?dist}
+Release:	%{upstream_rel_for_rpm}.5%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -2325,6 +2325,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Apr 02 2014 Peter Lemenkov <lemenkov@gmail.com> - R16B-03.5
+- Improve EPMD service
+
 * Fri Mar 28 2014 Peter Lemenkov <lemenkov@gmail.com> - R16B-03.4
 - Create group and user for EPMD
 
