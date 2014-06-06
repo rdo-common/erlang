@@ -6,7 +6,7 @@ Requires=epmd.socket
 [Service]
 ExecStart=/usr/bin/epmd -systemd
 #ExecStop=/usr/bin/epmd -kill
-Type=simple
+Type=notify
 StandardOutput=journal
 StandardError=journal
 DeviceAllow=/dev/null rw
