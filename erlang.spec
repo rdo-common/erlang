@@ -1534,6 +1534,7 @@ rm -rf $RPM_BUILD_ROOT
 %if 0%{?el7}%{?fedora}
 %{_unitdir}/epmd.service
 %{_unitdir}/epmd.socket
+%{_unitdir}/epmd@.socket
 %endif
 
 %files et
