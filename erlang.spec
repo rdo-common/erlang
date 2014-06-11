@@ -32,7 +32,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel_for_rpm}.6%{?dist}
+Release:	%{upstream_rel_for_rpm}.7%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -46,7 +46,8 @@ Source2:	http://erlang.org/download/otp_doc_man_%{upstream_ver}%{upstream_rel}-1
 Source4:	http://www.erlang.org/download/otp_src_%{upstream_ver}%{upstream_rel}-1.readme
 Source5:	epmd.service
 Source6:	epmd.socket
-Source7:	epmd@.socket
+Source7:	epmd@.service
+Source8:	epmd@.socket
 Source999:	otp-get-patches.sh
 
 
@@ -1181,7 +1182,8 @@ ln -s "${jinterface_lib_dir}priv/OtpErlang.jar" "$RPM_BUILD_ROOT%{_javadir}/%{na
 %if 0%{?el7}%{?fedora}
 install -D -p -m 0644 %{SOURCE5} %{buildroot}%{_unitdir}/epmd.service
 install -D -p -m 0644 %{SOURCE6} %{buildroot}%{_unitdir}/epmd.socket
-install -D -p -m 0644 %{SOURCE7} %{buildroot}%{_unitdir}/epmd@.socket
+install -D -p -m 0644 %{SOURCE7} %{buildroot}%{_unitdir}/epmd@.service
+install -D -p -m 0644 %{SOURCE8} %{buildroot}%{_unitdir}/epmd@.socket
 %endif
 
 
@@ -1534,6 +1536,7 @@ rm -rf $RPM_BUILD_ROOT
 %if 0%{?el7}%{?fedora}
 %{_unitdir}/epmd.service
 %{_unitdir}/epmd.socket
+%{_unitdir}/epmd@.service
 %{_unitdir}/epmd@.socket
 %endif
 
@@ -2332,6 +2335,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jun 11 2014 Peter Lemenkov <lemenkov@gmail.com> - R16B-03.7
+- Added missing template for epmd@.socket
+
 * Fri Jun 06 2014 Peter Lemenkov <lemenkov@gmail.com> - R16B-03.6
 - Add configurable EPMD socket unit
 - Change EPMD service's type from simple to notify
