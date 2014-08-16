@@ -32,7 +32,7 @@
 
 Name:		erlang
 Version:	%{upstream_ver}
-Release:	%{upstream_rel_for_rpm}.7%{?dist}
+Release:	%{upstream_rel_for_rpm}.7%{?dist}.1
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -2335,6 +2335,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - R16B-03.7.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
 * Wed Jun 11 2014 Peter Lemenkov <lemenkov@gmail.com> - R16B-03.7
 - Added missing template for epmd@.socket
 
