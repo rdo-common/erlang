@@ -5,10 +5,10 @@ Subject: [PATCH] Remove rpath
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 
 diff --git a/lib/crypto/c_src/Makefile.in b/lib/crypto/c_src/Makefile.in
-index a20ddff..e890927 100644
+index 8c92b5b..5b36c19 100644
 --- a/lib/crypto/c_src/Makefile.in
 +++ b/lib/crypto/c_src/Makefile.in
-@@ -85,7 +85,7 @@ endif
+@@ -89,7 +89,7 @@ endif
  DYNAMIC_CRYPTO_LIB=@SSL_DYNAMIC_ONLY@
  
  ifeq ($(DYNAMIC_CRYPTO_LIB),yes)

@@ -8,7 +8,7 @@ Conflicts:
 	erts/configure.in
 
 diff --git a/erts/epmd/src/epmd.c b/erts/epmd/src/epmd.c
-index fc58882..1757fa9 100644
+index 3cfa7a7..67e8b49 100644
 --- a/erts/epmd/src/epmd.c
 +++ b/erts/epmd/src/epmd.c
 @@ -589,9 +589,11 @@ void epmd_cleanup_exit(EpmdVars *g, int exitval)
@@ -27,10 +27,10 @@ index fc58882..1757fa9 100644
  }
  
 diff --git a/erts/epmd/src/epmd_srv.c b/erts/epmd/src/epmd_srv.c
-index cb8ca96..78524a6 100644
+index 48fd7a5..18d898a 100644
 --- a/erts/epmd/src/epmd_srv.c
 +++ b/erts/epmd/src/epmd_srv.c
-@@ -394,8 +394,11 @@ void run(EpmdVars *g)
+@@ -399,8 +399,11 @@ void run(EpmdVars *g)
        }
        select_fd_set(g, listensock[i]);
      }
