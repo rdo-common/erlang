@@ -9,7 +9,7 @@
 %endif
 
 Name:		erlang
-Version:	17.2.1
+Version:	17.2.2
 Release:	1%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
@@ -2208,6 +2208,11 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 
 
 %changelog
+* Sun Sep  7 2014 Peter Lemenkov <lemenkov@gmail.com> - 17.2.2-1
+- Ver. 17.2.2
+- Fixed a race which could make create_table fail if a node was going down
+  during the transaction. See upstream issue OTP-12124 for a further reference.
+
 * Tue Aug 26 2014 Peter Lemenkov <lemenkov@gmail.com> - 17.2.1-1
 - Ver. 17.2.1
 - Removed support for EPEL5
