@@ -34,10 +34,10 @@ index 6798da0..4e3ae0e 100644
  	$(INSTALL_DATA) $(EXAMPLES) "$(RELSYSDIR)/examples"
  
 diff --git a/lib/common_test/src/Makefile b/lib/common_test/src/Makefile
-index 4600c0a..1675a4a 100644
+index 8d74546..a25d85d 100644
 --- a/lib/common_test/src/Makefile
 +++ b/lib/common_test/src/Makefile
-@@ -139,7 +139,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
+@@ -140,7 +140,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt
  	$(INSTALL_DIR) "$(RELSYSDIR)/src"
@@ -873,10 +873,10 @@ index 698c341..3344a0c 100644
  	$(INSTALL_DATA) $(TARGET_FILES) "$(RELSYSDIR)/ebin"
  # 	$(INSTALL_DIR) "$(RELSYSDIR)/include"
 diff --git a/lib/ssh/src/Makefile b/lib/ssh/src/Makefile
-index 2ef2859..aac91a3 100644
+index 04ce750..ef55c37 100644
 --- a/lib/ssh/src/Makefile
 +++ b/lib/ssh/src/Makefile
-@@ -134,7 +134,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
+@@ -135,7 +135,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt
  	$(INSTALL_DIR) "$(RELSYSDIR)/src"

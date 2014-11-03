@@ -8,10 +8,10 @@ Conflicts:
 	erts/configure.in
 
 diff --git a/erts/epmd/src/epmd.c b/erts/epmd/src/epmd.c
-index 3cfa7a7..67e8b49 100644
+index 9630e0c..dff9bc6 100644
 --- a/erts/epmd/src/epmd.c
 +++ b/erts/epmd/src/epmd.c
-@@ -589,9 +589,11 @@ void epmd_cleanup_exit(EpmdVars *g, int exitval)
+@@ -593,9 +593,11 @@ void epmd_cleanup_exit(EpmdVars *g, int exitval)
        for(i=0; g->argv[i] != NULL; ++i)
  	  free(g->argv[i]);
        free(g->argv);

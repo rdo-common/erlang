@@ -46,10 +46,10 @@ index 5b36c19..470821e 100644
  endif
  endif
 diff --git a/lib/erl_interface/src/Makefile.in b/lib/erl_interface/src/Makefile.in
-index e36b39c..fd377bb 100644
+index 7d914a0..b013939 100644
 --- a/lib/erl_interface/src/Makefile.in
 +++ b/lib/erl_interface/src/Makefile.in
-@@ -876,14 +876,14 @@ ifneq ($(EXE_TARGETS),)
+@@ -892,14 +892,14 @@ ifneq ($(EXE_TARGETS),)
  	$(INSTALL_PROGRAM) $(EXE_TARGETS) "$(RELSYSDIR)/bin"
  endif
  	$(INSTALL_DATA) $(EXTRA)        "$(RELSYSDIR)/src"
