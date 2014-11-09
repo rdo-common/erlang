@@ -5,7 +5,7 @@ Subject: [PATCH] Split off webtool dependency from tools
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 
 diff --git a/lib/tools/src/cover_web.erl b/lib/tools/src/cover_web.erl
-index 69f2f3b..397826a 100644
+index 69f2f3b..9085300 100644
 --- a/lib/tools/src/cover_web.erl
 +++ b/lib/tools/src/cover_web.erl
 @@ -50,14 +50,25 @@
@@ -29,8 +29,8 @@ index 69f2f3b..397826a 100644
 -    webtool:stop().
 +    try
 +        % Disable automatic dependency picking up
-+        erlang:apply(webtool, stop_tools, [[],"app=webcover"])
-+        erlang:apply(webtool, stop, []),
++        erlang:apply(webtool, stop_tools, [[],"app=webcover"]),
++        erlang:apply(webtool, stop, [])
 +    catch
 +        error:undef -> error_logger:error_msg("No erlang-webtool found.~nPlease install erlang-webtool package first.~n")
 +    end,
