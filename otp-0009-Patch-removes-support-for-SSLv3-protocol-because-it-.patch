@@ -5,7 +5,7 @@ Subject: [PATCH] Patch removes support for SSLv3 protocol because it is proved
 
 
 diff --git a/lib/ssl/doc/src/ssl.xml b/lib/ssl/doc/src/ssl.xml
-index f14d0b8..3a768e9 100644
+index b53344e..b245621 100644
 --- a/lib/ssl/doc/src/ssl.xml
 +++ b/lib/ssl/doc/src/ssl.xml
 @@ -123,7 +123,7 @@
@@ -45,10 +45,10 @@ index 43cb393..ff12e04 100644
  
        <tag><c><![CDATA[session_lifetime = integer() <optional>]]></c></tag>
 diff --git a/lib/ssl/src/ssl_internal.hrl b/lib/ssl/src/ssl_internal.hrl
-index 85724de..14013a4 100644
+index 75efb64..155fa81 100644
 --- a/lib/ssl/src/ssl_internal.hrl
 +++ b/lib/ssl/src/ssl_internal.hrl
-@@ -64,8 +64,8 @@
+@@ -67,8 +67,8 @@
  -define(TRUE, 0).
  -define(FALSE, 1).
  

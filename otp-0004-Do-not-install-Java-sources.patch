@@ -18,10 +18,10 @@ index 273614e..5b1fb57 100644
  	$(INSTALL_DATA) $(JAVA_DEST_ROOT)$(JARFILE) "$(RELSYSDIR)/priv"
  
 diff --git a/lib/jinterface/java_src/com/ericsson/otp/erlang/Makefile b/lib/jinterface/java_src/com/ericsson/otp/erlang/Makefile
-index 8ae1ca0..adaaf55 100644
+index ea3ab77..e95757e 100644
 --- a/lib/jinterface/java_src/com/ericsson/otp/erlang/Makefile
 +++ b/lib/jinterface/java_src/com/ericsson/otp/erlang/Makefile
-@@ -114,8 +114,6 @@ release release_docs release_tests release_html:
+@@ -119,8 +119,6 @@ release release_docs release_tests release_html:
  	$(V_at)$(MAKE) $(MFLAGS) RELEASE_PATH="$(RELEASE_PATH)" $(TARGET_MAKEFILE)  $@_spec
  
  release_spec: opt
