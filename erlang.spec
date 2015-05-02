@@ -10,7 +10,7 @@
 
 Name:		erlang
 Version:	17.4
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -2216,6 +2216,9 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 
 
 %changelog
+* Sat May 02 2015 Kalev Lember <kalevlember@gmail.com> - 17.4-2
+- Rebuilt for GCC 5 C++11 ABI change
+
 * Fri Dec 12 2014 Peter Lemenkov <lemenkov@gmail.com> - 17.4-1
 - Ver. 17.4
 
