@@ -1,0 +1,576 @@
+diff -Naur otp-OTP-17.4.orig/lib/ssl/doc/src/ssl.xml otp-OTP-17.4/lib/ssl/doc/src/ssl.xml
+--- otp-OTP-17.4.orig/lib/ssl/doc/src/ssl.xml	2015-08-05 16:52:39.988500514 -0400
++++ otp-OTP-17.4/lib/ssl/doc/src/ssl.xml	2015-08-05 16:52:50.478441422 -0400
+@@ -4,7 +4,7 @@
+ <erlref>
+   <header>
+     <copyright>
+-      <year>1999</year><year>2014</year>
++      <year>1999</year><year>2015</year>
+       <holder>Ericsson AB. All Rights Reserved.</holder>
+     </copyright>
+     <legalnotice>
+@@ -348,11 +348,23 @@
+ 	</p>
+       </item>
+ 
++      <tag>{padding_check, boolean()}</tag>
++      <item>
++	<p> This option only affects TLS-1.0 connections.
++	If set to false it disables the block cipher padding check
++	to be able to interoperate with legacy software.
++	</p>
++	
++	<warning><p> Using this option makes TLS vulnerable to
++	the Poodle attack</p></warning>
++	
++      </item>
++      
+     </taglist>
+-
++    
+   </section>
+-
+-   <section>
++  
++  <section>
+     <title>SSL OPTION DESCRIPTIONS - CLIENT SIDE</title>
+ 
+     <p>Options described here are client specific or has a slightly different
+diff -Naur otp-OTP-17.4.orig/lib/ssl/src/dtls_record.erl otp-OTP-17.4/lib/ssl/src/dtls_record.erl
+--- otp-OTP-17.4.orig/lib/ssl/src/dtls_record.erl	2015-08-05 16:52:39.989500508 -0400
++++ otp-OTP-17.4/lib/ssl/src/dtls_record.erl	2015-08-05 16:52:50.478441422 -0400
+@@ -1,7 +1,7 @@
+ %%
+ %% %CopyrightBegin%
+ %%
+-%% Copyright Ericsson AB 2013-2014. All Rights Reserved.
++%% Copyright Ericsson AB 2013-2015. All Rights Reserved.
+ %%
+ %% The contents of this file are subject to the Erlang Public License,
+ %% Version 1.1, (the "License"); you may not use this file except in
+@@ -146,7 +146,7 @@
+ 		   = ConnnectionStates0) ->
+     CompressAlg = SecParams#security_parameters.compression_algorithm,
+     {PlainFragment, Mac, ReadState1} = ssl_record:decipher(dtls_v1:corresponding_tls_version(Version),
+-							   CipherFragment, ReadState0),
++							   CipherFragment, ReadState0, true),
+     MacHash = calc_mac_hash(ReadState1, Type, Version, Epoch, Seq, PlainFragment),
+     case ssl_record:is_correct_mac(Mac, MacHash) of
+ 	true ->
+diff -Naur otp-OTP-17.4.orig/lib/ssl/src/ssl_cipher.erl otp-OTP-17.4/lib/ssl/src/ssl_cipher.erl
+--- otp-OTP-17.4.orig/lib/ssl/src/ssl_cipher.erl	2015-08-05 16:52:39.989500508 -0400
++++ otp-OTP-17.4/lib/ssl/src/ssl_cipher.erl	2015-08-05 16:52:50.479441417 -0400
+@@ -1,7 +1,7 @@
+ %%
+ %% %CopyrightBegin%
+ %%
+-%% Copyright Ericsson AB 2007-2014. All Rights Reserved.
++%% Copyright Ericsson AB 2007-2015. All Rights Reserved.
+ %%
+ %% The contents of this file are subject to the Erlang Public License,
+ %% Version 1.1, (the "License"); you may not use this file except in
+@@ -33,8 +33,7 @@
+ -include_lib("public_key/include/public_key.hrl").
+ 
+ -export([security_parameters/2, security_parameters/3, suite_definition/1,
+-	 decipher/5, cipher/5,
+-	 suite/1, suites/1, all_suites/1, 
++	 decipher/6, cipher/5, suite/1, suites/1, all_suites/1, 
+ 	 ec_keyed_suites/0, anonymous_suites/0, psk_suites/1, srp_suites/0,
+ 	 openssl_suite/1, openssl_suite_name/1, filter/2, filter_suites/1,
+ 	 hash_algorithm/1, sign_algorithm/1, is_acceptable_hash/2]).
+@@ -143,17 +142,18 @@
+     {T, CS0#cipher_state{iv=NextIV}}.
+ 
+ %%--------------------------------------------------------------------
+--spec decipher(cipher_enum(), integer(), #cipher_state{}, binary(), ssl_record:ssl_version()) ->
++-spec decipher(cipher_enum(), integer(), #cipher_state{}, binary(), 
++	       ssl_record:ssl_version(), boolean()) ->
+ 		      {binary(), binary(), #cipher_state{}} | #alert{}.
+ %%
+ %% Description: Decrypts the data and the MAC using cipher described
+ %% by cipher_enum() and updating the cipher state.
+ %%-------------------------------------------------------------------
+-decipher(?NULL, _HashSz, CipherState, Fragment, _) ->
++decipher(?NULL, _HashSz, CipherState, Fragment, _, _) ->
+     {Fragment, <<>>, CipherState};
+-decipher(?RC4, HashSz, CipherState, Fragment, _) ->
++decipher(?RC4, HashSz, CipherState, Fragment, _, _) ->
+     State0 = case CipherState#cipher_state.state of
+-                 undefined -> crypto:stream_init(rc4, CipherState#cipher_state.key);
++		 undefined -> crypto:stream_init(rc4, CipherState#cipher_state.key);
+                  S -> S
+              end,
+     try crypto:stream_decrypt(State0, Fragment) of
+@@ -171,23 +171,23 @@
+ 	    ?ALERT_REC(?FATAL, ?BAD_RECORD_MAC)
+     end;
+ 
+-decipher(?DES, HashSz, CipherState, Fragment, Version) ->
++decipher(?DES, HashSz, CipherState, Fragment, Version, PaddingCheck) ->
+     block_decipher(fun(Key, IV, T) ->
+ 			   crypto:block_decrypt(des_cbc, Key, IV, T)
+-		   end, CipherState, HashSz, Fragment, Version);
+-decipher(?'3DES', HashSz, CipherState, Fragment, Version) ->
++		   end, CipherState, HashSz, Fragment, Version, PaddingCheck);
++decipher(?'3DES', HashSz, CipherState, Fragment, Version, PaddingCheck) ->
+     block_decipher(fun(<<K1:8/binary, K2:8/binary, K3:8/binary>>, IV, T) ->
+ 			   crypto:block_decrypt(des3_cbc, [K1, K2, K3], IV, T)
+-		   end, CipherState, HashSz, Fragment, Version);
+-decipher(?AES, HashSz, CipherState, Fragment, Version) ->
++		   end, CipherState, HashSz, Fragment, Version, PaddingCheck);
++decipher(?AES, HashSz, CipherState, Fragment, Version, PaddingCheck) ->
+     block_decipher(fun(Key, IV, T) when byte_size(Key) =:= 16 ->
+ 			   crypto:block_decrypt(aes_cbc128, Key, IV, T);
+ 		      (Key, IV, T) when byte_size(Key) =:= 32 ->
+ 			   crypto:block_decrypt(aes_cbc256, Key, IV, T)
+-		   end, CipherState, HashSz, Fragment, Version).
++		   end, CipherState, HashSz, Fragment, Version, PaddingCheck).
+ 
+ block_decipher(Fun, #cipher_state{key=Key, iv=IV} = CipherState0, 
+-	       HashSz, Fragment, Version) ->
++	       HashSz, Fragment, Version, PaddingCheck) ->
+     try 
+ 	Text = Fun(Key, IV, Fragment),
+ 	NextIV = next_iv(Fragment, IV),
+@@ -195,7 +195,7 @@
+ 	Content = GBC#generic_block_cipher.content,
+ 	Mac = GBC#generic_block_cipher.mac,
+ 	CipherState1 = CipherState0#cipher_state{iv=GBC#generic_block_cipher.next_iv},
+-	case is_correct_padding(GBC, Version) of
++	case is_correct_padding(GBC, Version, PaddingCheck) of
+ 	    true ->
+ 		{Content, Mac, CipherState1};
+ 	    false ->
+@@ -1288,16 +1288,18 @@
+     #generic_stream_cipher{content=Content,
+ 			   mac=Mac}.
+ 
+-%% For interoperability reasons we do not check the padding content in
+-%% SSL 3.0 and TLS 1.0 as it is not strictly required and breaks
+-%% interopability with for instance Google. 
+ is_correct_padding(#generic_block_cipher{padding_length = Len,
+-					 padding = Padding}, {3, N})
+-  when N == 0; N == 1 ->
+-    Len == byte_size(Padding); 
+-%% Padding must be check in TLS 1.1 and after  
++					 padding = Padding}, {3, 0}, _) ->
++    Len == byte_size(Padding); %% Only length check is done in SSL 3.0 spec
++%% For interoperability reasons it is possible to disable
++%% the padding check when using TLS 1.0, as it is not strictly required 
++%% in the spec (only recommended), howerver this makes TLS 1.0 vunrable to the Poodle attack 
++%% so by default this clause will not match
++is_correct_padding(GenBlockCipher, {3, 1}, false) ->
++    is_correct_padding(GenBlockCipher, {3, 0}, false);
++%% Padding must be checked in TLS 1.1 and after  
+ is_correct_padding(#generic_block_cipher{padding_length = Len,
+-					 padding = Padding}, _) ->
++					 padding = Padding}, _, _) ->
+     Len == byte_size(Padding) andalso
+ 		list_to_binary(lists:duplicate(Len, Len)) == Padding.
+ 
+diff -Naur otp-OTP-17.4.orig/lib/ssl/src/ssl.erl otp-OTP-17.4/lib/ssl/src/ssl.erl
+--- otp-OTP-17.4.orig/lib/ssl/src/ssl.erl	2015-08-05 16:52:39.989500508 -0400
++++ otp-OTP-17.4/lib/ssl/src/ssl.erl	2015-08-05 16:52:50.479441417 -0400
+@@ -1,7 +1,7 @@
+ %%
+ %% %CopyrightBegin%
+ %%
+-%% Copyright Ericsson AB 1999-2014. All Rights Reserved.
++%% Copyright Ericsson AB 1999-2015. All Rights Reserved.
+ %%
+ %% The contents of this file are subject to the Erlang Public License,
+ %% Version 1.1, (the "License"); you may not use this file except in
+@@ -656,7 +656,8 @@
+ 		    log_alert = handle_option(log_alert, Opts, true),
+ 		    server_name_indication = handle_option(server_name_indication, Opts, undefined),
+ 		    honor_cipher_order = handle_option(honor_cipher_order, Opts, false),
+-		    protocol = proplists:get_value(protocol, Opts, tls)
++		    protocol = proplists:get_value(protocol, Opts, tls),
++		    padding_check =  proplists:get_value(padding_check, Opts, true)
+ 		   },
+ 
+     CbInfo  = proplists:get_value(cb_info, Opts, {gen_tcp, tcp, tcp_closed, tcp_error}),
+@@ -669,7 +670,7 @@
+ 		  cb_info, renegotiate_at, secure_renegotiate, hibernate_after,
+ 		  erl_dist, next_protocols_advertised,
+ 		  client_preferred_next_protocols, log_alert,
+-		  server_name_indication, honor_cipher_order],
++		  server_name_indication, honor_cipher_order, padding_check],
+ 
+     SockOpts = lists:foldl(fun(Key, PropList) ->
+ 				   proplists:delete(Key, PropList)
+@@ -847,6 +848,8 @@
+     undefined;
+ validate_option(honor_cipher_order, Value) when is_boolean(Value) ->
+     Value;
++validate_option(padding_check, Value) when is_boolean(Value) ->
++    Value;
+ validate_option(Opt, Value) ->
+     throw({error, {options, {Opt, Value}}}).
+ 
+diff -Naur otp-OTP-17.4.orig/lib/ssl/src/ssl_internal.hrl otp-OTP-17.4/lib/ssl/src/ssl_internal.hrl
+--- otp-OTP-17.4.orig/lib/ssl/src/ssl_internal.hrl	2015-08-05 16:52:39.990500503 -0400
++++ otp-OTP-17.4/lib/ssl/src/ssl_internal.hrl	2015-08-05 16:52:50.479441417 -0400
+@@ -1,7 +1,7 @@
+ %%
+ %% %CopyrightBegin%
+ %%
+-%% Copyright Ericsson AB 2007-2014. All Rights Reserved.
++%% Copyright Ericsson AB 2007-2015. All Rights Reserved.
+ %%
+ %% The contents of this file are subject to the Erlang Public License,
+ %% Version 1.1, (the "License"); you may not use this file except in
+@@ -117,7 +117,8 @@
+ 	  server_name_indication = undefined,
+ 	  %% Should the server prefer its own cipher order over the one provided by
+ 	  %% the client?
+-	  honor_cipher_order = false
++	  honor_cipher_order = false,
++	  padding_check = true
+ 	  }).
+ 
+ -record(socket_options,
+diff -Naur otp-OTP-17.4.orig/lib/ssl/src/ssl_record.erl otp-OTP-17.4/lib/ssl/src/ssl_record.erl
+--- otp-OTP-17.4.orig/lib/ssl/src/ssl_record.erl	2015-08-05 16:52:39.989500508 -0400
++++ otp-OTP-17.4/lib/ssl/src/ssl_record.erl	2015-08-05 16:52:50.479441417 -0400
+@@ -1,7 +1,7 @@
+ %%
+ %% %CopyrightBegin%
+ %%
+-%% Copyright Ericsson AB 2013-2014. All Rights Reserved.
++%% Copyright Ericsson AB 2013-2015. All Rights Reserved.
+ %%
+ %% The contents of this file are subject to the Erlang Public License,
+ %% Version 1.1, (the "License"); you may not use this file except in
+@@ -48,7 +48,7 @@
+ -export([compress/3, uncompress/3, compressions/0]).
+ 
+ %% Payload encryption/decryption
+--export([cipher/4, decipher/3, is_correct_mac/2]).
++-export([cipher/4, decipher/4, is_correct_mac/2]).
+ 
+ -export_type([ssl_version/0, ssl_atom_version/0]).
+ 
+@@ -376,8 +376,9 @@
+     {CipherFragment, CipherS1} =
+ 	ssl_cipher:cipher(BulkCipherAlgo, CipherS0, MacHash, Fragment, Version),
+     {CipherFragment,  WriteState0#connection_state{cipher_state = CipherS1}}.
++
+ %%--------------------------------------------------------------------
+--spec decipher(ssl_version(), binary(), #connection_state{}) -> {binary(), binary(), #connection_state{}} | #alert{}.
++-spec decipher(ssl_version(), binary(), #connection_state{}, boolean()) -> {binary(), binary(), #connection_state{}} | #alert{}.
+ %%
+ %% Description: Payload decryption
+ %%--------------------------------------------------------------------
+@@ -387,8 +388,8 @@
+ 							BulkCipherAlgo,
+ 						    hash_size = HashSz},
+ 			   cipher_state = CipherS0
+-			  } = ReadState) ->
+-    case ssl_cipher:decipher(BulkCipherAlgo, HashSz, CipherS0, CipherFragment, Version) of
++			  } = ReadState, PaddingCheck) ->
++    case ssl_cipher:decipher(BulkCipherAlgo, HashSz, CipherS0, CipherFragment, Version, PaddingCheck) of
+ 	{PlainFragment, Mac, CipherS1} ->
+ 	    CS1 = ReadState#connection_state{cipher_state = CipherS1},
+ 	    {PlainFragment, Mac, CS1};
+diff -Naur otp-OTP-17.4.orig/lib/ssl/src/tls_connection.erl otp-OTP-17.4/lib/ssl/src/tls_connection.erl
+--- otp-OTP-17.4.orig/lib/ssl/src/tls_connection.erl	2015-08-05 16:52:39.990500503 -0400
++++ otp-OTP-17.4/lib/ssl/src/tls_connection.erl	2015-08-05 16:52:50.479441417 -0400
+@@ -1,7 +1,7 @@
+ %%
+ %% %CopyrightBegin%
+ %%
+-%% Copyright Ericsson AB 2007-2014. All Rights Reserved.
++%% Copyright Ericsson AB 2007-2015. All Rights Reserved.
+ %%
+ %% The contents of this file are subject to the Erlang Public License,
+ %% Version 1.1, (the "License"); you may not use this file except in
+@@ -482,8 +482,9 @@
+ next_record(#state{protocol_buffers =
+ 		       #protocol_buffers{tls_packets = [], tls_cipher_texts = [CT | Rest]}
+ 		   = Buffers,
+-		   connection_states = ConnStates0} = State) ->
+-    case tls_record:decode_cipher_text(CT, ConnStates0) of
++		   connection_states = ConnStates0,
++		   ssl_options = #ssl_options{padding_check = Check}} = State) ->
++    case tls_record:decode_cipher_text(CT, ConnStates0, Check) of
+ 	{Plain, ConnStates} ->		      
+ 	    {Plain, State#state{protocol_buffers =
+ 				    Buffers#protocol_buffers{tls_cipher_texts = Rest},
+diff -Naur otp-OTP-17.4.orig/lib/ssl/src/tls_record.erl otp-OTP-17.4/lib/ssl/src/tls_record.erl
+--- otp-OTP-17.4.orig/lib/ssl/src/tls_record.erl	2015-08-05 16:52:39.990500503 -0400
++++ otp-OTP-17.4/lib/ssl/src/tls_record.erl	2015-08-05 16:52:50.480441411 -0400
+@@ -1,7 +1,7 @@
+ %%
+ %% %CopyrightBegin%
+ %%
+-%% Copyright Ericsson AB 2007-2014. All Rights Reserved.
++%% Copyright Ericsson AB 2007-2015. All Rights Reserved.
+ %%
+ %% The contents of this file are subject to the Erlang Public License,
+ %% Version 1.1, (the "License"); you may not use this file except in
+@@ -34,7 +34,7 @@
+ -export([get_tls_records/2]).
+ 
+ %% Decoding
+--export([decode_cipher_text/2]).
++-export([decode_cipher_text/3]).
+ 
+ %% Encoding
+ -export([encode_plain_text/4]).
+@@ -142,19 +142,21 @@
+     {CipherText, ConnectionStates#connection_states{current_write = WriteState#connection_state{sequence_number = Seq +1}}}.
+ 
+ %%--------------------------------------------------------------------
+--spec decode_cipher_text(#ssl_tls{}, #connection_states{}) ->
++-spec decode_cipher_text(#ssl_tls{}, #connection_states{}, boolean()) ->
+ 				{#ssl_tls{}, #connection_states{}}| #alert{}.
+ %%
+ %% Description: Decode cipher text
+ %%--------------------------------------------------------------------
+ decode_cipher_text(#ssl_tls{type = Type, version = Version,
+-			    fragment = CipherFragment} = CipherText, ConnnectionStates0) ->
+-    ReadState0 = ConnnectionStates0#connection_states.current_read,
+-    #connection_state{compression_state = CompressionS0,
+-		      sequence_number = Seq,
+-		      security_parameters = SecParams} = ReadState0,
+-    CompressAlg = SecParams#security_parameters.compression_algorithm,
+-    case ssl_record:decipher(Version, CipherFragment, ReadState0) of
++			    fragment = CipherFragment} = CipherText,
++		   #connection_states{current_read =
++					  #connection_state{
++					     compression_state = CompressionS0,
++					     sequence_number = Seq,
++					     security_parameters=
++						 #security_parameters{compression_algorithm = CompressAlg}
++					    } = ReadState0} = ConnnectionStates0, PaddingCheck) ->
++    case ssl_record:decipher(Version, CipherFragment, ReadState0, PaddingCheck) of
+ 	{PlainFragment, Mac, ReadState1} ->
+ 	    MacHash = calc_mac_hash(Type, Version, PlainFragment, ReadState1),
+ 	    case ssl_record:is_correct_mac(Mac, MacHash) of
+diff -Naur otp-OTP-17.4.orig/lib/ssl/test/ssl_cipher_SUITE.erl otp-OTP-17.4/lib/ssl/test/ssl_cipher_SUITE.erl
+--- otp-OTP-17.4.orig/lib/ssl/test/ssl_cipher_SUITE.erl	2015-08-05 16:52:39.990500503 -0400
++++ otp-OTP-17.4/lib/ssl/test/ssl_cipher_SUITE.erl	2015-08-05 16:52:50.480441411 -0400
+@@ -1,7 +1,7 @@
+ %%
+ %% %CopyrightBegin%
+ %%
+-%% Copyright Ericsson AB 2008-2013. All Rights Reserved.
++%% Copyright Ericsson AB 2008-2015. All Rights Reserved.
+ %%
+ %% The contents of this file are subject to the Erlang Public License,
+ %% Version 1.1, (the "License"); you may not use this file except in
+@@ -38,7 +38,7 @@
+ suite() -> [{ct_hooks,[ts_install_cth]}].
+ 
+ all() ->
+-    [aes_decipher_good, aes_decipher_good_tls11, aes_decipher_fail, aes_decipher_fail_tls11].
++    [aes_decipher_good, aes_decipher_fail, padding_test].
+ 
+ groups() ->
+     [].
+@@ -73,93 +73,123 @@
+ %% Test Cases --------------------------------------------------------
+ %%--------------------------------------------------------------------
+ aes_decipher_good() ->
+-    [{doc,"Decipher a known cryptotext."}].
++    [{doc,"Decipher a known cryptotext using a correct key"}].
+ 
+ aes_decipher_good(Config) when is_list(Config) ->
+     HashSz = 32,
+-    CipherState = #cipher_state{iv = <<59,201,85,117,188,206,224,136,5,109,46,70,104,79,4,9>>,
+-				key = <<72,196,247,97,62,213,222,109,210,204,217,186,172,184,197,148>>},
+-    Fragment = <<220,193,179,139,171,33,143,245,202,47,123,251,13,232,114,8,
+-		 190,162,74,31,186,227,119,155,94,74,119,79,169,193,240,160,
+-		 198,181,81,19,98,162,213,228,74,224,253,168,156,59,195,122,
+-		 108,101,107,242,20,15,169,150,163,107,101,94,93,104,241,165>>,
+-    Content = <<183,139,16,132,10,209,67,86,168,100,61,217,145,57,36,56, "HELLO\n">>,
+-    Mac = <<71,136,212,107,223,200,70,232,127,116,148,205,232,35,158,113,237,174,15,217,192,168,35,8,6,107,107,233,25,174,90,111>>,
+-    Version = {3,0},
+-    {Content, Mac, _} = ssl_cipher:decipher(?AES, HashSz, CipherState, Fragment, Version),
+-    Version1 = {3,1},
+-    {Content, Mac, _} = ssl_cipher:decipher(?AES, HashSz, CipherState, Fragment, Version1),
+-    ok.
+-
+-%%--------------------------------------------------------------------
+-
+-aes_decipher_good_tls11() ->
+-    [{doc,"Decipher a known TLS 1.1 cryptotext."}].
+-
+-%% the fragment is actuall a TLS 1.1 record, with
+-%% Version = TLS 1.1, we get the correct NextIV in #cipher_state
+-aes_decipher_good_tls11(Config) when is_list(Config) ->
+-    HashSz = 32,
+-    CipherState = #cipher_state{iv = <<59,201,85,117,188,206,224,136,5,109,46,70,104,79,4,9>>,
+-				key = <<72,196,247,97,62,213,222,109,210,204,217,186,172,184,197,148>>},
+-    Fragment = <<220,193,179,139,171,33,143,245,202,47,123,251,13,232,114,8,
+-		 190,162,74,31,186,227,119,155,94,74,119,79,169,193,240,160,
+-		 198,181,81,19,98,162,213,228,74,224,253,168,156,59,195,122,
+-		 108,101,107,242,20,15,169,150,163,107,101,94,93,104,241,165>>,
+-    Content = <<"HELLO\n">>,
+-    NextIV = <<183,139,16,132,10,209,67,86,168,100,61,217,145,57,36,56>>,
+-    Mac = <<71,136,212,107,223,200,70,232,127,116,148,205,232,35,158,113,237,174,15,217,192,168,35,8,6,107,107,233,25,174,90,111>>,
+-    Version = {3,2},
+-    {Content, Mac, #cipher_state{iv = NextIV}} = ssl_cipher:decipher(?AES, HashSz, CipherState, Fragment, Version),
+-    Version1 = {3,2},
+-    {Content, Mac, #cipher_state{iv = NextIV}} = ssl_cipher:decipher(?AES, HashSz, CipherState, Fragment, Version1),
+-    ok.
++    CipherState = correct_cipher_state(),
++    decipher_check_good(HashSz, CipherState, {3,0}),
++    decipher_check_good(HashSz, CipherState, {3,1}),
++    decipher_check_good(HashSz, CipherState, {3,2}),
++    decipher_check_good(HashSz, CipherState, {3,3}).
+ 
+ %%--------------------------------------------------------------------
+ 
+ aes_decipher_fail() ->
+-    [{doc,"Decipher a known cryptotext."}].
++    [{doc,"Decipher a known cryptotext using a incorrect key"}].
+ 
+-%% same as above, last byte of key replaced
+ aes_decipher_fail(Config) when is_list(Config) ->
+     HashSz = 32,
+-    CipherState = #cipher_state{iv = <<59,201,85,117,188,206,224,136,5,109,46,70,104,79,4,9>>,
+-				key = <<72,196,247,97,62,213,222,109,210,204,217,186,172,184,197,254>>},
+-    Fragment = <<220,193,179,139,171,33,143,245,202,47,123,251,13,232,114,8,
+-		 190,162,74,31,186,227,119,155,94,74,119,79,169,193,240,160,
+-		 198,181,81,19,98,162,213,228,74,224,253,168,156,59,195,122,
+-		 108,101,107,242,20,15,169,150,163,107,101,94,93,104,241,165>>,
+-    Version = {3,0},
+-    {Content, Mac, _} = ssl_cipher:decipher(?AES, HashSz, CipherState, Fragment, Version),
+-    32 = byte_size(Content),
+-    32 = byte_size(Mac),
+-    Version1 = {3,1},
+-    {Content1, Mac1, _} = ssl_cipher:decipher(?AES, HashSz, CipherState, Fragment, Version1),
+-    32 = byte_size(Content1),
+-    32 = byte_size(Mac1),
+-    ok.
+ 
+-%%--------------------------------------------------------------------
+-
+-aes_decipher_fail_tls11() ->
+-    [{doc,"Decipher a known TLS 1.1 cryptotext."}].
+-
+-%% same as above, last byte of key replaced
+-%% stricter padding checks in TLS 1.1 mean we get an alert instead
+-aes_decipher_fail_tls11(Config) when is_list(Config) ->
+-    HashSz = 32,
+-    CipherState = #cipher_state{iv = <<59,201,85,117,188,206,224,136,5,109,46,70,104,79,4,9>>,
+-				key = <<72,196,247,97,62,213,222,109,210,204,217,186,172,184,197,254>>},
+-    Fragment = <<220,193,179,139,171,33,143,245,202,47,123,251,13,232,114,8,
+-		 190,162,74,31,186,227,119,155,94,74,119,79,169,193,240,160,
+-		 198,181,81,19,98,162,213,228,74,224,253,168,156,59,195,122,
+-		 108,101,107,242,20,15,169,150,163,107,101,94,93,104,241,165>>,
+-    Version = {3,2},
+-    #alert{level = ?FATAL, description = ?BAD_RECORD_MAC} =
+-	ssl_cipher:decipher(?AES, HashSz, CipherState, Fragment, Version),
+-    Version1 = {3,3},
+-    #alert{level = ?FATAL, description = ?BAD_RECORD_MAC} =
+-	ssl_cipher:decipher(?AES, HashSz, CipherState, Fragment, Version1),
+-    ok.
+-
+-%%--------------------------------------------------------------------
++    CipherState = incorrect_cipher_state(),
++    decipher_check_fail(HashSz, CipherState, {3,0}),
++    decipher_check_fail(HashSz, CipherState, {3,1}),
++    decipher_check_fail(HashSz, CipherState, {3,2}),
++    decipher_check_fail(HashSz, CipherState, {3,3}).
++
++%%--------------------------------------------------------------------
++padding_test(Config) when is_list(Config)  ->
++    HashSz = 16,
++    CipherState = correct_cipher_state(),
++    pad_test(HashSz, CipherState, {3,0}),
++    pad_test(HashSz, CipherState, {3,1}),
++    pad_test(HashSz, CipherState, {3,2}),
++    pad_test(HashSz, CipherState, {3,3}).
++
++%%--------------------------------------------------------------------    
++% Internal functions  --------------------------------------------------------
++%%--------------------------------------------------------------------
++decipher_check_good(HashSz, CipherState, Version) ->
++    {Content, NextIV, Mac} = content_nextiv_mac(Version),
++    {Content, Mac,  #cipher_state{iv = NextIV}} = 
++	ssl_cipher:decipher(?AES, HashSz, CipherState, aes_fragment(Version), Version, true).
++
++decipher_check_fail(HashSz, CipherState, Version) ->
++    {Content, NextIV, Mac} = content_nextiv_mac(Version),
++    true = {Content, Mac, #cipher_state{iv = NextIV}} =/= 
++	ssl_cipher:decipher(?AES, HashSz, CipherState, aes_fragment(Version), Version, true).
++
++pad_test(HashSz, CipherState, {3,0} = Version) ->
++    %% 3.0 does not have padding test
++    {Content, NextIV, Mac} = badpad_content_nextiv_mac(Version),
++    {Content, Mac, #cipher_state{iv = NextIV}} = 
++	ssl_cipher:decipher(?AES, HashSz, CipherState, badpad_aes_fragment({3,0}), {3,0}, true),    
++    {Content, Mac, #cipher_state{iv = NextIV}} = 
++	ssl_cipher:decipher(?AES, HashSz, CipherState, badpad_aes_fragment({3,0}), {3,0}, false);
++pad_test(HashSz, CipherState, {3,1} = Version) ->
++    %% 3.1 should have padding test, but may be disabled
++    {Content, NextIV, Mac} = badpad_content_nextiv_mac(Version),
++    BadCont = badpad_content(Content),
++    {Content, Mac, #cipher_state{iv = NextIV}} = 
++	ssl_cipher:decipher(?AES, HashSz, CipherState, badpad_aes_fragment({3,1}) , {3,1}, false),
++    {BadCont, Mac, #cipher_state{iv = NextIV}} = 
++	ssl_cipher:decipher(?AES, HashSz, CipherState, badpad_aes_fragment({3,1}), {3,1}, true);
++pad_test(HashSz, CipherState, Version) ->
++    %% 3.2 and 3.3 must have padding test
++    {Content, NextIV, Mac} = badpad_content_nextiv_mac(Version),
++    BadCont = badpad_content(Content),
++    {BadCont, Mac, #cipher_state{iv = NextIV}} = ssl_cipher:decipher(?AES, HashSz, CipherState, 
++									      badpad_aes_fragment(Version), Version, false),
++    {BadCont, Mac, #cipher_state{iv = NextIV}} = ssl_cipher:decipher(?AES, HashSz, CipherState,  
++								     badpad_aes_fragment(Version), Version, true).
++    
++aes_fragment({3,N}) when N == 0; N == 1->
++    <<197,9,6,109,242,87,80,154,85,250,110,81,119,95,65,185,53,206,216,153,246,169,
++      119,177,178,238,248,174,253,220,242,81,33,0,177,251,91,44,247,53,183,198,165,
++      63,20,194,159,107>>;
++	
++aes_fragment(_) ->
++    <<220,193,179,139,171,33,143,245,202,47,123,251,13,232,114,8,
++      190,162,74,31,186,227,119,155,94,74,119,79,169,193,240,160,
++      198,181,81,19,98,162,213,228,74,224,253,168,156,59,195,122,
++      108,101,107,242,20,15,169,150,163,107,101,94,93,104,241,165>>.
++
++badpad_aes_fragment({3,N})  when N == 0; N == 1 ->
++    <<186,139,125,10,118,21,26,248,120,108,193,104,87,118,145,79,225,55,228,10,105,
++      30,190,37,1,88,139,243,210,99,65,41>>;
++badpad_aes_fragment(_) ->
++    <<137,31,14,77,228,80,76,103,183,125,55,250,68,190,123,131,117,23,229,180,207,
++      94,121,137,117,157,109,99,113,61,190,138,131,229,201,120,142,179,172,48,77,
++      234,19,240,33,38,91,93>>.
++
++content_nextiv_mac({3,N})  when N == 0; N == 1 ->
++    {<<"HELLO\n">>,
++     <<33,0, 177,251, 91,44, 247,53, 183,198, 165,63, 20,194, 159,107>>,
++     <<71,136,212,107,223,200,70,232,127,116,148,205,232,35,158,113,237,174,15,217,192,168,35,8,6,107,107,233,25,174,90,111>>};
++content_nextiv_mac(_) ->
++    {<<"HELLO\n">>,
++     <<183,139,16,132,10,209,67,86,168,100,61,217,145,57,36,56>>,
++     <<71,136,212,107,223,200,70,232,127,116,148,205,232,35,158,113,237,174,15,217,192,168,35,8,6,107,107,233,25,174,90,111>>}.
++
++badpad_content_nextiv_mac({3,N})  when N == 0; N == 1 ->
++    {<<"HELLO\n">>,
++     <<225,55,228,10,105,30,190,37,1,88,139,243,210,99,65,41>>,
++      <<183,139,16,132,10,209,67,86,168,100,61,217,145,57,36,56>>
++    };
++badpad_content_nextiv_mac(_) ->
++    {<<"HELLO\n">>,
++     <<133,211,45,189,179,229,56,86,11,178,239,159,14,160,253,140>>,
++      <<183,139,16,132,10,209,67,86,168,100,61,217,145,57,36,56>>
++    }.
++
++badpad_content(Content) ->
++    %% BadContent will fail mac test 
++    <<16#F0, Content/binary>>.
++  
++correct_cipher_state() ->
++    #cipher_state{iv = <<59,201,85,117,188,206,224,136,5,109,46,70,104,79,4,9>>,
++		  key = <<72,196,247,97,62,213,222,109,210,204,217,186,172,184,197,148>>}.
++
++incorrect_cipher_state() ->
++    #cipher_state{iv = <<59,201,85,117,188,206,224,136,5,109,46,70,104,79,4,9>>,
++		  key = <<72,196,247,97,62,213,222,109,210,204,217,186,172,184,197,254>>}.
