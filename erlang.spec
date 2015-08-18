@@ -2,7 +2,13 @@
 
 %{!?need_bootstrap: %global need_bootstrap %{need_bootstrap_set}}
 
+%ifarch %{arm}
+# For some reason, fop hangs on arm, so for now don't generate docs by
+# default
+%bcond_with doc
+%else
 %bcond_without doc
+%endif
 
 %ifarch %{arm} %{ix86} x86_64 ppc %{power64}
 %global __with_hipe 1
@@ -10,7 +16,7 @@
 
 Name:		erlang
 Version:	17.4
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -2221,6 +2227,9 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 
 
 %changelog
+* Tue Aug 18 2015 John Eckersberg <eck@redhat.com> - 17.4-5
+- Disable docs by default on ARM until I figure out why fop hangs
+
 * Wed Aug  5 2015 John Eckersberg <eck@redhat.com> - 17.4-4
 - Add patch for CVE-2015-2774 - TLS-1.0 POODLE vulnerability (rhbz#1206712)
 
