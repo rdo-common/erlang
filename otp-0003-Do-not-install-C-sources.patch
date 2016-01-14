@@ -14,10 +14,10 @@ https://bugzilla.redhat.com/818419
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 
 diff --git a/lib/asn1/c_src/Makefile b/lib/asn1/c_src/Makefile
-index a7cd03f..6da4d75 100644
+index 2b72e1a..0522562 100644
 --- a/lib/asn1/c_src/Makefile
 +++ b/lib/asn1/c_src/Makefile
-@@ -142,8 +142,6 @@ release_spec: opt
+@@ -143,8 +143,6 @@ release_spec: opt
  ifneq ($(findstring ose,$(TARGET)),ose)
  	$(INSTALL_PROGRAM) $(NIF_SHARED_OBJ_FILE) "$(RELSYSDIR)/priv/lib"
  endif
@@ -27,10 +27,10 @@ index a7cd03f..6da4d75 100644
  release_docs_spec:
  
 diff --git a/lib/crypto/c_src/Makefile.in b/lib/crypto/c_src/Makefile.in
-index 5b36c19..470821e 100644
+index 574cdf5..428c316 100644
 --- a/lib/crypto/c_src/Makefile.in
 +++ b/lib/crypto/c_src/Makefile.in
-@@ -199,14 +199,10 @@ docs:
+@@ -200,14 +200,10 @@ docs:
  include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt
@@ -46,10 +46,10 @@ index 5b36c19..470821e 100644
  endif
  endif
 diff --git a/lib/erl_interface/src/Makefile.in b/lib/erl_interface/src/Makefile.in
-index 7c09b60..2c14f9e 100644
+index 777d709..57917ae 100644
 --- a/lib/erl_interface/src/Makefile.in
 +++ b/lib/erl_interface/src/Makefile.in
-@@ -904,14 +904,14 @@ ifneq ($(EXE_TARGETS),)
+@@ -905,14 +905,14 @@ ifneq ($(EXE_TARGETS),)
  	$(INSTALL_PROGRAM) $(EXE_TARGETS) "$(RELSYSDIR)/bin"
  endif
  	$(INSTALL_DATA) $(EXTRA)        "$(RELSYSDIR)/src"
@@ -73,10 +73,10 @@ index 7c09b60..2c14f9e 100644
  release_docs:
  
 diff --git a/lib/ic/c_src/Makefile.in b/lib/ic/c_src/Makefile.in
-index ed860ab..96206ae 100644
+index b9f92a0..9612f24 100644
 --- a/lib/ic/c_src/Makefile.in
 +++ b/lib/ic/c_src/Makefile.in
-@@ -144,12 +144,10 @@ $(OBJDIR)/%.o: %.c
+@@ -145,12 +145,10 @@ $(OBJDIR)/%.o: %.c
  include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt
@@ -90,10 +90,10 @@ index ed860ab..96206ae 100644
  	$(INSTALL_DATA) $(LIBRARY) "$(RELSYSDIR)/priv/lib"
  	$(INSTALL_DATA) $(IDL_FILES) $(H_FILES) "$(RELEASE_PATH)/usr/include"
 diff --git a/lib/megaco/src/flex/Makefile.in b/lib/megaco/src/flex/Makefile.in
-index 6111cf2..bd62e8b 100644
+index 045b6d8..39be02a 100644
 --- a/lib/megaco/src/flex/Makefile.in
 +++ b/lib/megaco/src/flex/Makefile.in
-@@ -270,7 +270,7 @@ release_spec: opt
+@@ -271,7 +271,7 @@ release_spec: opt
  	$(INSTALL_DATA) $(ERL_FILES) $(INTERNAL_HRL_FILES) "$(RELSYSDIR)/src/flex"
  	$(INSTALL_DATA) $(TARGET_FILES) "$(RELSYSDIR)/ebin"
  ifeq ($(ENABLE_MEGACO_FLEX_SCANNER),true)
@@ -103,10 +103,10 @@ index 6111cf2..bd62e8b 100644
  endif
  
 diff --git a/lib/odbc/c_src/Makefile.in b/lib/odbc/c_src/Makefile.in
-index 6572d28..c7093ae 100644
+index 685eb5d..6c8a432 100644
 --- a/lib/odbc/c_src/Makefile.in
 +++ b/lib/odbc/c_src/Makefile.in
-@@ -128,11 +128,8 @@ include $(ERL_TOP)/make/otp_release_targets.mk
+@@ -129,11 +129,8 @@ include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt
  ifdef EXE_TARGET
@@ -119,10 +119,10 @@ index 6572d28..c7093ae 100644
  endif
  
 diff --git a/lib/os_mon/c_src/Makefile.in b/lib/os_mon/c_src/Makefile.in
-index f84ccf7..05d194f 100644
+index e9fc5f4..ac9fb73 100644
 --- a/lib/os_mon/c_src/Makefile.in
 +++ b/lib/os_mon/c_src/Makefile.in
-@@ -125,8 +125,6 @@ $(OBJDIR)/memsup.o: memsup.h
+@@ -126,8 +126,6 @@ $(OBJDIR)/memsup.o: memsup.h
  include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt
@@ -132,10 +132,10 @@ index f84ccf7..05d194f 100644
  	$(INSTALL_PROGRAM) $(TARGET_FILES) "$(RELSYSDIR)/priv/bin"
  
 diff --git a/lib/runtime_tools/c_src/Makefile.in b/lib/runtime_tools/c_src/Makefile.in
-index d46b499..4309aae 100644
+index 448b8c6..860d504 100644
 --- a/lib/runtime_tools/c_src/Makefile.in
 +++ b/lib/runtime_tools/c_src/Makefile.in
-@@ -156,10 +156,8 @@ docs:
+@@ -157,10 +157,8 @@ docs:
  include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt
@@ -147,10 +147,10 @@ index d46b499..4309aae 100644
  endif
  
 diff --git a/lib/tools/c_src/Makefile.in b/lib/tools/c_src/Makefile.in
-index b1eb69f..1acfdbf 100644
+index 66bba22..eea37fc 100644
 --- a/lib/tools/c_src/Makefile.in
 +++ b/lib/tools/c_src/Makefile.in
-@@ -197,8 +197,6 @@ include ../vsn.mk
+@@ -198,8 +198,6 @@ include ../vsn.mk
  RELSYSDIR = $(RELEASE_PATH)/lib/tools-$(TOOLS_VSN)
  
  release_spec: all

@@ -6,10 +6,10 @@ Subject: [PATCH] Do not format man-pages and do not install miscellaneous
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 
 diff --git a/erts/etc/common/Makefile.in b/erts/etc/common/Makefile.in
-index 0cf965f..94e82a8 100644
+index 8e55fa7..9512faa 100644
 --- a/erts/etc/common/Makefile.in
 +++ b/erts/etc/common/Makefile.in
-@@ -550,10 +550,6 @@ endif
+@@ -551,10 +551,6 @@ endif
  ifneq ($(INSTALL_TOP_BIN),)
  	$(INSTALL_PROGRAM) $(INSTALL_TOP_BIN) "$(RELEASE_PATH)"
  endif
@@ -21,10 +21,10 @@ index 0cf965f..94e82a8 100644
  	$(INSTALL_DIR) "$(RELEASE_PATH)/erts-$(VSN)/src"
  	$(INSTALL_DATA) $(INSTALL_SRC) "$(RELEASE_PATH)/erts-$(VSN)/src"
 diff --git a/erts/etc/unix/Install.src b/erts/etc/unix/Install.src
-index 8eb1db7..9e340bb 100644
+index 6634ae3..fa18956 100644
 --- a/erts/etc/unix/Install.src
 +++ b/erts/etc/unix/Install.src
-@@ -140,14 +140,5 @@ cp -p ../releases/%I_SYSTEM_VSN%/start_*.boot .
+@@ -141,14 +141,5 @@ cp -p ../releases/%I_SYSTEM_VSN%/start_*.boot .
  cp -p ../releases/%I_SYSTEM_VSN%/no_dot_erlang.boot .
  cp -p $Name.boot start.boot
  cp -p ../releases/%I_SYSTEM_VSN%/$Name.script start.script
