@@ -170,6 +170,25 @@ environment. Erlang has built-in support for concurrency, distribution
 and fault tolerance. Erlang is used in several large telecommunication
 systems from Ericsson.
 
+%package -n emacs-erlang
+Summary:	Compiled elisp files for erlang-mode under GNU Emacs
+Requires:	emacs-common-erlang = %{version}-%{release}
+Requires:	emacs(bin) >= %{_emacs_version}
+Group:		Applications/Editors
+BuildArch:	noarch
+
+%description -n emacs-erlang
+Erlang mode for GNU Emacs.
+
+%package -n emacs-erlang-el
+Summary:	Elisp source files for erlang-mode under GNU Emacs
+Requires:	emacs-erlang = %{version}-%{release}
+Group:		Applications/Editors
+BuildArch:	noarch
+
+%description -n emacs-erlang-el
+Erlang mode for GNU Emacs (source lisp files).
+
 %package asn1
 Summary:	Provides support for Abstract Syntax Notation One
 Group:		Development/Languages
@@ -853,25 +872,6 @@ Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 
 %description xmerl
 Provides support for XML 1.0.
-
-%package -n emacs-erlang
-Summary:	Compiled elisp files for erlang-mode under GNU Emacs
-Requires:	emacs-common-erlang = %{version}-%{release}
-Requires:	emacs(bin) >= %{_emacs_version}
-Group:		Applications/Editors
-BuildArch:	noarch
-
-%description -n emacs-erlang
-Erlang mode for GNU Emacs.
-
-%package -n emacs-erlang-el
-Summary:	Elisp source files for erlang-mode under GNU Emacs
-Requires:	emacs-erlang = %{version}-%{release}
-Group:		Applications/Editors
-BuildArch:	noarch
-
-%description -n emacs-erlang-el
-Erlang mode for GNU Emacs (source lisp files).
 
 %package -n xemacs-erlang
 Summary:	Compiled elisp files for erlang-mode under XEmacs
