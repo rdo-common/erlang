@@ -21,7 +21,12 @@ package_headers = {}
 ##
 
 # These packages should be marked as noarch
-package_noarch = ["emacs-erlang", "emacs-erlang-el", "erlang-doc", "xemacs-erlang", "xemacs-erlang-el"]
+package_noarch = [
+		"emacs-erlang",
+		"emacs-erlang-el",
+		"erlang-doc",
+		"xemacs-erlang",
+		"xemacs-erlang-el"]
 
 # These are additional Requires which cannot be picked up automatically (yet).
 # TODO these should be added automatically
@@ -30,33 +35,53 @@ package_additional_requires = {
 		"emacs-erlang-el": ["emacs-erlang = %{version}-%{release}"],
 		"erlang-dialyzer": ["graphviz"],
 		"erlang-erl_interface": ["%{name}-erts%{?_isa} = %{version}-%{release}"],
-		# This library is dlopened so it can't be picked up automatically by the RPM
-		# dependency checker
+		# This library (lksctp-tools) is dlopened so it can't be picked
+		# up automatically by the RPM dependency checker
 		"erlang-erts": ["lksctp-tools"],
 		"erlang-gs": ["tk"],
-		# FIXME stores files/links in jpackage-utils' directory "erlang-ic": ["jpackage-utils"],
-		# FIXME stores files/links in jpackage-utils' directory "erlang-jinterface": ["%{name}-erts%{?_isa} = %{version}-%{release}, "jpackage-utils"],
-		"erlang-jinterface": ["%{name}-erts%{?_isa} = %{version}-%{release}"],
+		# Stores files/links in /usr/share/java so has to depend on jpackage-utils
+		"erlang-ic": ["jpackage-utils"],
+		# Stores files/links in /usr/share/java so has to depend on jpackage-utils
+		"erlang-jinterface": ["%{name}-erts%{?_isa} = %{version}-%{release}", "jpackage-utils"],
 		"erlang-wx": ["mesa-libGL", "mesa-libGLU"],
 		"xemacs-erlang": ["emacs-common-erlang = %{version}-%{release}", "xemacs(bin) >= %{_xemacs_version}"],
 		"xemacs-erlang-el": ["xemacs-erlang = %{version}-%{release}"]
 		}
 
 package_additional_buildrequires = {
+		"emacs-erlang": ["emacs", "emacs-el"],
+		"erlang-crypto": ["openssl-devel"],
 		"erlang-diameter": ["ed"],
+
+		# BEWARE. No fop for EPEL5, and only for x86/x86_64 in EPEL6,
+		# so we cannot regenerate docs here. (Un)Fortunately we dropped
+		# support for EPEL6 and older versions.
+		# FIXME add bootstrap condition first.
+		"erlang-doc": ["fop", "libxslt"],
+
+		"erlang-erts": ["lksctp-tools-devel", "m4", "ncurses-devel", "zlib-devel"],
 		"erlang-gs": ["tcl-devel", "tk-devel"],
+
 		# in EPEL6 on arches different from %{ix86} x86_64 we have to
 		# use java-devel-gcj, so technically this requirement makes it
 		# impossible to build Java support there. (Un)Fortunately we
-		# already dropped full support for EPEL6
+		# already dropped full support for EPEL6 and older versions.
 		"erlang-ic": ["java-devel"],
 		"erlang-jinterface": ["java-devel"],
+
 		"erlang-odbc": ["unixODBC-devel"],
 		"erlang-wx": ["wxGTK-devel"],
+		"xemacs-erlang": ["xemacs", "xemacs-packages-extra-el"],
 		}
 
 package_additional_obsoletes = {
-		"erlang-erts": ["erlang-appmon", "erlang-docbuilder", "erlang-inviso", "erlang-pman", "erlang-toolbar", "erlang-tv"],
+		"erlang-erts": [
+			"erlang-appmon",
+			"erlang-docbuilder",
+			"erlang-inviso",
+			"erlang-pman",
+			"erlang-toolbar",
+			"erlang-tv"],
 		}
 
 ##
@@ -69,6 +94,11 @@ rpmmask = re.compile(".*\.rpm")
 
 # iterate over all rpms
 for package in sorted([p for p in packages if rpmmask.match(p)]):
+
+	# A tricky part. We are processing packages, rebuilt with
+	# %{__erlang_provides_requires}. Otherwise we won't get information
+	# about imports/exports (until we learn how to parse Erlang BEAM file
+	# headers with Python.
 	fd = os.open(package, os.O_RDONLY)
 	h = ts.hdrFromFdno(fd)
 	os.close(fd)
