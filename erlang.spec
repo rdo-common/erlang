@@ -428,6 +428,7 @@ Provides: erlang(erl_drv_version) = 3.2
 # See erts/emulator/beam/erl_nif.h or call erlang:system_info(nif_version).
 #Provides: erlang(erl_nif_version) = %%(%%{buildroot}/bin/erl -noshell -eval 'io:format(erlang:system_info(nif_version)).' -s erlang halt)
 Provides: erlang(erl_nif_version) = 2.9
+Provides: bundled(pcre) = 8.33
 Obsoletes: erlang-appmon
 Obsoletes: erlang-docbuilder
 Obsoletes: erlang-inviso
