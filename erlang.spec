@@ -952,7 +952,7 @@ make
 %if %{with doc}
 # should use FOP_OPTS after #832323 is resolved
 %ifnarch ppc %{power64}
-export BASE_OPTIONS=-Xmx1024m
+export BASE_OPTIONS=-Xmx512m
 %else
 export BASE_OPTIONS=-Xmx1536m
 %endif
