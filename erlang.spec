@@ -964,7 +964,7 @@ make
 %if %{with doc}
 # should use FOP_OPTS after #832323 is resolved
 %ifnarch ppc %{power64}
-export BASE_OPTIONS=-Xmx1024m
+export BASE_OPTIONS=-Xmx512m
 %else
 export BASE_OPTIONS=-Xmx1536m
 %endif
@@ -2232,7 +2232,6 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %changelog
 * Fri Jan 22 2016 Peter Lemenkov <lemenkov@gmail.com> - 18.2.2-3
 - Disable optimizations for Intel Atom CPU on ix86 arches
-- Restore Java memory limits, applied during docs building, back
 
 * Sun Jan 17 2016 John Eckersberg <eck@redhat.com> - 18.2.2-2
 - Add patch for epmd ipv6 support (rhbz#1299253)
