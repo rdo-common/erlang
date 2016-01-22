@@ -16,7 +16,7 @@
 
 Name:		erlang
 Version:	18.2.2
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -915,7 +915,15 @@ Erlang mode for XEmacs (source lisp files).
 %ifarch sparcv9 sparc64
 CFLAGS="$RPM_OPT_FLAGS -mcpu=ultrasparc -fno-strict-aliasing" %configure --enable-shared-zlib --enable-sctp --enable-systemd %{?__with_hipe:--enable-hipe}
 %else
+
+%ifarch %{ix86}
+# We have to disable optimizations for Intel Atom
+# See https://bugzilla.redhat.com/1240487#c13
+CFLAGS="${RPM_OPT_FLAGS/-mtune=atom/-mtune=generic} -fno-strict-aliasing" CXXFLAGS="${RPM_OPT_FLAGS/-mtune=atom/-mtune=generic}" %configure --enable-shared-zlib --enable-sctp --enable-systemd %{?__with_hipe:--enable-hipe}
+%else
 CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing" %configure --enable-shared-zlib --enable-sctp --enable-systemd %{?__with_hipe:--enable-hipe}
+%endif
+
 %endif
 
 # Remove pre-built BEAM files
@@ -956,7 +964,7 @@ make
 %if %{with doc}
 # should use FOP_OPTS after #832323 is resolved
 %ifnarch ppc %{power64}
-export BASE_OPTIONS=-Xmx512m
+export BASE_OPTIONS=-Xmx1024m
 %else
 export BASE_OPTIONS=-Xmx1536m
 %endif
@@ -2222,6 +2230,10 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 
 
 %changelog
+* Fri Jan 22 2016 Peter Lemenkov <lemenkov@gmail.com> - 18.2.2-3
+- Disable optimizations for Intel Atom CPU on ix86 arches
+- Restore Java memory limits, applied during docs building, back
+
 * Sun Jan 17 2016 John Eckersberg <eck@redhat.com> - 18.2.2-2
 - Add patch for epmd ipv6 support (rhbz#1299253)
 
