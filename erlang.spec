@@ -16,7 +16,7 @@
 
 Name:		erlang
 Version:	18.2.2
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -2230,6 +2230,9 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 
 
 %changelog
+* Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 18.2.2-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
 * Fri Jan 22 2016 Peter Lemenkov <lemenkov@gmail.com> - 18.2.2-3
 - Disable optimizations for Intel Atom CPU on ix86 arches
 
