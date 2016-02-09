@@ -15,8 +15,8 @@
 %endif
 
 Name:		erlang
-Version:	18.2.2
-Release:	4%{?dist}
+Version:	18.2.3
+Release:	1%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -912,19 +912,23 @@ Erlang mode for XEmacs (source lisp files).
 
 
 %build
+
+# Set up proper cflags/cxxflags first
 %ifarch sparcv9 sparc64
-CFLAGS="$RPM_OPT_FLAGS -mcpu=ultrasparc -fno-strict-aliasing" %configure --enable-shared-zlib --enable-sctp --enable-systemd %{?__with_hipe:--enable-hipe}
+ERL_FLAGS="${RPM_OPT_FLAGS} -mcpu=ultrasparc -fno-strict-aliasing"
 %else
 
 %ifarch %{ix86}
 # We have to disable optimizations for Intel Atom
 # See https://bugzilla.redhat.com/1240487#c13
-CFLAGS="${RPM_OPT_FLAGS/-mtune=atom/-mtune=generic} -fno-strict-aliasing" CXXFLAGS="${RPM_OPT_FLAGS/-mtune=atom/-mtune=generic}" %configure --enable-shared-zlib --enable-sctp --enable-systemd %{?__with_hipe:--enable-hipe}
+ERL_FLAGS="${RPM_OPT_FLAGS/-mtune=atom/-mtune=generic} -fno-strict-aliasing"
 %else
-CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing" %configure --enable-shared-zlib --enable-sctp --enable-systemd %{?__with_hipe:--enable-hipe}
+ERL_FLAGS="${RPM_OPT_FLAGS} -fno-strict-aliasing"
 %endif
 
 %endif
+
+CFLAGS="${ERL_FLAGS}" CXXFLAGS="${ERL_FLAGS}" %configure --enable-shared-zlib --enable-sctp --enable-systemd %{?__with_hipe:--enable-hipe}
 
 # Remove pre-built BEAM files
 make clean
@@ -2230,6 +2234,9 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 
 
 %changelog
+* Tue Feb  9 2016 Peter Lemenkov <lemenkov@gmail.com> - 18.2.3-1
+- Ver. 18.2.3
+
 * Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 18.2.2-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 
