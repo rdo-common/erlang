@@ -16,7 +16,7 @@
 
 Name:		erlang
 Version:	18.2.3
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -425,6 +425,8 @@ BuildRequires: lksctp-tools-devel
 BuildRequires: m4
 BuildRequires: ncurses-devel
 BuildRequires: zlib-devel
+# epmd user, epmd group
+Requires(pre): shadow-utils
 Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
 Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Requires: lksctp-tools
@@ -921,16 +923,7 @@ Erlang mode for XEmacs (source lisp files).
 %ifarch sparcv9 sparc64
 ERL_FLAGS="${RPM_OPT_FLAGS} -mcpu=ultrasparc -fno-strict-aliasing"
 %else
-
-%ifarch %{ix86}
-# We have to disable optimizations for Intel Atom
-# See https://bugzilla.redhat.com/1240487#c13
-#ERL_FLAGS="${RPM_OPT_FLAGS/-mtune=atom/-mtune=generic} -fno-strict-aliasing"
 ERL_FLAGS="${RPM_OPT_FLAGS} -fno-strict-aliasing"
-%else
-ERL_FLAGS="${RPM_OPT_FLAGS} -fno-strict-aliasing"
-%endif
-
 %endif
 
 CFLAGS="${ERL_FLAGS}" CXXFLAGS="${ERL_FLAGS}" %configure --enable-shared-zlib --enable-sctp --enable-systemd %{?__with_hipe:--enable-hipe}
@@ -2239,6 +2232,9 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 
 
 %changelog
+* Fri Feb 19 2016 Peter Lemenkov <lemenkov@gmail.com> - 18.2.3-3
+- Add missing dependency
+
 * Wed Feb 10 2016 Peter Lemenkov <lemenkov@gmail.com> - 18.2.3-2
 - Workaround for broken cmpxchg8b inlining on ix86 (rhbz#1240487)
 - Don't use generic optimization on ix86
