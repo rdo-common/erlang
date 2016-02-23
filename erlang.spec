@@ -15,8 +15,8 @@
 %endif
 
 Name:		erlang
-Version:	18.2.3
-Release:	3%{?dist}
+Version:	18.2.4
+Release:	1%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -850,7 +850,7 @@ A tool that simplifying the use of web based Erlang tools.
 %package wx
 Summary: A library for wxWidgets support in Erlang
 Group: Development/Languages
-BuildRequires: wxGTK-devel
+BuildRequires: wxGTK3-devel
 Requires: %{name}-erts%{?_isa} = %{version}-%{release}
 Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
 Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
@@ -2232,6 +2232,11 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 
 
 %changelog
+* Tue Feb 23 2016 Peter Lemenkov <lemenkov@gmail.com> - 18.2.4-1
+- Ver. 18.2.4
+- Build against wxGTK-3.x.y as recommended by upstream. This change won't
+  affect "headless" installations.
+
 * Fri Feb 19 2016 Peter Lemenkov <lemenkov@gmail.com> - 18.2.3-3
 - Add missing dependency
 
