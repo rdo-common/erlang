@@ -97,6 +97,8 @@ Requires(preun):systemd
 Requires(postun):systemd
 Requires:	systemd
 %endif
+BuildRequires:	autoconf
+BuildRequires:	automake
 BuildRequires:	erlang-rpm-macros
 
 Requires: %{name}-asn1%{?_isa} = %{version}-%{release}
