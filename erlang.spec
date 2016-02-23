@@ -928,7 +928,7 @@ ERL_FLAGS="${RPM_OPT_FLAGS} -mcpu=ultrasparc -fno-strict-aliasing"
 ERL_FLAGS="${RPM_OPT_FLAGS} -fno-strict-aliasing"
 %endif
 
-CFLAGS="${ERL_FLAGS}" CXXFLAGS="${ERL_FLAGS}" %configure --enable-shared-zlib --enable-sctp --enable-systemd %{?__with_hipe:--enable-hipe}
+CFLAGS="${ERL_FLAGS}" CXXFLAGS="${ERL_FLAGS}" %configure --enable-shared-zlib --enable-sctp --enable-systemd %{?__with_hipe:--enable-hipe} --with-wx-config=/usr/bin/wx-config-3.0
 
 # Remove pre-built BEAM files
 make clean
