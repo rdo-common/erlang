@@ -16,7 +16,7 @@
 
 Name:		erlang
 Version:	18.2.4
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -2234,6 +2234,9 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 
 
 %changelog
+* Sun Feb 28 2016 Peter Lemenkov <lemenkov@gmail.com> - 18.2.4-2
+- Fixed issue with nodes registration over IPv6
+
 * Tue Feb 23 2016 Peter Lemenkov <lemenkov@gmail.com> - 18.2.4-1
 - Ver. 18.2.4
 - Build against wxGTK-3.x.y as recommended by upstream. This change won't

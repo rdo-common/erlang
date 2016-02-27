@@ -17,30 +17,22 @@ epmd ignores errors opening the socket if the protocol is not
 supported. Similarly, the epmd client will fall back to IPv4 if the IPv6
 socket is not available.
 
-The interaction between IPv4 and IPv6 sockets depends on the platform:
+Update the minimum supported version of Windows to Windows Vista to
+support IPv6.
 
-* FreeBSD allows multiple "specific" sockets to bind the same port (such
-  as 2 sockets listening to the same port on ANY and the loopback).
-  Binding port 4369 to IPv4 and IPv6 sockets simulataneously is allowed.
-
-* Linux does not allow the same port to be bound by different sockets.
-  Setting the IPV6_V6ONLY socket option is required.
-
-* Windows
-
-  The behaviour differs depending on the version of Windows:
-
-  http://msdn.microsoft.com/en-us/library/windows/desktop/bb513665(v=vs.85).aspx
-
-  According to the site, sockets on Windows XP with Service Pack 1 (SP1)
-  and Windows Server 2003 will only listen on either IPv4 or IPv6, so
-  creating two sockets is required to service IPv4 and IPv6 traffic on
-  the same port. The IPV6_V6ONLY socket option is not supported.
-
-  For Windows Vista and later, a single socket can handle IPv4 and IPv6
-  traffic for the same port. The IPV6_V6ONLY socket option is supported
-  and is enabled for IPv6 sockets by default.
-
+diff --git a/erts/configure.in b/erts/configure.in
+index 4fb725f..368c563 100644
+--- a/erts/configure.in
++++ b/erts/configure.in
+@@ -468,7 +468,7 @@ case $host_os in
+     win32)
+ 	# The ethread library requires _WIN32_WINNT of at least 0x0403.
+ 	# -D_WIN32_WINNT=* from CPPFLAGS is saved in ETHR_DEFS.
+-	CPPFLAGS="$CPPFLAGS -D_WIN32_WINNT=0x0501 -DWINVER=0x0501"
++	CPPFLAGS="$CPPFLAGS -D_WIN32_WINNT=0x0600 -DWINVER=0x0600"
+ 	;;
+     darwin*)
+         CPPFLAGS="$CPPFLAGS -D_XOPEN_SOURCE"
 diff --git a/erts/doc/src/epmd.xml b/erts/doc/src/epmd.xml
 index 28fcc8f..7f61804 100644
 --- a/erts/doc/src/epmd.xml
@@ -55,13 +47,18 @@ index 28fcc8f..7f61804 100644
    <p>Starts the port mapper daemon</p>
    </item>
 diff --git a/erts/doc/src/erl.xml b/erts/doc/src/erl.xml
-index ec4a0de..cdf8aef 100644
+index ec4a0de..9016a94 100644
 --- a/erts/doc/src/erl.xml
 +++ b/erts/doc/src/erl.xml
-@@ -382,6 +382,28 @@
+@@ -382,6 +382,33 @@
            similar to <c><![CDATA[code:add_pathsz/1]]></c>. See
            <seealso marker="kernel:code">code(3)</seealso>.</p>
        </item>
++      <tag><c><![CDATA[-path Dir1 Dir2 ...]]></c></tag>
++      <item>
++        <p>Replaces the path specified in the boot script. See
++          <seealso marker="sasl:script">script(4)</seealso>.</p>
++      </item>
 +      <tag><c><![CDATA[-proto_dist Proto]]></c></tag>
 +      <item>
 +        <p>Specify a protocol for Erlang distribution.</p>
@@ -80,9 +77,9 @@ index ec4a0de..cdf8aef 100644
 +              </item>
 +        </taglist>
 +        <p>For example, to start up IPv6 distributed nodes:</p>
-+<pre>
-+% <input>erl -name test@ipv6node.example.com -proto_dist inet6_tcp</input>
-+</pre>
++		<pre>
++		% <input>erl -name test@ipv6node.example.com -proto_dist inet6_tcp</input>
++		</pre>
 +      </item>
        <tag><c><![CDATA[-remsh Node]]></c></tag>
        <item>
@@ -147,7 +144,7 @@ index a8fe865..6fc05e1 100644
  
   error:
 diff --git a/erts/epmd/src/epmd_int.h b/erts/epmd/src/epmd_int.h
-index 26100af..8f44c2a 100644
+index 26100af..0931709 100644
 --- a/erts/epmd/src/epmd_int.h
 +++ b/erts/epmd/src/epmd_int.h
 @@ -55,6 +55,7 @@
@@ -158,20 +155,18 @@ index 26100af..8f44c2a 100644
  #  include <windows.h>
  #  include <process.h>
  #endif
-@@ -130,6 +131,12 @@
+@@ -130,6 +131,10 @@
  #  include <systemd/sd-daemon.h>
  #endif /* HAVE_SYSTEMD_DAEMON */
  
-+#if defined(HAVE_IN6) && defined(AF_INET6)
-+#if !defined(__WIN32__)
++#if defined(HAVE_IN6) && defined(AF_INET6) && defined(HAVE_INET_PTON)
 +#  define EPMD6
-+#endif
 +#endif
 +
  /* ************************************************************************ */
  /* Replace some functions by others by making the function name a macro */
  
-@@ -183,33 +190,53 @@
+@@ -183,33 +188,53 @@
  /* ************************************************************************ */
  /* Macros that let us use IPv6                                              */
  
@@ -198,14 +193,14 @@ index 26100af..8f44c2a 100644
 +#endif /* HAVE_IN6 */
 +
 +#define IS_ADDR_LOOPBACK(addr) ((addr).s_addr == htonl(INADDR_LOOPBACK))
++
++#if defined(EPMD6)
  
 -#define EPMD_SOCKADDR_IN sockaddr_in6
 -#define EPMD_IN_ADDR in6_addr
 -#define EPMD_S_ADDR s6_addr
 -#define EPMD_ADDR_LOOPBACK in6addr_loopback.s6_addr
 -#define EPMD_ADDR_ANY in6addr_any.s6_addr
-+#if defined(EPMD6)
-+
 +#define EPMD_SOCKADDR_IN sockaddr_storage
  #define FAMILY AF_INET6
  
@@ -243,7 +238,7 @@ index 26100af..8f44c2a 100644
  #define FAMILY AF_INET
  
  #define SET_ADDR(dst, addr, port) do { \
-@@ -219,8 +246,6 @@
+@@ -219,8 +244,6 @@
      (dst).sin_port = htons(port); \
   } while(0)
  
@@ -253,7 +248,7 @@ index 26100af..8f44c2a 100644
  
  /* ************************************************************************ */
 diff --git a/erts/epmd/src/epmd_srv.c b/erts/epmd/src/epmd_srv.c
-index 8c8d730..28a2968 100644
+index 8c8d730..d092d98 100644
 --- a/erts/epmd/src/epmd_srv.c
 +++ b/erts/epmd/src/epmd_srv.c
 @@ -76,6 +76,7 @@ static time_t current_time(EpmdVars*);
@@ -353,10 +348,10 @@ index 8c8d730..28a2968 100644
  	  if (IS_ADDR_LOOPBACK(addr))
 -	    loopback_ok = 1;
 +	    continue;
-+
-+	  num_sockets++;
  
 -	  if (num_sockets - loopback_ok == MAX_LISTEN_SOCKETS - 1)
++	  num_sockets++;
++
 +	  if (num_sockets >= MAX_LISTEN_SOCKETS)
  	    {
  	      dbg_tty_printf(g,0,"cannot listen on more than %d IP addresses",
@@ -405,7 +400,6 @@ index 8c8d730..28a2968 100644
 +      if ((listensock[i] = socket(sa->sa_family,SOCK_STREAM,0)) < 0)
  	{
 -	  dbg_perror(g,"error opening stream socket");
--	  epmd_cleanup_exit(g,1);
 +	  switch (errno) {
 +	      case EAFNOSUPPORT:
 +	      case EPROTONOSUPPORT:
@@ -414,9 +408,8 @@ index 8c8d730..28a2968 100644
 +	          dbg_perror(g,"error opening stream socket");
 +	          epmd_cleanup_exit(g,1);
 +	  }
- 	}
-       g->listenfd[i] = listensock[i];
--  
++	}
++      g->listenfd[bound++] = listensock[i];
 +
 +#if HAVE_DECL_IPV6_V6ONLY
 +      opt = 1;
@@ -425,8 +418,10 @@ index 8c8d730..28a2968 100644
 +              sizeof(opt)) <0)
 +	{
 +	  dbg_perror(g,"can't set IPv6 only socket option");
-+	  epmd_cleanup_exit(g,1);
-+	}
+ 	  epmd_cleanup_exit(g,1);
+ 	}
+-      g->listenfd[i] = listensock[i];
+-  
 +#endif
 +
        /*
@@ -442,15 +437,7 @@ index 8c8d730..28a2968 100644
  	{
  	  if (errno == EADDRINUSE)
  	    {
-@@ -394,12 +439,18 @@ void run(EpmdVars *g)
- 	    }
- 	}
- 
-+      bound++;
-+
-       if(listen(listensock[i], SOMAXCONN) < 0) {
-           dbg_perror(g,"failed to listen on socket");
-           epmd_cleanup_exit(g,1);
+@@ -400,6 +445,11 @@ void run(EpmdVars *g)
        }
        select_fd_set(g, listensock[i]);
      }
@@ -458,10 +445,22 @@ index 8c8d730..28a2968 100644
 +      dbg_perror(g,"unable to bind any address");
 +      epmd_cleanup_exit(g,1);
 +  }
++  num_sockets = bound;
  #ifdef HAVE_SYSTEMD_DAEMON
      }
      sd_notifyf(0, "READY=1\n"
-@@ -1007,15 +1058,6 @@ static int conn_open(EpmdVars *g,int fd)
+@@ -444,8 +494,8 @@ void run(EpmdVars *g)
+ 	}
+ 
+ 	for (i = 0; i < num_sockets; i++)
+-	  if (FD_ISSET(listensock[i],&read_mask)) {
+-	    if (do_accept(g, listensock[i]) && g->active_conn < g->max_conn) {
++	  if (FD_ISSET(g->listenfd[i],&read_mask)) {
++	    if (do_accept(g, g->listenfd[i]) && g->active_conn < g->max_conn) {
+ 	      /*
+ 	       * The accept() succeeded, and we have at least one file
+ 	       * descriptor still free, which means that another accept()
+@@ -1007,15 +1057,6 @@ static int conn_open(EpmdVars *g,int fd)
  
    for (i = 0; i < g->max_conn; i++) {
      if (g->conn[i].open == EPMD_FALSE) {
@@ -477,7 +476,7 @@ index 8c8d730..28a2968 100644
        g->active_conn++;
        s = &g->conn[i];
       
-@@ -1026,20 +1068,7 @@ static int conn_open(EpmdVars *g,int fd)
+@@ -1026,20 +1067,7 @@ static int conn_open(EpmdVars *g,int fd)
        s->open = EPMD_TRUE;
        s->keep = EPMD_FALSE;
  
@@ -499,7 +498,7 @@ index 8c8d730..28a2968 100644
        dbg_tty_printf(g,2,(s->local_peer) ? "Local peer connected" :
  		     "Non-local peer connected");
  
-@@ -1047,7 +1076,7 @@ static int conn_open(EpmdVars *g,int fd)
+@@ -1047,7 +1075,7 @@ static int conn_open(EpmdVars *g,int fd)
        s->got  = 0;
        s->mod_time = current_time(g); /* Note activity */
  
@@ -508,7 +507,7 @@ index 8c8d730..28a2968 100644
  
        if (s->buf == NULL) {
  	dbg_printf(g,0,"epmd: Insufficient memory");
-@@ -1065,6 +1094,60 @@ static int conn_open(EpmdVars *g,int fd)
+@@ -1065,6 +1093,60 @@ static int conn_open(EpmdVars *g,int fd)
    return EPMD_FALSE;
  }
  
@@ -570,7 +569,7 @@ index 8c8d730..28a2968 100644
  {
    int i;
 diff --git a/erts/epmd/test/epmd_SUITE.erl b/erts/epmd/test/epmd_SUITE.erl
-index e8bbfdb..f3c0ada 100644
+index e8bbfdb..58fe23c 100644
 --- a/erts/epmd/test/epmd_SUITE.erl
 +++ b/erts/epmd/test/epmd_SUITE.erl
 @@ -43,6 +43,7 @@
@@ -616,7 +615,7 @@ index e8bbfdb..f3c0ada 100644
  register_names_1(doc) ->
      ["Register and unregister two nodes"];
  register_names_1(suite) ->
-@@ -242,13 +262,18 @@ register_node(Name) ->
+@@ -242,13 +262,14 @@ register_node(Name) ->
  register_node(Name,Port) ->
      register_node_v2(Port,$M,0,5,5,Name,"").
  
@@ -624,19 +623,20 @@ index e8bbfdb..f3c0ada 100644
 +    register_node_v2({0,0,0,0,0,0,0,1},?DUMMY_PORT,$M,0,5,5,Name,"").
 +
  register_node_v2(Port, NodeType, Prot, HVsn, LVsn, Name, Extra) ->
+-    Utf8Name = unicode:characters_to_binary(Name),
+-    Req = [?EPMD_ALIVE2_REQ, put16(Port), NodeType, Prot,
+-	   put16(HVsn), put16(LVsn),
+-	   put16(size(Utf8Name)), binary_to_list(Utf8Name),
+-	   size16(Extra), Extra],
+-    case send_req(Req) of
 +    register_node_v2("localhost", Port, NodeType, Prot, HVsn, LVsn, Name, Extra).
 +register_node_v2(Addr, Port, NodeType, Prot, HVsn, LVsn, Name, Extra) ->
-     Utf8Name = unicode:characters_to_binary(Name),
-     Req = [?EPMD_ALIVE2_REQ, put16(Port), NodeType, Prot,
- 	   put16(HVsn), put16(LVsn),
- 	   put16(size(Utf8Name)), binary_to_list(Utf8Name),
- 	   size16(Extra), Extra],
--    case send_req(Req) of
++    Req = alive2_req(Port, NodeType, Prot, HVsn, LVsn, Name, Extra),
 +    case send_req(Req, Addr) of
  	{ok,Sock} ->
  	    case recv(Sock,4) of
  		{ok, [?EPMD_ALIVE2_RESP,_Res=0,_C0,_C1]} ->
-@@ -1151,7 +1176,9 @@ send_direct(Sock, Bytes) ->
+@@ -1151,7 +1172,9 @@ send_direct(Sock, Bytes) ->
      end.
  
  send_req(Req) ->
@@ -647,6 +647,19 @@ index e8bbfdb..f3c0ada 100644
  	{ok,Sock} ->
  	    case send(Sock, [size16(Req), Req]) of
  		ok ->
+diff --git a/lib/erl_interface/configure.in b/lib/erl_interface/configure.in
+index 3ac9212..7a3b5ce 100644
+--- a/lib/erl_interface/configure.in
++++ b/lib/erl_interface/configure.in
+@@ -251,7 +251,7 @@ case "$threads_disabled" in
+ 	        ;;
+ 	    win32_threads)
+ 		EI_THREADS="true"	
+-		THR_DEFS="$THR_DEFS -D_WIN32_WINNT=0x0500 -DWINVER=0x0500"
++		THR_DEFS="$THR_DEFS -D_WIN32_WINNT=0x0600 -DWINVER=0x0600"
+ 		;;
+ 	    pthread)	
+ 		EI_THREADS="true"
 diff --git a/lib/kernel/src/erl_epmd.erl b/lib/kernel/src/erl_epmd.erl
 index 55ce9a7..c6202dd 100644
 --- a/lib/kernel/src/erl_epmd.erl
@@ -699,3 +712,26 @@ index 55ce9a7..c6202dd 100644
  	{ok, Socket} ->
  	    Name = to_string(NodeName),
  	    Extra = "",
+diff --git a/lib/wx/configure.in b/lib/wx/configure.in
+index 48fcca6..bf27b72 100644
+--- a/lib/wx/configure.in
++++ b/lib/wx/configure.in
+@@ -164,14 +164,14 @@ case $host_os in
+ 	CPPFLAGS="$CPPFLAGS -D_MACOSX $PTHR_CFLAGS"
+ 	;;
+     mingw32)
+-	CFLAGS="$CFLAGS -DWIN32 -DWINVER=0x0500 -D_WINDOWS -D_UNICODE -DUNICODE"
+-	CPPFLAGS="$CPPFLAGS -D_WIN32_WINNT=0x0500"	
++	CFLAGS="$CFLAGS -DWIN32 -DWINVER=0x0600 -D_WINDOWS -D_UNICODE -DUNICODE"
++	CPPFLAGS="$CPPFLAGS -D_WIN32_WINNT=0x0600"
+ 	AC_MSG_WARN([Reverting to 32-bit time_t])
+ 	CPPFLAGS="$CPPFLAGS -D_USE_32BIT_TIME_T"
+ 	;;
+     win32)
+-	CFLAGS="$CFLAGS -DWIN32 -DWINVER=0x0500 -D_WINDOWS -D_UNICODE -DUNICODE"
+-	CPPFLAGS="$CPPFLAGS -D_WIN32_WINNT=0x0500"
++	CFLAGS="$CFLAGS -DWIN32 -DWINVER=0x0600 -D_WINDOWS -D_UNICODE -DUNICODE"
++	CPPFLAGS="$CPPFLAGS -D_WIN32_WINNT=0x0600"
+ 	;;
+     *)
+ 	CFLAGS="$CFLAGS -Wno-deprecated-declarations"
