@@ -2,14 +2,9 @@
 
 %{!?need_bootstrap: %global need_bootstrap %{need_bootstrap_set}}
 
-%global __minimal 0
-
 %ifarch %{arm}
 # For some reason, fop hangs on arm, so for now don't generate docs by
 # default
-%bcond_with doc
-%else
-%if 0%{__minimal}
 %bcond_with doc
 %else
 %bcond_without doc
