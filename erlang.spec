@@ -15,8 +15,8 @@
 %endif
 
 Name:		erlang
-Version:	18.3
-Release:	2%{?dist}
+Version:	18.3.1
+Release:	1%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -2230,6 +2230,9 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 
 
 %changelog
+* Thu Apr  7 2016 Peter Lemenkov <lemenkov@gmail.com> - 18.3.1-1
+- Ver. 18.3.1
+
 * Thu Mar 31 2016 Peter Lemenkov <lemenkov@gmail.com> - 18.3-2
 - Added patch to suppress sending systemd notifications from epmd if not
   started as a systemd service.
