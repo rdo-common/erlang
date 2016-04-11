@@ -14,9 +14,62 @@
 %global __with_hipe 1
 %endif
 
+##
+## Optional components
+##
+
+%global __with_emacs 1
+%global __with_examples 1
+%global __with_java 1
+%global __with_tcltk 1
+#
+# wxWidgets plugin blocks the following ones:
+#
+# * debugger - https://bugzilla.redhat.com/1095715
+# * dialyzer - https://bugzilla.redhat.com/1095717
+# * et - https://bugzilla.redhat.com/1095718
+# * observer - https://bugzilla.redhat.com/1095721
+# * reltool - https://bugzilla.redhat.com/1095727
+#
+# debugger blocks:
+#
+# * common_test
+# * megaco
+#
+# dialyzer blocks:
+#
+# * typer
+#
+# et blocks:
+#
+# * megaco
+#
+# observer blocks:
+#
+# * common_test
+# * test_server
+# * webtool
+#
+# So finally we have to disable the following plugins:
+#
+# common_test
+# debugger
+# dialyzer
+# et
+# megaco
+# observer
+# reltool (*)
+# test_server
+# typer
+# webtool
+# wx
+#
+%global __with_wxwidgets 1
+
+
 Name:		erlang
 Version:	18.3.1
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -89,6 +142,7 @@ BuildRequires:	erlang
 %if 0%{?el7}%{?fedora}
 # for <systemd/sd-daemon.h>
 BuildRequires:	systemd-devel
+BuildRequires:	systemd
 Requires(post):	systemd
 Requires(preun):systemd
 Requires(postun):systemd
@@ -96,10 +150,12 @@ Requires:	systemd
 %endif
 BuildRequires:	autoconf
 BuildRequires:	automake
-BuildRequires:	erlang-rpm-macros
+#BuildRequires:	erlang-rpm-macros
 
 Requires: %{name}-asn1%{?_isa} = %{version}-%{release}
+%if %{__with_wxwidgets}
 Requires: %{name}-common_test%{?_isa} = %{version}-%{release}
+%endif %{__with_wxwidgets}
 Requires: %{name}-compiler%{?_isa} = %{version}-%{release}
 Requires: %{name}-cosEvent%{?_isa} = %{version}-%{release}
 Requires: %{name}-cosEventDomain%{?_isa} = %{version}-%{release}
@@ -109,25 +165,41 @@ Requires: %{name}-cosProperty%{?_isa} = %{version}-%{release}
 Requires: %{name}-cosTime%{?_isa} = %{version}-%{release}
 Requires: %{name}-cosTransactions%{?_isa} = %{version}-%{release}
 Requires: %{name}-crypto%{?_isa} = %{version}-%{release}
+%if %{__with_wxwidgets}
 Requires: %{name}-debugger%{?_isa} = %{version}-%{release}
+%endif %{__with_wxwidgets}
+%if %{__with_wxwidgets}
 Requires: %{name}-dialyzer%{?_isa} = %{version}-%{release}
+%endif %{__with_wxwidgets}
 Requires: %{name}-diameter%{?_isa} = %{version}-%{release}
 Requires: %{name}-edoc%{?_isa} = %{version}-%{release}
 Requires: %{name}-eldap%{?_isa} = %{version}-%{release}
 Requires: %{name}-erl_docgen%{?_isa} = %{version}-%{release}
 Requires: %{name}-erl_interface%{?_isa} = %{version}-%{release}
 Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+%if %{__with_wxwidgets}
 Requires: %{name}-et%{?_isa} = %{version}-%{release}
+%endif %{__with_wxwidgets}
 Requires: %{name}-eunit%{?_isa} = %{version}-%{release}
+%if %{__with_tcltk}
 Requires: %{name}-gs%{?_isa} = %{version}-%{release}
+%endif %{__with_tcltk}
 Requires: %{name}-hipe%{?_isa} = %{version}-%{release}
+%if %{__with_java}
 Requires: %{name}-ic%{?_isa} = %{version}-%{release}
+%endif %{__with_java}
 Requires: %{name}-inets%{?_isa} = %{version}-%{release}
+%if %{__with_java}
 Requires: %{name}-jinterface%{?_isa} = %{version}-%{release}
+%endif %{__with_java}
 Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
+%if %{__with_wxwidgets}
 Requires: %{name}-megaco%{?_isa} = %{version}-%{release}
+%endif %{__with_wxwidgets}
 Requires: %{name}-mnesia%{?_isa} = %{version}-%{release}
+%if %{__with_wxwidgets}
 Requires: %{name}-observer%{?_isa} = %{version}-%{release}
+%endif %{__with_wxwidgets}
 Requires: %{name}-odbc%{?_isa} = %{version}-%{release}
 Requires: %{name}-orber%{?_isa} = %{version}-%{release}
 Requires: %{name}-os_mon%{?_isa} = %{version}-%{release}
@@ -136,7 +208,9 @@ Requires: %{name}-otp_mibs%{?_isa} = %{version}-%{release}
 Requires: %{name}-parsetools%{?_isa} = %{version}-%{release}
 Requires: %{name}-percept%{?_isa} = %{version}-%{release}
 Requires: %{name}-public_key%{?_isa} = %{version}-%{release}
+%if %{__with_wxwidgets}
 Requires: %{name}-reltool%{?_isa} = %{version}-%{release}
+%endif %{__with_wxwidgets}
 Requires: %{name}-runtime_tools%{?_isa} = %{version}-%{release}
 Requires: %{name}-sasl%{?_isa} = %{version}-%{release}
 Requires: %{name}-snmp%{?_isa} = %{version}-%{release}
@@ -144,11 +218,19 @@ Requires: %{name}-ssh%{?_isa} = %{version}-%{release}
 Requires: %{name}-ssl%{?_isa} = %{version}-%{release}
 Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Requires: %{name}-syntax_tools%{?_isa} = %{version}-%{release}
+%if %{__with_wxwidgets}
 Requires: %{name}-test_server%{?_isa} = %{version}-%{release}
+%endif %{__with_wxwidgets}
 Requires: %{name}-tools%{?_isa} = %{version}-%{release}
+%if %{__with_wxwidgets}
 Requires: %{name}-typer%{?_isa} = %{version}-%{release}
+%endif %{__with_wxwidgets}
+%if %{__with_wxwidgets}
 Requires: %{name}-webtool%{?_isa} = %{version}-%{release}
+%endif %{__with_wxwidgets}
+%if %{__with_wxwidgets}
 Requires: %{name}-wx%{?_isa} = %{version}-%{release}
+%endif %{__with_wxwidgets}
 Requires: %{name}-xmerl%{?_isa} = %{version}-%{release}
 
 %description
@@ -159,6 +241,7 @@ systems from Ericsson.
 
 ### BEGIN OF AUTOGENERATED LIST ###
 
+%if %{__with_emacs}
 %package -n emacs-erlang
 Summary: Compiled elisp files for erlang-mode under GNU Emacs
 Group: Applications/Editors
@@ -179,6 +262,7 @@ BuildArch: noarch
 
 %description -n emacs-erlang-el
 Erlang mode for GNU Emacs (source lisp files).
+%endif %{__with_emacs}
 
 %package asn1
 Summary: Provides support for Abstract Syntax Notation One
@@ -190,6 +274,7 @@ Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 %description asn1
 Provides support for Abstract Syntax Notation One.
 
+%if %{__with_wxwidgets}
 %package common_test
 Summary: A portable framework for automatic testing
 Group: Development/Languages
@@ -211,6 +296,7 @@ Requires: %{name}-xmerl%{?_isa} = %{version}-%{release}
 
 %description common_test
 A portable framework for automatic testing.
+%endif %{__with_wxwidgets}
 
 %package compiler
 Summary: A byte code compiler for Erlang which produces highly compact code
@@ -320,6 +406,7 @@ Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 %description crypto
 Cryptographical support.
 
+%if %{__with_wxwidgets}
 %package debugger
 Summary: A debugger for debugging and testing of Erlang programs
 Group: Development/Languages
@@ -331,7 +418,9 @@ Requires: %{name}-wx%{?_isa} = %{version}-%{release}
 
 %description debugger
 A debugger for debugging and testing of Erlang programs.
+%endif %{__with_wxwidgets}
 
+%if %{__with_wxwidgets}
 %package dialyzer
 Summary: A DIscrepancy AnaLYZer for ERlang programs
 Group: Development/Languages
@@ -346,6 +435,7 @@ Requires: graphviz
 
 %description dialyzer
 A DIscrepancy AnaLYZer for ERlang programs.
+%endif %{__with_wxwidgets}
 
 %package diameter
 Summary: Diameter (RFC 3588) library
@@ -446,6 +536,7 @@ Obsoletes: erlang-tv
 %description erts
 Functionality necessary to run the Erlang System itself.
 
+%if %{__with_wxwidgets}
 %package et
 Summary: An event tracer for Erlang programs
 Group: Development/Languages
@@ -457,6 +548,7 @@ Requires: %{name}-wx%{?_isa} = %{version}-%{release}
 
 %description et
 An event tracer for Erlang programs.
+%endif %{__with_wxwidgets}
 
 %package eunit
 Summary: Support for unit testing
@@ -468,11 +560,14 @@ Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 %description eunit
 Support for unit testing.
 
+%if %{__with_examples}
 %package examples
 Summary: Examples for some Erlang modules
 Group: Development/Languages
 Requires: %{name}-erts%{?_isa} = %{version}-%{release}
+%if %{__with_tcltk}
 Requires: %{name}-gs%{?_isa} = %{version}-%{release}
+%endif %{__with_tcltk}
 Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
 Requires: %{name}-public_key%{?_isa} = %{version}-%{release}
 Requires: %{name}-sasl%{?_isa} = %{version}-%{release}
@@ -481,7 +576,9 @@ Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 
 %description examples
 Examples for some Erlang modules.
+%endif %{__with_examples}
 
+%if %{__with_tcltk}
 %package gs
 Summary: A library for Tcl/Tk support in Erlang
 Group: Development/Languages
@@ -494,6 +591,7 @@ Requires: tk
 
 %description gs
 A Graphics System used to write platform independent user interfaces.
+%endif %{__with_tcltk}
 
 %package hipe
 Summary: High Performance Erlang
@@ -510,7 +608,9 @@ High Performance Erlang.
 %package ic
 Summary: IDL compiler
 Group: Development/Languages
+%if %{__with_java}
 BuildRequires: java-devel
+%endif %{__with_java}
 Requires: %{name}-erts%{?_isa} = %{version}-%{release}
 Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
 Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
@@ -531,6 +631,7 @@ Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 %description inets
 A set of services such as a Web server and a ftp client etc.
 
+%if %{__with_java}
 %package jinterface
 Summary: A library for accessing Java from Erlang
 Group: Development/Languages
@@ -539,6 +640,7 @@ Requires: %{name}-erts%{?_isa} = %{version}-%{release}
 
 %description jinterface
 Low level interface to Java.
+%endif %{__with_java}
 
 %package kernel
 Summary: Main erlang library
@@ -549,6 +651,7 @@ Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 %description kernel
 Main erlang library.
 
+%if %{__with_wxwidgets}
 %package megaco
 Summary: Megaco/H.248 support library
 Group: Development/Languages
@@ -564,6 +667,7 @@ Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 Megaco/H.248 is a protocol for control of elements in a physically
 decomposed multimedia gateway, enabling separation of call control
 from media conversion.
+%endif %{__with_wxwidgets}
 
 %package mnesia
 Summary: A heavy duty real-time distributed database
@@ -575,6 +679,7 @@ Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 %description mnesia
 A heavy duty real-time distributed database.
 
+%if %{__with_wxwidgets}
 %package observer
 Summary: A set of tools for tracing and investigation of distributed systems
 Group: Development/Languages
@@ -588,6 +693,7 @@ Requires: %{name}-wx%{?_isa} = %{version}-%{release}
 
 %description observer
 A set of tools for tracing and investigation of distributed systems.
+%endif %{__with_wxwidgets}
 
 %package odbc
 Summary: A library for unixODBC support in Erlang
@@ -683,6 +789,7 @@ Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 %description public_key
 API to public key infrastructure.
 
+%if %{__with_wxwidgets}
 %package reltool
 Summary: A release management tool
 Group: Development/Languages
@@ -700,6 +807,7 @@ between applications. The graphical frontend depicts the
 dependencies and enables interactive customization of a
 target system. The backend provides a batch interface
 for generation of customized target systems.
+%endif %{__with_wxwidgets}
 
 %package runtime_tools
 Summary: A set of tools to include in a production system
@@ -786,6 +894,7 @@ Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 A utility used to handle abstract Erlang syntax trees,
 reading source files differently, pretty-printing syntax trees.
 
+%if %{__with_wxwidgets}
 %package test_server
 Summary: The OTP Test Server
 Group: Development/Languages
@@ -800,6 +909,7 @@ Requires: %{name}-tools%{?_isa} = %{version}-%{release}
 
 %description test_server
 The OTP Test Server.
+%endif %{__with_wxwidgets}
 
 %package tools
 Summary: A set of programming tools including a coverage analyzer etc
@@ -816,11 +926,14 @@ Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 %if 0%{?fedora} >= 21 || 0%{?rhel} >= 8
 Suggests: %{name}-webtool%{?_isa} = %{version}-%{release}
 %endif
+%if %{__with_emacs}
 Provides: emacs-common-erlang = %{version}-%{release}
+%endif %{__with_emacs}
 
 %description tools
 A set of programming tools including a coverage analyzer etc.
 
+%if %{__with_wxwidgets}
 %package typer
 Summary: TYPe annotator for ERlang programs
 Group: Development/Languages
@@ -833,7 +946,9 @@ Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 
 %description typer
 TYPe annotator for ERlang programs.
+%endif %{__with_wxwidgets}
 
+%if %{__with_wxwidgets}
 %package webtool
 Summary: A tool that simplifying the use of web based Erlang tools
 Group: Development/Languages
@@ -845,7 +960,9 @@ Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 
 %description webtool
 A tool that simplifying the use of web based Erlang tools.
+%endif %{__with_wxwidgets}
 
+%if %{__with_wxwidgets}
 %package wx
 Summary: A library for wxWidgets support in Erlang
 Group: Development/Languages
@@ -858,6 +975,7 @@ Requires: mesa-libGLU
 
 %description wx
 A Graphics System used to write platform independent user interfaces.
+%endif %{__with_wxwidgets}
 
 %package xmerl
 Summary: Provides support for XML 1.0
@@ -869,6 +987,7 @@ Requires: %{name}-stdlib%{?_isa} = %{version}-%{release}
 %description xmerl
 Provides support for XML 1.0.
 
+%if %{__with_emacs}
 %package -n xemacs-erlang
 Summary: Compiled elisp files for erlang-mode under XEmacs
 Group: Applications/Editors
@@ -889,6 +1008,7 @@ BuildArch: noarch
 
 %description -n xemacs-erlang-el
 Erlang mode for XEmacs (source lisp files).
+%endif %{__with_emacs}
 
 ### END OF AUTOGENERATED LIST ###
 
@@ -924,11 +1044,38 @@ ERL_FLAGS="${RPM_OPT_FLAGS} -mcpu=ultrasparc -fno-strict-aliasing"
 ERL_FLAGS="${RPM_OPT_FLAGS} -fno-strict-aliasing"
 %endif
 
-CFLAGS="${ERL_FLAGS}" CXXFLAGS="${ERL_FLAGS}" %configure --enable-shared-zlib --enable-sctp --enable-systemd %{?__with_hipe:--enable-hipe} --with-wx-config=/usr/bin/wx-config-3.0
+CFLAGS="${ERL_FLAGS}" CXXFLAGS="${ERL_FLAGS}" %configure --enable-shared-zlib --enable-sctp --enable-systemd \
+	%{?__with_hipe:--enable-hipe} \
+%if %{__with_java}
+	\
+%else
+	--without-jinterface \
+%endif %{__with_java}
+%if %{__with_tcltk}
+	\
+%else
+	--without-gs \
+%endif %{__with_tcltk}
+%if %{__with_wxwidgets}
+	--with-wx-config=/usr/bin/wx-config-3.0
+%else
+	--without-common_test \
+	--without-debugger \
+	--without-dialyzer \
+	--without-et \
+	--without-megaco \
+	--without-observer \
+	--without-reltool \
+	--without-test_server \
+	--without-typer \
+	--without-webtool \
+	--without-wx
+%endif %{__with_wxwidgets}
 
 # Remove pre-built BEAM files
 make clean
 
+%if %{__with_emacs}
 # GNU Emacs/XEmacs related stuff
 erlang_tools_vsn="$(sed -n 's/TOOLS_VSN = //p' lib/tools/vsn.mk)"
 
@@ -958,6 +1105,7 @@ rm -f xemacs-erlang/erlang-flymake.el
 pushd xemacs-erlang
 %{_xemacs_bytecompile} *.el
 popd
+%endif %{__with_emacs}
 
 make
 
@@ -973,6 +1121,7 @@ make docs
 
 
 %install
+%if %{__with_emacs}
 # GNU Emacs/XEmacs related stuff
 erlang_tools_vsn="$(sed -n 's/TOOLS_VSN = //p' lib/tools/vsn.mk)"
 
@@ -998,6 +1147,7 @@ for f in lib/tools/emacs/{README,*.el}; do
 done
 rm -f "$RPM_BUILD_ROOT%{_xemacs_sitelispdir}/erlang/erlang-flymake.el"
 install -m 0644 xemacs-erlang/*.elc "$RPM_BUILD_ROOT%{_xemacs_sitelispdir}/erlang/"
+%endif %{__with_emacs}
 
 make DESTDIR=$RPM_BUILD_ROOT install
 
@@ -1008,9 +1158,15 @@ env ERL_LIBS="$RPM_BUILD_ROOT%{_libdir}/erlang/lib" make DESTDIR=$RPM_BUILD_ROOT
 # Do not install info files - they are almost empty and useless
 find $RPM_BUILD_ROOT%{_libdir}/erlang -type f -name info -exec rm -f {} \;
 
+%if %{__with_examples}
 # fix 0775 permission on some directories
 find $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ssl-*/examples/ -type d -perm 0775 | xargs chmod 755
 find $RPM_BUILD_ROOT%{_libdir}/erlang/lib/kernel-*/examples/uds_dist -type d -perm 0775 | xargs chmod 755
+%else
+# Remove all examples
+find $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ -mindepth 1 -maxdepth 2 -type d -name examples -exec rm -rf {} \;
+%endif %{__with_examples}
+
 chmod 0755 $RPM_BUILD_ROOT%{_libdir}/erlang/bin
 
 # Relocate doc-files into the proper directory
@@ -1060,6 +1216,7 @@ do
 	fi
 done
 
+%if %{__with_java}
 # symlink *.jar files to appropriate places for subpackages
 install -m 0755 -d "$RPM_BUILD_ROOT%{_javadir}/%{name}"
 
@@ -1072,6 +1229,7 @@ ln -s "${ic_lib_dir}priv/ic.jar" "$RPM_BUILD_ROOT%{_javadir}/%{name}/"
 jinterface_lib_dir="$(ls -d1 $RPM_BUILD_ROOT%{_libdir}/erlang/lib/jinterface-*/ | sed "s,^$RPM_BUILD_ROOT,,")"
 test -d "$RPM_BUILD_ROOT$jinterface_lib_dir"
 ln -s "${jinterface_lib_dir}priv/OtpErlang.jar" "$RPM_BUILD_ROOT%{_javadir}/%{name}/"
+%endif %{__with_java}
 
 # systemd-related stuff
 %if 0%{?el7}%{?fedora}
@@ -1080,6 +1238,19 @@ install -D -p -m 0644 %{SOURCE6} %{buildroot}%{_unitdir}/epmd.socket
 install -D -p -m 0644 %{SOURCE7} %{buildroot}%{_unitdir}/epmd@.service
 install -D -p -m 0644 %{SOURCE8} %{buildroot}%{_unitdir}/epmd@.socket
 %endif
+
+
+%if %{__with_wxwidgets}
+echo "No need to fix additional scripts"
+%else
+# FIXME workaround for broken Erlang install procedure
+for exe in ct_run dialyzer typer
+do
+	rm -f $RPM_BUILD_ROOT/%{_bindir}/${exe}
+	rm -f $RPM_BUILD_ROOT/%{_libdir}/erlang/bin/${exe}
+	rm -f $RPM_BUILD_ROOT/%{_libdir}/erlang/erts-*/bin/${exe}
+done
+%endif %{__with_wxwidgets}
 
 
 %check
@@ -1115,10 +1286,14 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %{_libdir}/erlang/man/man3/asn1rt.*
 %endif
 
+%if %{__with_wxwidgets}
 %files common_test
 %{_bindir}/ct_run
+%{_libdir}/erlang/bin/ct_run
+%{_libdir}/erlang/erts-*/bin/ct_run
 %{_libdir}/erlang/lib/common_test-*/
 %if %{with doc}
+%{_libdir}/erlang/man/man1/ct_run.*
 %{_libdir}/erlang/man/man3/ct.*
 %{_libdir}/erlang/man/man3/ct_cover.*
 %{_libdir}/erlang/man/man3/ct_ftp.*
@@ -1134,6 +1309,7 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %{_libdir}/erlang/man/man3/unix_telnet.*
 %{_libdir}/erlang/man/man6/common_test.*
 %endif
+%endif %{__with_wxwidgets}
 
 %files compiler
 %{_libdir}/erlang/lib/compiler-*/
@@ -1266,6 +1442,7 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %{_libdir}/erlang/man/man6/crypto.*
 %endif
 
+%if %{__with_wxwidgets}
 %files debugger
 %{_libdir}/erlang/lib/debugger-*/
 %if %{with doc}
@@ -1273,7 +1450,9 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %{_libdir}/erlang/man/man3/i.*
 %{_libdir}/erlang/man/man3/int.*
 %endif
+%endif %{__with_wxwidgets}
 
+%if %{__with_wxwidgets}
 %files dialyzer
 %{_bindir}/dialyzer
 %{_libdir}/erlang/bin/dialyzer
@@ -1282,6 +1461,7 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %if %{with doc}
 %{_libdir}/erlang/man/man3/dialyzer.*
 %endif
+%endif %{__with_wxwidgets}
 
 %files diameter
 %dir %{_libdir}/erlang/lib/diameter-*/
@@ -1370,7 +1550,6 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %{_bindir}/escript
 %{_bindir}/run_erl
 %{_bindir}/to_erl
-%{_libdir}/erlang/bin/ct_run
 %{_libdir}/erlang/bin/epmd
 %{_libdir}/erlang/bin/erl
 %{_libdir}/erlang/bin/erlc
@@ -1389,7 +1568,6 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %{_libdir}/erlang/erts-*/bin/beam
 %{_libdir}/erlang/erts-*/bin/beam.smp
 %{_libdir}/erlang/erts-*/bin/child_setup
-%{_libdir}/erlang/erts-*/bin/ct_run
 %{_libdir}/erlang/erts-*/bin/dyn_erl
 %{_libdir}/erlang/erts-*/bin/epmd
 %{_libdir}/erlang/erts-*/bin/erl
@@ -1409,7 +1587,6 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %{_libdir}/erlang/erts-*/src/
 %{_libdir}/erlang/lib/erts-*/
 %if %{with doc}
-%{_libdir}/erlang/man/man1/ct_run.*
 %{_libdir}/erlang/man/man1/epmd.*
 %{_libdir}/erlang/man/man1/erl.*
 %{_libdir}/erlang/man/man1/erlc.*
@@ -1435,6 +1612,7 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %{_unitdir}/epmd@.socket
 %endif
 
+%if %{__with_wxwidgets}
 %files et
 %dir %{_libdir}/erlang/lib/et-*/
 %{_libdir}/erlang/lib/et-*/ebin
@@ -1446,6 +1624,7 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %{_libdir}/erlang/man/man3/et_selector.*
 %{_libdir}/erlang/man/man3/et_viewer.*
 %endif
+%endif %{__with_wxwidgets}
 
 %files eunit
 %dir %{_libdir}/erlang/lib/eunit-*/
@@ -1457,20 +1636,31 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %{_libdir}/erlang/man/man3/eunit_surefire.*
 %endif
 
+%if %{__with_examples}
 %files examples
 %{_libdir}/erlang/lib/asn1-*/examples/
 %{_libdir}/erlang/lib/diameter-*/examples/
+%if %{__with_wxwidgets}
 %{_libdir}/erlang/lib/et-*/examples/
+%endif %{__with_wxwidgets}
 %{_libdir}/erlang/lib/eunit-*/examples/
+%if %{__with_tcltk}
 %{_libdir}/erlang/lib/gs-*/examples/
+%endif %{__with_tcltk}
+%if %{__with_java}
 %{_libdir}/erlang/lib/ic-*/examples/
+%endif %{__with_java}
 %{_libdir}/erlang/lib/inets-*/examples/
 %{_libdir}/erlang/lib/kernel-*/examples/
 %{_libdir}/erlang/lib/megaco-*/examples/
 %{_libdir}/erlang/lib/mnesia-*/examples/
+%if %{__with_wxwidgets}
 %{_libdir}/erlang/lib/observer-*/examples/
+%endif %{__with_wxwidgets}
 %{_libdir}/erlang/lib/orber-*/examples/
+%if %{__with_wxwidgets}
 %{_libdir}/erlang/lib/reltool-*/examples/
+%endif %{__with_wxwidgets}
 %{_libdir}/erlang/lib/runtime_tools-*/examples/
 %{_libdir}/erlang/lib/sasl-*/examples/
 %{_libdir}/erlang/lib/snmp-*/examples/
@@ -1478,8 +1668,12 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %{_libdir}/erlang/lib/stdlib-*/examples/
 %{_libdir}/erlang/lib/syntax_tools-*/examples/
 %{_libdir}/erlang/lib/tools-*/examples/
+%if %{__with_wxwidgets}
 %{_libdir}/erlang/lib/wx-*/examples/
+%endif %{__with_wxwidgets}
+%endif %{__with_examples}
 
+%if %{__with_tcltk}
 %files gs
 %dir %{_libdir}/erlang/lib/gs-*/
 %{_libdir}/erlang/lib/gs-*/contribs
@@ -1489,6 +1683,7 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %if %{with doc}
 %{_libdir}/erlang/man/man3/gs.*
 %endif
+%endif %{__with_tcltk}
 
 %files hipe
 %{_libdir}/erlang/lib/hipe-*/
@@ -1501,7 +1696,9 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %{_libdir}/erlang/lib/ic-*/src
 # FIXME see erlang-jinterface also
 #%dir %{_javadir}/%{name}/
+%if %{__with_java}
 %{_javadir}/%{name}/ic.jar
+%endif %{__with_java}
 %if %{with doc}
 %{_libdir}/erlang/man/man3/ic.*
 %{_libdir}/erlang/man/man3/ic_clib.*
@@ -1530,11 +1727,13 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %{_libdir}/erlang/man/man3/tftp.*
 %endif
 
+%if %{__with_java}
 %files jinterface
 # FIXME see erlang-ic also
 #%dir %{_javadir}/%{name}/
 %{_javadir}/%{name}/OtpErlang.jar
 %{_libdir}/erlang/lib/jinterface-*/
+%endif %{__with_java}
 
 %files kernel
 %dir %{_libdir}/erlang/lib/kernel-*/
@@ -1576,6 +1775,7 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %{_libdir}/erlang/man/man6/kernel.*
 %endif
 
+%if %{__with_wxwidgets}
 %files megaco
 %dir %{_libdir}/erlang/lib/megaco-*/
 %{_libdir}/erlang/lib/megaco-*/ebin
@@ -1596,6 +1796,7 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %{_libdir}/erlang/man/man3/megaco_udp.*
 %{_libdir}/erlang/man/man3/megaco_user.*
 %endif
+%endif %{__with_wxwidgets}
 
 %files mnesia
 %dir %{_libdir}/erlang/lib/mnesia-*/
@@ -1607,6 +1808,7 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %{_libdir}/erlang/man/man3/mnesia_registry.*
 %endif
 
+%if %{__with_wxwidgets}
 %files observer
 %dir %{_libdir}/erlang/lib/observer-*/
 %{_libdir}/erlang/lib/observer-*/ebin/
@@ -1616,10 +1818,12 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %if %{with doc}
 %{_libdir}/erlang/man/man1/cdv.*
 %{_libdir}/erlang/man/man3/crashdump.*
+%{_libdir}/erlang/man/man3/etop.*
 %{_libdir}/erlang/man/man3/observer.*
 %{_libdir}/erlang/man/man3/ttb.*
 %{_libdir}/erlang/man/man6/observer.*
 %endif
+%endif %{__with_wxwidgets}
 
 %files odbc
 %{_libdir}/erlang/lib/odbc-*/
@@ -1644,7 +1848,6 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %{_libdir}/erlang/man/man3/any.*
 %{_libdir}/erlang/man/man3/corba.*
 %{_libdir}/erlang/man/man3/corba_object.*
-%{_libdir}/erlang/man/man3/etop.*
 %{_libdir}/erlang/man/man3/fixed.*
 %{_libdir}/erlang/man/man3/interceptors.*
 %{_libdir}/erlang/man/man3/lname.*
@@ -1703,6 +1906,7 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %{_libdir}/erlang/man/man3/public_key.*
 %endif
 
+%if %{__with_wxwidgets}
 %files reltool
 %dir %{_libdir}/erlang/lib/reltool-*/
 %{_libdir}/erlang/lib/reltool-*/ebin
@@ -1710,6 +1914,7 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %if %{with doc}
 %{_libdir}/erlang/man/man3/reltool.*
 %endif
+%endif %{__with_wxwidgets}
 
 %files runtime_tools
 %dir %{_libdir}/erlang/lib/runtime_tools-*/
@@ -1918,6 +2123,7 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %{_libdir}/erlang/man/man3/prettypr.*
 %endif
 
+%if %{__with_wxwidgets}
 %files test_server
 %{_libdir}/erlang/lib/test_server-*/
 %if %{with doc}
@@ -1925,6 +2131,7 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %{_libdir}/erlang/man/man3/test_server_ctrl.*
 %{_libdir}/erlang/man/man6/test_server.*
 %endif
+%endif %{__with_wxwidgets}
 
 %files tools
 %dir %{_libdir}/erlang/lib/tools-*/
@@ -1946,20 +2153,25 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %{_libdir}/erlang/man/man3/xref.*
 %endif
 
+%if %{__with_wxwidgets}
 %files typer
 %{_bindir}/typer
 %{_libdir}/erlang/bin/typer
 %{_libdir}/erlang/erts-*/bin/typer
 %dir %{_libdir}/erlang/lib/typer-*/
 %{_libdir}/erlang/lib/typer-*/ebin/
+%endif %{__with_wxwidgets}
 
+%if %{__with_wxwidgets}
 %files webtool
 %{_libdir}/erlang/lib/webtool-*/
 %if %{with doc}
 %{_libdir}/erlang/man/man1/start_webtool.*
 %{_libdir}/erlang/man/man3/webtool.*
 %endif
+%endif %{__with_wxwidgets}
 
+%if %{__with_wxwidgets}
 %files wx
 %dir %{_libdir}/erlang/lib/wx-*/
 %{_libdir}/erlang/lib/wx-*/ebin
@@ -2197,6 +2409,7 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %{_libdir}/erlang/man/man3/wxWindowDestroyEvent.*
 %{_libdir}/erlang/man/man3/wxXmlResource.*
 %endif
+%endif %{__with_wxwidgets}
 
 %files xmerl
 %{_libdir}/erlang/lib/xmerl-*/
@@ -2210,6 +2423,7 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %{_libdir}/erlang/man/man3/xmerl_xsd.*
 %endif
 
+%if %{__with_emacs}
 %files -n emacs-erlang
 %dir %{_emacs_sitelispdir}/erlang
 %doc %{_emacs_sitelispdir}/erlang/README
@@ -2227,9 +2441,13 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 
 %files -n xemacs-erlang-el
 %{_xemacs_sitelispdir}/erlang/*.el
+%endif %{__with_emacs}
 
 
 %changelog
+* Sun Apr 10 2016 Peter Lemenkov <lemenkov@gmail.com> - 18.3.1-2
+- Enable selective building
+
 * Thu Apr  7 2016 Peter Lemenkov <lemenkov@gmail.com> - 18.3.1-1
 - Ver. 18.3.1
 
