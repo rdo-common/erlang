@@ -68,8 +68,8 @@
 
 
 Name:		erlang
-Version:	18.3.1
-Release:	2%{?dist}
+Version:	18.3.2
+Release:	1%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -2445,6 +2445,9 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 
 
 %changelog
+* Wed Apr 27 2016 Peter Lemenkov <lemenkov@gmail.com> - 18.3.2-1
+- Ver. 18.3.2
+
 * Sun Apr 10 2016 Peter Lemenkov <lemenkov@gmail.com> - 18.3.1-2
 - Enable selective building
 
