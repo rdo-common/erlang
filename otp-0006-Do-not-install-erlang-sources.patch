@@ -472,10 +472,10 @@ index 1c05d45..88f9f62 100644
  	$(INSTALL_DATA) $(TARGET_FILES) $(BEHAVIOUR_TARGET_FILES) "$(RELSYSDIR)/ebin"
  
 diff --git a/lib/inets/src/inets_app/Makefile b/lib/inets/src/inets_app/Makefile
-index 0a4b625..1b1d83d 100644
+index 7f51676..093f462 100644
 --- a/lib/inets/src/inets_app/Makefile
 +++ b/lib/inets/src/inets_app/Makefile
-@@ -115,7 +115,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
+@@ -116,7 +116,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
  release_spec: opt
  	$(INSTALL_DIR)  "$(RELSYSDIR)/src"
  	$(INSTALL_DIR)  "$(RELSYSDIR)/src/inets_app"
