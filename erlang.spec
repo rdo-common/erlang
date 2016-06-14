@@ -68,8 +68,8 @@
 
 
 Name:		erlang
-Version:	18.3.3
-Release:	2%{?dist}
+Version:	18.3.4
+Release:	1%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -2449,6 +2449,9 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 
 
 %changelog
+* Tue Jun 14 2016 Peter Lemenkov <lemenkov@gmail.com> - 18.3.4-1
+- Ver. 18.3.4
+
 * Mon Jun 13 2016 Peter Lemenkov <lemenkov@gmail.com> - 18.3.3-2
 - Fix regression with GCC 6.x.y
 
