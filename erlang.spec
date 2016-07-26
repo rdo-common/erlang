@@ -68,7 +68,7 @@
 
 
 Name:		erlang
-Version:	18.3.4.1
+Version:	18.3.4.2
 Release:	1%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
@@ -2453,6 +2453,9 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 
 
 %changelog
+* Tue Jul 26 2016 Peter Lemenkov <lemenkov@gmail.com> - 18.3.4.2-1
+- Ver. 18.3.4.2
+
 * Fri Jul 15 2016 Peter Lemenkov <lemenkov@gmail.com> - 18.3.4.1-1
 - Ver. 18.3.4.1
 - Allow node registration via IPv6 (PR erlang/otp#1129)
