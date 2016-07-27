@@ -5,7 +5,7 @@ Subject: [PATCH] Do not install Java sources
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 
 diff --git a/lib/ic/java_src/com/ericsson/otp/ic/Makefile b/lib/ic/java_src/com/ericsson/otp/ic/Makefile
-index d9100cf..6886c71 100644
+index 21c38e5..eeba2e4 100644
 --- a/lib/ic/java_src/com/ericsson/otp/ic/Makefile
 +++ b/lib/ic/java_src/com/ericsson/otp/ic/Makefile
 @@ -113,8 +113,6 @@ docs:
@@ -18,7 +18,7 @@ index d9100cf..6886c71 100644
  	$(INSTALL_DATA) $(JAVA_DEST_ROOT)$(JARFILE) "$(RELSYSDIR)/priv"
  
 diff --git a/lib/jinterface/java_src/com/ericsson/otp/erlang/Makefile b/lib/jinterface/java_src/com/ericsson/otp/erlang/Makefile
-index 1c8364e..34b64a8 100644
+index e55cfa6..5e3a0a5 100644
 --- a/lib/jinterface/java_src/com/ericsson/otp/erlang/Makefile
 +++ b/lib/jinterface/java_src/com/ericsson/otp/erlang/Makefile
 @@ -120,8 +120,6 @@ release release_docs release_tests release_html:
