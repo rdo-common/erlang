@@ -2,7 +2,8 @@
 
 %{!?need_bootstrap: %global need_bootstrap %{need_bootstrap_set}}
 
-%ifarch %{arm}
+%ifarch %{arm} %{mips}
+# MIPS does not have all dependencies for fop yet
 # For some reason, fop hangs on arm, so for now don't generate docs by
 # default
 %bcond_with doc
@@ -65,7 +66,7 @@
 
 Name:		erlang
 Version:	19.0.2
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -2313,6 +2314,9 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 
 
 %changelog
+* Fri Aug 12 2016 Michal Toman <mtoman@fedoraproject.org> - 19.0.2-2
+- Disable doc on MIPS
+
 * Wed Jul 27 2016 Peter Lemenkov <lemenkov@gmail.com> - 19.0.2-1
 - Ver. 19.0.2
 - The following packages were removed - ose, test_server (merged into common_test), webtool
