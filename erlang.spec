@@ -65,8 +65,8 @@
 
 
 Name:		erlang
-Version:	19.0.2
-Release:	2%{?dist}
+Version:	19.0.4
+Release:	1%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -2314,6 +2314,9 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 
 
 %changelog
+* Tue Aug 16 2016 Peter Lemenkov <lemenkov@gmail.com> - 19.0.4-1
+- Ver. 19.0.4
+
 * Fri Aug 12 2016 Michal Toman <mtoman@fedoraproject.org> - 19.0.2-2
 - Disable doc on MIPS
 
