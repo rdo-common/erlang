@@ -1081,6 +1081,8 @@ popd
 cp -av AUTHORS LICENSE.txt README.md $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/PR.template $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/COPYRIGHT $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
+# We'll package it by marking it explicitly as doc - see below
+rm -f $RPM_BUILD_ROOT%{_libdir}/erlang/README.md
 %endif
 
 # Win32-specific man-pages
