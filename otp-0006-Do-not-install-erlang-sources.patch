@@ -8,10 +8,10 @@ Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 Signed-off-by: Hans Ulrich Niedermann <hun@n-dimensional.de>
 
 diff --git a/erts/preloaded/src/Makefile b/erts/preloaded/src/Makefile
-index 4a447d3..eac5ae5 100644
+index 2ab9eda..9b8ed35 100644
 --- a/erts/preloaded/src/Makefile
 +++ b/erts/preloaded/src/Makefile
-@@ -88,8 +88,6 @@ $(APP_TARGET): $(APP_SRC) $(ERL_TOP)/erts/vsn.mk
+@@ -90,8 +90,6 @@ $(APP_TARGET): $(APP_SRC) $(ERL_TOP)/erts/vsn.mk
  include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: $(APP_TARGET)
@@ -213,7 +213,7 @@ index 256f20f..2920c0f 100644
  	$(INSTALL_DIR) "$(RELSYSDIR)/ebin"
  	$(INSTALL_DATA) $(INSTALL_FILES) "$(RELSYSDIR)/ebin"
 diff --git a/lib/diameter/src/Makefile b/lib/diameter/src/Makefile
-index 7f61620..cade771 100644
+index 6bf748a..962d7b7 100644
 --- a/lib/diameter/src/Makefile
 +++ b/lib/diameter/src/Makefile
 @@ -251,11 +251,8 @@ release_spec: opt
