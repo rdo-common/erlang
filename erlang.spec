@@ -1080,7 +1080,6 @@ for i in * ; do mv -v $i/doc $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}/lib/$i
 popd
 cp -av AUTHORS LICENSE.txt README.md $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/PR.template $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
-mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/README $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 mv -v $RPM_BUILD_ROOT%{_libdir}/erlang/COPYRIGHT $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 %endif
 
@@ -1171,7 +1170,6 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %doc %{_docdir}/%{name}-%{version}/COPYRIGHT
 %doc %{_docdir}/%{name}-%{version}/LICENSE.txt
 %doc %{_docdir}/%{name}-%{version}/PR.template
-%doc %{_docdir}/%{name}-%{version}/README
 %doc %{_docdir}/%{name}-%{version}/README.md
 %endif
 
