@@ -1059,8 +1059,8 @@ find $RPM_BUILD_ROOT%{_libdir}/erlang -type f -name info -exec rm -f {} \;
 
 %if %{__with_examples}
 # fix 0775 permission on some directories
-find $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ssl-*/examples/ -type d -perm 0775 | xargs chmod 755
-find $RPM_BUILD_ROOT%{_libdir}/erlang/lib/kernel-*/examples/uds_dist -type d -perm 0775 | xargs chmod 755
+find $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ssl-*/examples/ -type d -perm 0775 -print -exec chmod 755 {} \;
+find $RPM_BUILD_ROOT%{_libdir}/erlang/lib/kernel-*/examples/uds_dist -type d -perm 0775 -print -exec chmod 755 {} \;
 %else
 # Remove all examples
 find $RPM_BUILD_ROOT%{_libdir}/erlang/lib/ -mindepth 1 -maxdepth 2 -type d -name examples -exec rm -rf {} \;
