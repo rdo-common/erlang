@@ -18,8 +18,8 @@
 ## Optional components
 ##
 
-%global __with_emacs 1
-%global __with_examples 1
+%global __with_emacs 0
+%global __with_examples 0
 %global __with_java 1
 %global __with_tcltk 1
 #
@@ -64,12 +64,12 @@
 # webtool
 # wx
 #
-%global __with_wxwidgets 1
+%global __with_wxwidgets 0
 
 
 Name:		erlang
 Version:	18.3.4.4
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -2453,6 +2453,9 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 
 
 %changelog
+* Fri Oct  7 2016 Haïkel Guémar <hguemar@fedoraproject.org> - 18.3.4.4-2
+- Disabling wxwidgets, emacs, examples
+
 * Tue Aug 16 2016 Peter Lemenkov <lemenkov@gmail.com> - 18.3.4.4-1
 - Ver. 18.3.4.4
 
