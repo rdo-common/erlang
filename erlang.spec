@@ -19,8 +19,8 @@
 ## Optional components
 ##
 
-%global __with_emacs 1
-%global __with_examples 1
+%global __with_emacs 0
+%global __with_examples 0
 %global __with_java 1
 %global __with_tcltk 1
 #
@@ -61,7 +61,7 @@
 # typer
 # wx
 #
-%global __with_wxwidgets 1
+%global __with_wxwidgets 0
 
 
 Name:		erlang
