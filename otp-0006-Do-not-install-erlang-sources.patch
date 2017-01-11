@@ -34,10 +34,10 @@ index 38cf2d4..d4bb398 100644
  	$(INSTALL_DATA) $(EXAMPLES) "$(RELSYSDIR)/examples"
  
 diff --git a/lib/common_test/src/Makefile b/lib/common_test/src/Makefile
-index 0f9e044..5039444 100644
+index 9d75199..b96a112 100644
 --- a/lib/common_test/src/Makefile
 +++ b/lib/common_test/src/Makefile
-@@ -151,7 +151,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
+@@ -152,7 +152,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt
  	$(INSTALL_DIR) "$(RELSYSDIR)/src"
@@ -634,10 +634,10 @@ index 08a00e6..a21ffb3 100644
  	$(INSTALL_DATA) $(TARGET_FILES) "$(RELSYSDIR)/ebin"
  
 diff --git a/lib/observer/src/Makefile b/lib/observer/src/Makefile
-index dd7831f..1d5c505 100644
+index ff2bcbd..4973158 100644
 --- a/lib/observer/src/Makefile
 +++ b/lib/observer/src/Makefile
-@@ -153,7 +153,6 @@ include $(ERL_TOP)/make/otp_release_targets.mk
+@@ -149,7 +149,6 @@ include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt
  	$(INSTALL_DIR) "$(RELSYSDIR)/src"
@@ -868,7 +868,7 @@ index adc2c48..89ce954 100644
  	$(INSTALL_DATA) $(TARGET_FILES) "$(RELSYSDIR)/ebin"
  # 	$(INSTALL_DIR) "$(RELSYSDIR)/include"
 diff --git a/lib/ssh/src/Makefile b/lib/ssh/src/Makefile
-index 69d5a47..c79ffd1 100644
+index 7ab6f22..b57da4a 100644
 --- a/lib/ssh/src/Makefile
 +++ b/lib/ssh/src/Makefile
 @@ -136,7 +136,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
@@ -881,10 +881,10 @@ index 69d5a47..c79ffd1 100644
  	$(INSTALL_DATA) $(BEHAVIOUR_TARGET_FILES) $(TARGET_FILES) $(APP_TARGET) \
  	$(APPUP_TARGET) "$(RELSYSDIR)/ebin"
 diff --git a/lib/ssl/src/Makefile b/lib/ssl/src/Makefile
-index b625db0..9172486 100644
+index 3dda1a3..a1e3c7c 100644
 --- a/lib/ssl/src/Makefile
 +++ b/lib/ssl/src/Makefile
-@@ -143,7 +143,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
+@@ -146,7 +146,7 @@ include $(ERL_TOP)/make/otp_release_targets.mk
  
  release_spec: opt
  	$(INSTALL_DIR) "$(RELSYSDIR)/src"
