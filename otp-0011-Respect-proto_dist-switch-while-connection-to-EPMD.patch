@@ -1,0 +1,47 @@
+From: Peter Lemenkov <lemenkov@gmail.com>
+Date: Thu, 14 Jul 2016 17:51:16 +0300
+Subject: [PATCH] Respect -proto_dist switch while connection to EPMD
+
+Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
+
+diff --git a/lib/kernel/src/erl_epmd.erl b/lib/kernel/src/erl_epmd.erl
+index c6202dd..ec2e330 100644
+--- a/lib/kernel/src/erl_epmd.erl
++++ b/lib/kernel/src/erl_epmd.erl
+@@ -103,6 +103,10 @@ names(EpmdAddr) ->
+ 
+ register_node(Name, PortNo) ->
+     register_node(Name, PortNo, inet).
++register_node(Name, PortNo, inet_tcp) ->
++    register_node(Name, PortNo, inet);
++register_node(Name, PortNo, inet6_tcp) ->
++    register_node(Name, PortNo, inet6);
+ register_node(Name, PortNo, Family) ->
+     gen_server:call(erl_epmd, {register, Name, PortNo, Family}, infinity).
+ 
+diff --git a/lib/kernel/src/inet_tcp_dist.erl b/lib/kernel/src/inet_tcp_dist.erl
+index 64b28bb..ffbd5d5 100644
+--- a/lib/kernel/src/inet_tcp_dist.erl
++++ b/lib/kernel/src/inet_tcp_dist.erl
+@@ -73,7 +73,7 @@ gen_listen(Driver, Name) ->
+ 	{ok, Socket} ->
+ 	    TcpAddress = get_tcp_address(Driver, Socket),
+ 	    {_,Port} = TcpAddress#net_address.address,
+-	    case erl_epmd:register_node(Name, Port) of
++	    case erl_epmd:register_node(Name, Port, Driver) of
+ 		{ok, Creation} ->
+ 		    {ok, {Socket, TcpAddress, Creation}};
+ 		Error ->
+diff --git a/lib/ssl/src/ssl_tls_dist_proxy.erl b/lib/ssl/src/ssl_tls_dist_proxy.erl
+index 4c78979..7c6b14f 100644
+--- a/lib/ssl/src/ssl_tls_dist_proxy.erl
++++ b/lib/ssl/src/ssl_tls_dist_proxy.erl
+@@ -116,7 +116,7 @@ handle_call({listen, Driver, Name}, _From, State) ->
+ 	    {ok, TcpAddress} = get_tcp_address(Socket),
+ 	    {ok, WorldTcpAddress} = get_tcp_address(World),
+ 	    {_,Port} = WorldTcpAddress#net_address.address,
+-	    case erl_epmd:register_node(Name, Port) of
++	    case erl_epmd:register_node(Name, Port, Driver) of
+ 		{ok, Creation} ->
+ 		    {reply, {ok, {Socket, TcpAddress, Creation}},
+ 		     State#state{listen={Socket, World}}};

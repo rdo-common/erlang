@@ -1,0 +1,56 @@
+From: Alexey Lebedeff <alebedev@mirantis.com>
+Date: Tue, 29 Mar 2016 20:30:22 +0300
+Subject: [PATCH] Don't send unasked for systemd notifications
+
+Suppose we have some erlang system that uses systemd unit with
+Type=notify - so this should send startup confirmation itself. But if
+systemd-enabled epmd will be started as a first step of that system
+startup, empd startup confirmation will be misinterpeted by systemd. And
+our erlang service will be considered 'ready' to early. Also this will
+interefere with systemd MAINPID detection: systemd will be monitoring
+`epmd` process instead of `beam` one.
+
+For example, rabbitmq works around this issue by starting epmd using
+separate short-lived beam process, with NOTIFY_SOCKET environment
+variable reset - only in this way we could be sure that epmd will not
+interfere with rabbit startup sequence.
+
+This patch disables indiscriminate confirmation sending, and does it
+only when it was explicitly asked to do so.
+
+diff --git a/erts/epmd/src/epmd.c b/erts/epmd/src/epmd.c
+index 5513cb2..4740ce8 100644
+--- a/erts/epmd/src/epmd.c
++++ b/erts/epmd/src/epmd.c
+@@ -592,8 +592,10 @@ void epmd_cleanup_exit(EpmdVars *g, int exitval)
+       free(g->argv);
+   }
+ #ifdef HAVE_SYSTEMD_DAEMON
+-  sd_notifyf(0, "STATUS=Exited.\n"
+-                "ERRNO=%i", exitval);
++  if (g->is_systemd){
++    sd_notifyf(0, "STATUS=Exited.\n"
++               "ERRNO=%i", exitval);
++  }
+ #endif /* HAVE_SYSTEMD_DAEMON */
+   exit(exitval);
+ }
+diff --git a/erts/epmd/src/epmd_srv.c b/erts/epmd/src/epmd_srv.c
+index e1bac99..59d59ad 100644
+--- a/erts/epmd/src/epmd_srv.c
++++ b/erts/epmd/src/epmd_srv.c
+@@ -452,9 +452,11 @@ void run(EpmdVars *g)
+   num_sockets = bound;
+ #ifdef HAVE_SYSTEMD_DAEMON
+     }
+-    sd_notifyf(0, "READY=1\n"
+-                  "STATUS=Processing port mapping requests...\n"
+-                  "MAINPID=%lu", (unsigned long) getpid());
++    if (g->is_systemd) {
++      sd_notifyf(0, "READY=1\n"
++                    "STATUS=Processing port mapping requests...\n"
++                    "MAINPID=%lu", (unsigned long) getpid());
++    }
+ #endif /* HAVE_SYSTEMD_DAEMON */
+ 
+   dbg_tty_printf(g,2,"entering the main select() loop");
