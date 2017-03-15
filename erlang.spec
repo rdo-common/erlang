@@ -1205,6 +1205,7 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %{_libdir}/erlang/man/man3/ct_snmp.*
 %{_libdir}/erlang/man/man3/ct_ssh.*
 %{_libdir}/erlang/man/man3/ct_telnet.*
+%{_libdir}/erlang/man/man3/ct_testspec.*
 %{_libdir}/erlang/man/man3/unix_telnet.*
 %{_libdir}/erlang/man/man6/common_test.*
 %endif
