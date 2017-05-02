@@ -6,7 +6,7 @@ Subject: [PATCH] Do not format man-pages and do not install miscellaneous
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 
 diff --git a/erts/etc/common/Makefile.in b/erts/etc/common/Makefile.in
-index cb053a1..024307b 100644
+index cb053a1b7c..024307b9c9 100644
 --- a/erts/etc/common/Makefile.in
 +++ b/erts/etc/common/Makefile.in
 @@ -492,10 +492,6 @@ endif
@@ -21,7 +21,7 @@ index cb053a1..024307b 100644
  	$(INSTALL_DIR) "$(RELEASE_PATH)/erts-$(VSN)/src"
  	$(INSTALL_DATA) $(INSTALL_SRC) "$(RELEASE_PATH)/erts-$(VSN)/src"
 diff --git a/erts/etc/unix/Install.src b/erts/etc/unix/Install.src
-index e71308e..ae2c9cf 100644
+index e71308edbe..ae2c9cf251 100644
 --- a/erts/etc/unix/Install.src
 +++ b/erts/etc/unix/Install.src
 @@ -141,14 +141,5 @@ cp -p ../releases/%I_SYSTEM_VSN%/start_*.boot .

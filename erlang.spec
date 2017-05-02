@@ -65,7 +65,7 @@
 
 
 Name:		erlang
-Version:	19.3.2
+Version:	19.3.3
 Release:	1%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
@@ -2316,6 +2316,9 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 
 
 %changelog
+* Tue May  2 2017 Peter Lemenkov <lemenkov@gmail.com> - 19.3.3-1
+- Ver. 19.3.2
+
 * Mon Apr 24 2017 Peter Lemenkov <lemenkov@gmail.com> - 19.3.2-1
 - Ver. 19.3.2
 
