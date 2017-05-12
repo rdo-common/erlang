@@ -65,13 +65,13 @@
 
 
 Name:		erlang
-Version:	19.3.3
+Version:	19.3.4
 Release:	1%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
 License:	ASL 2.0
-URL:		http://www.erlang.org
+URL:		https://www.erlang.org
 %if 0%{?el7}%{?fedora}
 VCS:		scm:git:https://github.com/erlang/otp
 %endif
@@ -574,6 +574,7 @@ Summary: IDL compiler
 Group: Development/Languages
 %if %{__with_java}
 BuildRequires: java-devel
+Requires: javapackages-tools
 %endif %{__with_java}
 Requires: %{name}-erts%{?_isa} = %{version}-%{release}
 Requires: %{name}-kernel%{?_isa} = %{version}-%{release}
@@ -600,6 +601,7 @@ A set of services such as a Web server and a ftp client etc.
 Summary: A library for accessing Java from Erlang
 Group: Development/Languages
 BuildRequires: java-devel
+Requires: javapackages-tools
 Requires: %{name}-erts%{?_isa} = %{version}-%{release}
 
 %description jinterface
@@ -1165,7 +1167,7 @@ done
 %pre erts
 getent group epmd >/dev/null || groupadd -r epmd
 getent passwd epmd >/dev/null || \
-useradd -r -g epmd -d /tmp -s /sbin/nologin \
+useradd -r -g epmd -d /dev/null -s /sbin/nologin \
 -c "Erlang Port Mapper Daemon" epmd 2>/dev/null || :
 
 
@@ -1598,9 +1600,9 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 %{_libdir}/erlang/lib/ic-*/include
 %{_libdir}/erlang/lib/ic-*/priv
 %{_libdir}/erlang/lib/ic-*/src
-# FIXME see erlang-jinterface also
-#%dir %{_javadir}/%{name}/
 %if %{__with_java}
+# FIXME see also erlang-jinterface
+%dir %{_javadir}/%{name}/
 %{_javadir}/%{name}/ic.jar
 %endif %{__with_java}
 %if %{with doc}
@@ -1633,8 +1635,8 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 
 %if %{__with_java}
 %files jinterface
-# FIXME see erlang-ic also
-#%dir %{_javadir}/%{name}/
+# FIXME see also erlang-ic
+%dir %{_javadir}/%{name}/
 %{_javadir}/%{name}/OtpErlang.jar
 %{_libdir}/erlang/lib/jinterface-*/
 %endif %{__with_java}
@@ -2316,8 +2318,13 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 
 
 %changelog
+* Fri May 12 2017 Peter Lemenkov <lemenkov@gmail.com> - 19.3.4-1
+- Ver. 19.3.4
+- Require javapackages-tools (/use/share/java)
+- Use /dev/null as a homedir for EPMD (its shell is /sbin/nologin anyway)
+
 * Tue May  2 2017 Peter Lemenkov <lemenkov@gmail.com> - 19.3.3-1
-- Ver. 19.3.2
+- Ver. 19.3.3
 
 * Mon Apr 24 2017 Peter Lemenkov <lemenkov@gmail.com> - 19.3.2-1
 - Ver. 19.3.2
@@ -2802,7 +2809,7 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 - new release R12B-0
 
 * Wed Dec 05 2007 Release Engineering <rel-eng at fedoraproject dot org> - R11B-6
- - Rebuild for deps
+- Rebuild for deps
 
 * Sun Aug 19 2007 Gerard Milmeister <gemi@bluewin.ch> - R11B-5.3
 - fix some permissions
