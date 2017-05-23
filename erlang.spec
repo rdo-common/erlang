@@ -69,7 +69,7 @@
 
 Name:		erlang
 Version:	18.3.4.4
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
 Group:		Development/Languages
@@ -2453,6 +2453,9 @@ useradd -r -g epmd -d /tmp -s /sbin/nologin \
 
 
 %changelog
+* Tue May 23 2017 Mike Burns <mburns@redhat.com> 18.3.4.4-3
+- rebuild for ppc64le
+
 * Wed Nov 30 2016 Jon Schlueter <jschluet@redhat.com> 18.3.4.4-2
 - rebuild
 
