@@ -65,7 +65,7 @@
 
 
 Name:		erlang
-Version:	19.3.4
+Version:	19.3.5
 Release:	1%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
@@ -1160,8 +1160,11 @@ done
 
 
 %check
-# FIXME run tests somehow
-# make tests || exit 0
+TARGET="$(make target_configured)"
+ERL_TOP="$(pwd)"
+# FIXME we'll keep "exit 0" for a while to check if everything ok on secondary
+# arches.
+ERL_TOP=${ERL_TOP} make TARGET=${TARGET} release_tests || exit 0
 
 
 %pre erts
@@ -2318,6 +2321,10 @@ useradd -r -g epmd -d /dev/null -s /sbin/nologin \
 
 
 %changelog
+* Wed Jun  7 2017 Peter Lemenkov <lemenkov@gmail.com> - 19.3.5-1
+- Ver. 19.3.5
+- Enabled tests
+
 * Fri May 12 2017 Peter Lemenkov <lemenkov@gmail.com> - 19.3.4-1
 - Ver. 19.3.4
 - Require javapackages-tools (/use/share/java)
