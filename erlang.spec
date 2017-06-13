@@ -65,7 +65,7 @@
 
 
 Name:		erlang
-Version:	19.3.5
+Version:	19.3.6
 Release:	1%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
@@ -1162,9 +1162,10 @@ done
 %check
 TARGET="$(make target_configured)"
 ERL_TOP="$(pwd)"
-# FIXME we'll keep "exit 0" for a while to check if everything ok on secondary
-# arches.
-ERL_TOP=${ERL_TOP} make TARGET=${TARGET} release_tests || exit 0
+ERL_TOP=${ERL_TOP} make TARGET=${TARGET} release_tests
+# Unfortunately running the tests will take several hours. So we build the
+# package w/o tests for now. See this:
+# https://github.com/erlang/otp/wiki/Running-tests
 
 
 %pre erts
@@ -2321,6 +2322,9 @@ useradd -r -g epmd -d /dev/null -s /sbin/nologin \
 
 
 %changelog
+* Tue Jun 13 2017 Peter Lemenkov <lemenkov@gmail.com> - 19.3.6-1
+- Ver. 19.3.6
+
 * Wed Jun  7 2017 Peter Lemenkov <lemenkov@gmail.com> - 19.3.5-1
 - Ver. 19.3.5
 - Enabled tests
