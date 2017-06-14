@@ -5,7 +5,7 @@ Subject: [PATCH] erts: Fix correct link flags for hipe_mkliterals
 and no need for $(INCLUDED).
 
 diff --git a/erts/emulator/Makefile.in b/erts/emulator/Makefile.in
-index a919f0e..15e5609 100644
+index a919f0e3ac..15e5609d08 100644
 --- a/erts/emulator/Makefile.in
 +++ b/erts/emulator/Makefile.in
 @@ -53,6 +53,7 @@ CREATE_DIRS=

@@ -5,7 +5,7 @@ Subject: [PATCH] Split off webtool dependency from tools
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 
 diff --git a/lib/tools/src/cover_web.erl b/lib/tools/src/cover_web.erl
-index ae8b3f2..539ca96 100644
+index ae8b3f25cf..539ca96b8e 100644
 --- a/lib/tools/src/cover_web.erl
 +++ b/lib/tools/src/cover_web.erl
 @@ -51,14 +51,25 @@

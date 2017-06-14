@@ -5,7 +5,7 @@ Subject: [PATCH] Remove rpath
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 
 diff --git a/lib/crypto/c_src/Makefile.in b/lib/crypto/c_src/Makefile.in
-index e66c0ca..574cdf5 100644
+index e66c0ca916..574cdf5721 100644
 --- a/lib/crypto/c_src/Makefile.in
 +++ b/lib/crypto/c_src/Makefile.in
 @@ -90,7 +90,7 @@ endif
@@ -18,7 +18,7 @@ index e66c0ca..574cdf5 100644
  EXTRA_FLAGS = -DHAVE_DYNAMIC_CRYPTO_LIB
  else
 diff --git a/lib/crypto/priv/Makefile b/lib/crypto/priv/Makefile
-index ff9d3e1..d3aba77 100644
+index ff9d3e1dc9..d3aba77808 100644
 --- a/lib/crypto/priv/Makefile
 +++ b/lib/crypto/priv/Makefile
 @@ -61,7 +61,7 @@ OBJS = $(OBJDIR)/crypto.o

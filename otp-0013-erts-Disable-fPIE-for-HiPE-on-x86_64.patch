@@ -4,7 +4,7 @@ Subject: [PATCH] erts: Disable -fPIE for HiPE on x86_64
 
 
 diff --git a/erts/configure.in b/erts/configure.in
-index 4ade3b3..e99d22a 100644
+index 4ade3b3086..e99d22a0af 100644
 --- a/erts/configure.in
 +++ b/erts/configure.in
 @@ -2887,6 +2887,22 @@ case $ARCH-$OPSYS in

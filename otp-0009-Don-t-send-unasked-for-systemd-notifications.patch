@@ -19,7 +19,7 @@ This patch disables indiscriminate confirmation sending, and does it
 only when it was explicitly asked to do so.
 
 diff --git a/erts/epmd/src/epmd.c b/erts/epmd/src/epmd.c
-index 5513cb2..4740ce8 100644
+index 5513cb2d7e..4740ce8534 100644
 --- a/erts/epmd/src/epmd.c
 +++ b/erts/epmd/src/epmd.c
 @@ -592,8 +592,10 @@ void epmd_cleanup_exit(EpmdVars *g, int exitval)
@@ -36,7 +36,7 @@ index 5513cb2..4740ce8 100644
    exit(exitval);
  }
 diff --git a/erts/epmd/src/epmd_srv.c b/erts/epmd/src/epmd_srv.c
-index e1bac99..59d59ad 100644
+index e1bac99ef9..59d59ad0f7 100644
 --- a/erts/epmd/src/epmd_srv.c
 +++ b/erts/epmd/src/epmd_srv.c
 @@ -452,9 +452,11 @@ void run(EpmdVars *g)

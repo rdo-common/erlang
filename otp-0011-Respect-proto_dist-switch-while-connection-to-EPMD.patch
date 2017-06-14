@@ -5,7 +5,7 @@ Subject: [PATCH] Respect -proto_dist switch while connection to EPMD
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 
 diff --git a/lib/kernel/src/erl_epmd.erl b/lib/kernel/src/erl_epmd.erl
-index c6202dd..ec2e330 100644
+index c6202dd796..ec2e3309c8 100644
 --- a/lib/kernel/src/erl_epmd.erl
 +++ b/lib/kernel/src/erl_epmd.erl
 @@ -103,6 +103,10 @@ names(EpmdAddr) ->
@@ -20,7 +20,7 @@ index c6202dd..ec2e330 100644
      gen_server:call(erl_epmd, {register, Name, PortNo, Family}, infinity).
  
 diff --git a/lib/kernel/src/inet_tcp_dist.erl b/lib/kernel/src/inet_tcp_dist.erl
-index 64b28bb..ffbd5d5 100644
+index 64b28bb49b..ffbd5d5a21 100644
 --- a/lib/kernel/src/inet_tcp_dist.erl
 +++ b/lib/kernel/src/inet_tcp_dist.erl
 @@ -73,7 +73,7 @@ gen_listen(Driver, Name) ->
@@ -33,7 +33,7 @@ index 64b28bb..ffbd5d5 100644
  		    {ok, {Socket, TcpAddress, Creation}};
  		Error ->
 diff --git a/lib/ssl/src/ssl_tls_dist_proxy.erl b/lib/ssl/src/ssl_tls_dist_proxy.erl
-index 4c78979..7c6b14f 100644
+index 4c789793ec..7c6b14fcaf 100644
 --- a/lib/ssl/src/ssl_tls_dist_proxy.erl
 +++ b/lib/ssl/src/ssl_tls_dist_proxy.erl
 @@ -116,7 +116,7 @@ handle_call({listen, Driver, Name}, _From, State) ->
