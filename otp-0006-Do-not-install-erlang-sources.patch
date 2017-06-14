@@ -771,7 +771,7 @@ index 1fea415..a756470 100644
  	$(INSTALL_DATA) $(TARGET_FILES) "$(RELSYSDIR)/ebin"
  	$(INSTALL_DATA) $(APP_TARGET) $(APPUP_TARGET) "$(RELSYSDIR)/ebin"
 diff --git a/lib/runtime_tools/src/Makefile b/lib/runtime_tools/src/Makefile
-index 99b90f9..25b3ebb 100644
+index 99b90f9e..25b3ebb 100644
 --- a/lib/runtime_tools/src/Makefile
 +++ b/lib/runtime_tools/src/Makefile
 @@ -97,8 +97,6 @@ docs:
