@@ -1,0 +1,58 @@
+From: Daniel Sommermann <dcsommer@whatsapp.com>
+Date: Fri, 20 May 2016 15:47:16 -0700
+Subject: [PATCH] Make inet:gethostbyname respect resolver option `inet6`
+
+This makes the implementation text of inet:gethostbyname/1 identical to
+that of inet_res:gethostbyname/1. I also copied over the doc note about
+this resolver option.
+
+diff --git a/lib/kernel/doc/src/inet.xml b/lib/kernel/doc/src/inet.xml
+index 088d78c1d6..f38af7a06b 100644
+--- a/lib/kernel/doc/src/inet.xml
++++ b/lib/kernel/doc/src/inet.xml
+@@ -11,7 +11,7 @@
+       Licensed under the Apache License, Version 2.0 (the "License");
+       you may not use this file except in compliance with the License.
+       You may obtain a copy of the License at
+- 
++
+           http://www.apache.org/licenses/LICENSE-2.0
+ 
+       Unless required by applicable law or agreed to in writing, software
+@@ -184,7 +184,12 @@ fe80::204:acff:fe17:bf38
+       <name name="gethostbyname" arity="1"/>
+       <fsummary>Return a hostent record for the host with the given name</fsummary>
+       <desc>
+-        <p>Returns a <c>hostent</c> record given a hostname.</p>
++        <p>Returns a <c>hostent</c> record for the host with the specified
++          hostname.</p>
++        <p>If resolver option <c>inet6</c> is <c>true</c>,
++          an IPv6 address is looked up. If that fails,
++          the IPv4 address is looked up and returned on
++          IPv6-mapped IPv4 format.</p>
+       </desc>
+     </func>
+     <func>
+@@ -1288,4 +1293,3 @@ setcap cap_sys_admin,cap_sys_ptrace,cap_dac_read_search+epi beam.smp
+     </list>
+   </section>
+ </erlref>
+-
+diff --git a/lib/kernel/src/inet.erl b/lib/kernel/src/inet.erl
+index c1ae99ea24..713a9cf725 100644
+--- a/lib/kernel/src/inet.erl
++++ b/lib/kernel/src/inet.erl
+@@ -439,7 +439,12 @@ getstat(Socket,What) ->
+       Hostent :: hostent().
+ 
+ gethostbyname(Name) -> 
+-    gethostbyname_tm(Name, inet, false).
++    case inet_db:res_option(inet6) of
++	true ->
++	    gethostbyname_tm(Name, inet6, false);
++	false ->
++	    gethostbyname_tm(Name, inet, false)
++    end.
+ 
+ -spec gethostbyname(Hostname, Family) ->
+                            {ok, Hostent} | {error, posix()} when
