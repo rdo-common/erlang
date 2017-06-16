@@ -1,0 +1,26 @@
+From: John Eckersberg <jeckersb@redhat.com>
+Date: Wed, 14 Jun 2017 12:32:17 -0400
+Subject: [PATCH] Fix erl_epmd:port_please when using IPv6
+
+This mirrors the behavior of inet:gethostbyname when no family or
+timeout is supplied.
+
+diff --git a/lib/kernel/src/erl_epmd.erl b/lib/kernel/src/erl_epmd.erl
+index ec2e3309c8..07bfb451ae 100644
+--- a/lib/kernel/src/erl_epmd.erl
++++ b/lib/kernel/src/erl_epmd.erl
+@@ -79,7 +79,13 @@ port_please(Node, EpmdAddr, Timeout) ->
+ 
+ 
+ port_please1(Node,HostName, Timeout) ->
+-  case inet:gethostbyname(HostName, inet, Timeout) of
++  Family = case inet_db:res_option(inet6) of
++             true ->
++               inet6;
++             false ->
++               inet
++           end,
++  case inet:gethostbyname(HostName, Family, Timeout) of
+     {ok,{hostent, _Name, _ , _Af, _Size, [EpmdAddr | _]}} ->
+       get_port(Node, EpmdAddr, Timeout);
+     Else ->
