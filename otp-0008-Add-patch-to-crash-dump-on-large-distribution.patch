@@ -8,7 +8,7 @@ https://bugzilla.redhat.com/show_bug.cgi?id=1291856
 https://bugzilla.redhat.com/show_bug.cgi?id=1291857
 
 diff --git a/erts/emulator/beam/dist.c b/erts/emulator/beam/dist.c
-index 787241b..069d80a 100644
+index 787241b960..069d80ac4b 100644
 --- a/erts/emulator/beam/dist.c
 +++ b/erts/emulator/beam/dist.c
 @@ -1980,7 +1980,7 @@ dist_port_command(Port *prt, ErtsDistOutputBuf *obuf)
