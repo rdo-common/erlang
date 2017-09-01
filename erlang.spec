@@ -7,7 +7,7 @@
 # default
 %bcond_with doc
 %else
-%bcond_without doc
+%bcond_with doc
 %endif
 
 %ifarch %{arm} %{ix86} x86_64 ppc %{power64}
@@ -18,10 +18,10 @@
 ## Optional components
 ##
 
-%global __with_emacs 1
-%global __with_examples 1
-%global __with_java 1
-%global __with_tcltk 1
+%global __with_emacs 0
+%global __with_examples 0
+%global __with_java 0
+%global __with_tcltk 0
 #
 # wxWidgets plugin blocks the following ones:
 #
@@ -64,7 +64,7 @@
 # webtool
 # wx
 #
-%global __with_wxwidgets 1
+%global __with_wxwidgets 0
 
 
 Name:		erlang
