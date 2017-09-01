@@ -5,7 +5,7 @@ Subject: [PATCH] Fix decoding of LLONG_MIN in erl_decode
 Reported-by: Peter Lemenkov
 
 diff --git a/lib/erl_interface/src/legacy/erl_marshal.c b/lib/erl_interface/src/legacy/erl_marshal.c
-index a4216c9..6a1b573 100644
+index a4216c9541..6a1b573d52 100644
 --- a/lib/erl_interface/src/legacy/erl_marshal.c
 +++ b/lib/erl_interface/src/legacy/erl_marshal.c
 @@ -727,6 +727,13 @@ static ETERM *erl_decode_it(unsigned char **ext)

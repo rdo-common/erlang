@@ -14,7 +14,7 @@ https://bugzilla.redhat.com/818419
 Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
 
 diff --git a/lib/asn1/c_src/Makefile b/lib/asn1/c_src/Makefile
-index 2b72e1a..0522562 100644
+index 2b72e1a214..0522562a1e 100644
 --- a/lib/asn1/c_src/Makefile
 +++ b/lib/asn1/c_src/Makefile
 @@ -143,8 +143,6 @@ release_spec: opt
@@ -27,7 +27,7 @@ index 2b72e1a..0522562 100644
  release_docs_spec:
  
 diff --git a/lib/crypto/c_src/Makefile.in b/lib/crypto/c_src/Makefile.in
-index 574cdf5..428c316 100644
+index 574cdf5721..428c3163f5 100644
 --- a/lib/crypto/c_src/Makefile.in
 +++ b/lib/crypto/c_src/Makefile.in
 @@ -200,14 +200,10 @@ docs:
@@ -46,7 +46,7 @@ index 574cdf5..428c316 100644
  endif
  endif
 diff --git a/lib/erl_interface/src/Makefile.in b/lib/erl_interface/src/Makefile.in
-index 777d709..57917ae 100644
+index 777d709b1e..57917ae7ee 100644
 --- a/lib/erl_interface/src/Makefile.in
 +++ b/lib/erl_interface/src/Makefile.in
 @@ -905,14 +905,14 @@ ifneq ($(EXE_TARGETS),)
@@ -73,7 +73,7 @@ index 777d709..57917ae 100644
  release_docs:
  
 diff --git a/lib/ic/c_src/Makefile.in b/lib/ic/c_src/Makefile.in
-index b9f92a0..9612f24 100644
+index b9f92a0925..9612f24f93 100644
 --- a/lib/ic/c_src/Makefile.in
 +++ b/lib/ic/c_src/Makefile.in
 @@ -145,12 +145,10 @@ $(OBJDIR)/%.o: %.c
@@ -90,7 +90,7 @@ index b9f92a0..9612f24 100644
  	$(INSTALL_DATA) $(LIBRARY) "$(RELSYSDIR)/priv/lib"
  	$(INSTALL_DATA) $(IDL_FILES) $(H_FILES) "$(RELEASE_PATH)/usr/include"
 diff --git a/lib/megaco/src/flex/Makefile.in b/lib/megaco/src/flex/Makefile.in
-index 045b6d8..39be02a 100644
+index 045b6d871a..39be02ad5e 100644
 --- a/lib/megaco/src/flex/Makefile.in
 +++ b/lib/megaco/src/flex/Makefile.in
 @@ -271,7 +271,7 @@ release_spec: opt
@@ -103,7 +103,7 @@ index 045b6d8..39be02a 100644
  endif
  
 diff --git a/lib/odbc/c_src/Makefile.in b/lib/odbc/c_src/Makefile.in
-index 685eb5d..6c8a432 100644
+index 685eb5d150..6c8a432fb0 100644
 --- a/lib/odbc/c_src/Makefile.in
 +++ b/lib/odbc/c_src/Makefile.in
 @@ -129,11 +129,8 @@ include $(ERL_TOP)/make/otp_release_targets.mk
@@ -119,7 +119,7 @@ index 685eb5d..6c8a432 100644
  endif
  
 diff --git a/lib/os_mon/c_src/Makefile.in b/lib/os_mon/c_src/Makefile.in
-index e9fc5f4..ac9fb73 100644
+index e9fc5f4139..ac9fb73abb 100644
 --- a/lib/os_mon/c_src/Makefile.in
 +++ b/lib/os_mon/c_src/Makefile.in
 @@ -126,8 +126,6 @@ $(OBJDIR)/memsup.o: memsup.h
@@ -132,7 +132,7 @@ index e9fc5f4..ac9fb73 100644
  	$(INSTALL_PROGRAM) $(TARGET_FILES) "$(RELSYSDIR)/priv/bin"
  
 diff --git a/lib/runtime_tools/c_src/Makefile.in b/lib/runtime_tools/c_src/Makefile.in
-index 448b8c6..860d504 100644
+index 448b8c62c2..860d5040b2 100644
 --- a/lib/runtime_tools/c_src/Makefile.in
 +++ b/lib/runtime_tools/c_src/Makefile.in
 @@ -157,10 +157,8 @@ docs:
@@ -147,7 +147,7 @@ index 448b8c6..860d504 100644
  endif
  
 diff --git a/lib/tools/c_src/Makefile.in b/lib/tools/c_src/Makefile.in
-index 66bba22..eea37fc 100644
+index 66bba229f6..eea37fcab6 100644
 --- a/lib/tools/c_src/Makefile.in
 +++ b/lib/tools/c_src/Makefile.in
 @@ -198,8 +198,6 @@ include ../vsn.mk
