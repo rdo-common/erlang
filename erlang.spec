@@ -65,7 +65,7 @@
 
 
 Name:		erlang
-Version:	19.3.6.3
+Version:	19.3.6.4
 Release:	1%{?dist}
 Summary:	General-purpose programming language and runtime environment
 
@@ -2306,6 +2306,10 @@ useradd -r -g epmd -d /dev/null -s /sbin/nologin \
 
 
 %changelog
+* Mon Nov 27 2017 Peter Lemenkov <lemenkov@gmail.com> - 19.3.6.4
+- Ver. 19.3.6.4
+- ssl: Countermeasurements for Bleichenbacher attack
+
 * Tue Aug  1 2017 Randy Barlow <bowlofeggs@fedoraproject.org> - 19.3.6.2-2
 - Search /usr/share/erlang/lib for libraries as well
 
